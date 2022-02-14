@@ -1,5 +1,110 @@
+$primary: #9b8267;
+$secondary: #706e6e;
+
+* {
+  box-sizing: border-box;
+}
+
 .App {
   width: 1920px;
   height: 1080px;
   background: #fff;
+
+  .header {
+    display: flex;
+    height: 50px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
+    border-radius: 3.2px;
+
+    .title {
+      width: 1367px;
+      border-top: 50px solid $primary;
+      border-right: 50px solid transparent;
+      display: flex;
+
+      h1 {
+        font-family: Gurmukhi MN;
+        font-size: 28px;
+        color: #fff;
+        text-align: center;
+        font-weight: 700;
+        letter-spacing: 0.6px;
+        line-height: 50px;
+        margin-top: -50px;
+      }
+
+      img {
+        width: 30px;
+        height: 29px;
+        display: inline-block;
+        margin: -40px 14px 10px 23px;
+      }
+    }
+
+    .symbols {
+      width: 553px;
+      display: flex;
+      justify-content: space-around;
+
+      .symbol {
+        display: flex;
+        align-items: center;
+
+        span {
+          width: 11px;
+          height: 11px;
+          border-radius: 50%;
+          margin: 2px;
+        }
+
+        p {
+          font-family: Helvetica;
+          font-size: 13px;
+          line-height: 13px;
+          color: $secondary;
+          vertical-align: middle;
+          font-weight: 400;
+          letter-spacing: 0;
+        }
+      }
+    }
+  }
+
+  .main {
+    display: grid;
+    grid-template-columns: 315px 1345px auto;
+    grid-column-gap: 6px;
+    background: #f2ede0;
+    height: 1030px;
+
+    #left-panel,
+    #main-panel,
+    #right-panel {
+      background: #fff;
+    }
+  }
+}
+
+// --------------global style-------------------
+h2.g-title {
+  font-family: Helvetica;
+  font-size: 20px;
+  color: #252525;
+  font-weight: 700;
+  letter-spacing: 0;
+  margin: 0;
+}
+
+h3.g-title {
+  font-family: Helvetica;
+  font-size: 16px;
+  color: #706e6e;
+  font-weight: 700;
+  line-height: 16px;
+  letter-spacing: 0;
+  margin: 0;
+}
+
+.g-divider {
+  border-bottom: 1px dashed #979797;
 }

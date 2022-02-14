@@ -1,0 +1,25 @@
+#left-panel {
+  $leftPadding: 13px;
+
+  // padding: 0 0 0 13px;
+  .panel {
+    background: #fff;
+    padding: 0 0 0 $leftPadding;
+  }
+
+  .figures-view {
+    height: 50px;
+    display: flex;
+    align-items: center;
+  }
+
+  .identification-view {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+
+    h2.g-title {
+      margin: 10px 0;
+    }
+  }
+}
