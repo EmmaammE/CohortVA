@@ -1,0 +1,19 @@
+#main-panel {
+  padding: 0 20px;
+  position: relative;
+
+  h2 {
+    line-height: 50px;
+  }
+
+  .op-container {
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: flex;
+
+    div {
+      margin: 20px;
+    }
+  }
+}
