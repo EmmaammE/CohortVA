@@ -1,0 +1,38 @@
+.timeline-title {
+  line-height: 11.2px;
+  margin: 10px 0 5px 200px;
+  // overflow-x: hidden;
+}
+rect.bar{
+  fill:#4070c1;
+  border: #4070c1;
+  opacity: 0.5;
+  cursor: pointer;
+}
+svg.barchart{
+  height: 375px;
+  text.axis-title{
+    font-size:12px
+  }
+}
+#timeline{
+  overflow: auto;
+  max-width: 375px;
+  max-height: 375px;
+}
+#timeline::-webkit-scrollbar-track{  
+  border-radius: 8px;  
+  background-color: rgba(255,255,255,0.8);
+  border: 1px solid #C6C6C6;
+
+}
+#timeline::-webkit-scrollbar{  
+  height: 8px;			/*设置滚动条样式*/  
+  width:8px;
+  background-color: rgba(0,0,0,0);
+}
+#timeline::-webkit-scrollbar-thumb{  
+  border-radius: 8px;
+  background: #EEEEEE;
+  border: 1px solid #C6C6C6;
+}

@@ -1,5 +1,6 @@
 import React from 'react';
 import Button from '../../components/button/Button';
+import FigureTimeline from './FigureTimeline';
 import FigureTraces from './FigureTraces';
 import './index.scss';
 
@@ -28,6 +29,7 @@ const MainPanel = () => (
       </div>
       <div className="auxiliary-view">
         <h3 className="g-title">Cohort Timeline</h3>
+        <FigureTimeline />
       </div>
       <div className="auxiliary-view">
         <h3 className="g-title">Cohort Relationship</h3>

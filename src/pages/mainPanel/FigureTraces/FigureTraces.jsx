@@ -2,7 +2,7 @@
 import React, { Component,useState,useEffect,useRef } from 'react'
 import * as d3 from 'd3';
 import china from '../../../assets/geojson/full.json'
-import './FigureTraces.less'
+import './FigureTraces.scss'
 import template from '../../../utils/tempelate'
 import Tooltip from '../../../components/tooltip/Tip'
 import { post } from '../../../api/tools'
