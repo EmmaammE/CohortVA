@@ -243,7 +243,7 @@ class CohortSearcherPanel extends React.PureComponent {
             {/* 写死 */}
             {['office', 'group', 'popular', 'time', 'location', 'frequent'].map(
               (f, i) => (
-                <div className="single-checkbox" style={{}}>
+                <div className="single-checkbox" style={{}} key={i}>
                   <input type="checkbox" value="group" checked readOnly />
                   <label>{f}</label>
                   <div className="split-line" />

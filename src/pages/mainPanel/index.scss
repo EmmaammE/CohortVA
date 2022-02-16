@@ -1,6 +1,8 @@
 #main-panel {
   padding: 0 20px;
   position: relative;
+  display: flex;
+  flex-direction: column;
 
   h2 {
     line-height: 50px;
@@ -14,6 +16,30 @@
 
     div {
       margin: 20px;
+    }
+  }
+
+  .feature-view {
+    flex: 1;
+  }
+
+  .auxiliary {
+    flex: 0 0 330px;
+    display: flex;
+    width: 100%;
+
+    &-view {
+      flex: 0 0 25%;
+      margin: 9px 0;
+
+      h3 {
+        margin: 6px 0;
+      }
+
+      &:nth-last-child(-n + 3) {
+        border-left: 1px solid #979797;
+        padding: 0 0 0 15px;
+      }
     }
   }
 }
