@@ -144,8 +144,9 @@
       border: 1px solid #838383;
       outline: none;
     }
-    // input[type='checkbox']:checked {
-    //   background: url('../../../assets/icons/check.svg') no-repeat center;
-    // }
+
+    input[type='checkbox']:checked {
+      background: url('../../../assets/icons/check.svg') no-repeat center;
+    }
   }
 }

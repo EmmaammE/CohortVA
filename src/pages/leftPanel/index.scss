@@ -1,16 +1,31 @@
 #left-panel {
   $leftPadding: 13px;
 
-  // padding: 0 0 0 13px;
   .panel {
     background: #fff;
     padding: 0 0 0 $leftPadding;
   }
 
   .figures-view {
-    height: 50px;
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    position: relative;
+
+    &--header {
+      height: 50px;
+      line-height: 50px;
+      display: flex;
+      align-items: center;
+    }
+
+    &--icon {
+      display: block;
+      margin: 10px;
+      width: 17px;
+      height: 17px;
+      border: 1px solid #989898;
+      cursor: pointer;
+    }
   }
 
   .identification-view {
