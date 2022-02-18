@@ -1,4 +1,5 @@
 import React, { useCallback, useState } from 'react';
+import AnalysisPanel from './AnalysisProvenance';
 import CohortSearcherPanel from './CohortSearch';
 import './index.scss';
 
@@ -22,8 +23,9 @@ const LeftPanel = () => {
       <div className="identification-view panel">
         <h2 className="g-title">Cohort Identification View</h2>
         <div className="iv--content">
-          <div>
+          <div className="g-divider" style={{ flex: '0 0 50%' }}>
             <h3 className="g-title">Cohort Analysis Provenance</h3>
+            <AnalysisPanel />
           </div>
           <div>
             <h3 className="g-title">Cohort Feature Overview</h3>

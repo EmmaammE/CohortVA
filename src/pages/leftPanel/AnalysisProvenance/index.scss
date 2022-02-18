@@ -1,0 +1,52 @@
+#analysis-panel {
+  .cohort-item {
+    display: flex;
+    flex-direction: column;
+    padding: 0 10px;
+
+    &-content {
+      display: flex;
+      flex-direction: column;
+      margin-left: 11px;
+      padding: 0 15px;
+      border-left: 2px solid #979797;
+    }
+
+    &-row {
+      display: flex;
+      align-items: center;
+      height: 18px;
+      margin: 8px;
+      user-select: none;
+      cursor: pointer;
+
+      &.active > span.menu {
+        color: #fff;
+        background-color: #8f8f8f;
+        border: 1px solid #8f8f8f;
+      }
+
+      span.menu {
+        width: 18px;
+        height: 18px;
+        display: inline-block;
+        border: 1px solid #8f8f8f;
+        border-radius: 50%;
+        font-family: PingFang SC;
+        font-size: 15px;
+        text-align: center;
+        vertical-align: middle;
+        font-weight: 400;
+        letter-spacing: 0px;
+      }
+
+      span.text {
+        margin: 0 4px;
+      }
+
+      .svg-wrapper {
+        width: 130px;
+      }
+    }
+  }
+}

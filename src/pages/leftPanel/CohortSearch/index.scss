@@ -1,5 +1,5 @@
 #searcher-panel {
-  $width: 289px;
+  $width: 285px;
 
   .searcher-items {
     height: 460px;
@@ -84,7 +84,7 @@
       // display: inline-block;
       white-space: nowrap;
       // overflow: auto;
-      min-width: 211px;
+      min-width: 280px;
       height: 39px;
     }
   }
@@ -94,8 +94,8 @@
   }
 
   #submit-button {
-    position: absolute;
-    bottom: 15px;
+    // position: absolute;
+    // bottom: 15px;
     background: #efefef;
     border: 1px solid #a3a3a3;
     border-radius: 4px;
@@ -109,6 +109,7 @@
     height: 27px;
     margin: 0 auto;
     cursor: pointer;
+    margin: 10px 0;
   }
 
   #model-checkbox {
