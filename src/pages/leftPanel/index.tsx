@@ -5,6 +5,7 @@ import './index.scss';
 
 const LeftPanel = () => {
   const [show, setShow] = useState(true);
+  const [d, setPath] = useState<string | null>(null);
 
   const toggleShow = useCallback(() => {
     setShow(!show);
@@ -25,12 +26,16 @@ const LeftPanel = () => {
         <div className="iv--content">
           <div className="g-divider" style={{ flex: '0 0 50%' }}>
             <h3 className="g-title">Cohort Analysis Provenance</h3>
-            <AnalysisPanel />
+            <AnalysisPanel setPath={setPath} />
           </div>
           <div>
             <h3 className="g-title">Cohort Feature Overview</h3>
           </div>
         </div>
+      </div>
+
+      <div id="link-view">
+        <svg>{d && <path d={d} />}</svg>
       </div>
     </div>
   );

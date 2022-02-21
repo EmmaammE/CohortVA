@@ -24,15 +24,18 @@ interface ICohorts {
   groups: string[][];
   pid2data: TPerson;
   id2group: TGroup & Map;
-  // 当前选中的群体索引
-  groupIndex: [number, number] | null;
+  // 当前探索的群体组序号
+  groupIndex: number;
+  // 当前组选择的分类器序号
+  classifierIndex: number;
 }
 
 const initialState: ICohorts = {
   groups: [],
   pid2data: {},
   id2group: {},
-  groupIndex: [0, 0],
+  groupIndex: 0,
+  classifierIndex: 0,
 };
 
 export const fetchCohortsAsync = createAsyncThunk(
@@ -52,7 +55,9 @@ export const cohortsSlice = createSlice({
   initialState,
   reducers: {
     setGroupIndex: (state, action: PayloadAction<[number, number]>) => {
-      state.groupIndex = action.payload;
+      const [x, y] = action.payload;
+      state.groupIndex = x;
+      state.classifierIndex = y;
     },
   },
   extraReducers: (builder) => {
@@ -64,10 +69,6 @@ export const cohortsSlice = createSlice({
       } = payload;
 
       // console.log(payload);
-
-      if (state.groupIndex === null) {
-        state.groupIndex = [0, 0];
-      }
       state.groups.push(groups);
       state.pid2data = pid2data;
       state.id2group = id2group;
@@ -77,15 +78,16 @@ export const cohortsSlice = createSlice({
 
 // 返回当前选中的群体
 export const getCohort = (state: RootState) => {
-  const { groups, id2group, groupIndex } = state.cohorts;
+  const { groups, id2group, groupIndex, classifierIndex } = state.cohorts;
   if (groupIndex === null) {
     return {};
   }
-  const groupId = groups[groupIndex[0]][groupIndex[1]];
+  const groupId = groups[groupIndex][classifierIndex];
   return id2group[groupId];
 };
 
 // 返回所有的群体id
 export const getGroups = (state: RootState) => state.cohorts.groups;
 
+export const { setGroupIndex } = cohortsSlice.actions;
 export default cohortsSlice.reducer;

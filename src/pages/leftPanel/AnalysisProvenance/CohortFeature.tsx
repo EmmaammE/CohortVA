@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import * as d3 from 'd3';
-import atomTopic from '../../../utils/atomTopic';
+import { featureMap } from '../../../utils/atomTopic';
 
 type Feature = {
   feature: string[]; // feature type
@@ -33,11 +33,6 @@ const tmp = [
     cnt: 0.5,
   },
 ];
-
-const featureMap: any = atomTopic.reduce(
-  (acc, cur) => ({ ...acc, [cur.text]: cur.color }),
-  {}
-);
 
 const WIDTH = 17;
 const HEIGHT = 17;
@@ -95,6 +90,7 @@ const CohortFeature = ({ features = tmp }: ICohortFeature) => {
                 width={WIDTH}
                 height={HEIGHT}
                 fill={item.fill}
+                pointerEvents="none"
               />
             ))}
             <rect
@@ -103,6 +99,7 @@ const CohortFeature = ({ features = tmp }: ICohortFeature) => {
               width={size}
               height={size}
               fill="#fff"
+              pointerEvents="none"
             />
           </g>
         );

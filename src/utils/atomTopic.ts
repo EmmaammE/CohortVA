@@ -1,4 +1,14 @@
-export default [
+export const modelName2Topic = {
+  Frqnode_model: 'Frequent',
+  place_model: 'Location',
+  group_model: 'Group',
+  popular_model: 'Popular',
+  office_model: 'Office',
+  time_model: 'TimeRange',
+  gender_model: 'Gender',
+};
+
+const atomTopic = [
   {
     color: '#8AA79B',
     text: 'Group',
@@ -28,3 +38,10 @@ export default [
     text: 'Frequent',
   },
 ];
+
+export const featureMap: { [k: string]: string } = atomTopic.reduce(
+  (acc, cur) => ({ ...acc, [cur.text]: cur.color }),
+  {}
+);
+
+export default atomTopic;

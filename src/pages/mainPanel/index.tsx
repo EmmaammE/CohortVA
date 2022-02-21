@@ -1,44 +1,96 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
+import { Select } from 'antd';
 import Button from '../../components/button/Button';
+import FeaturePanel from './FeaturePanel';
 import FigureTimeline from './FigureTimeline';
 import FigureTraces from './FigureTraces';
 import './index.scss';
 
+interface ITipInfo {
+  content: string;
+  left?: number;
+  top?: number;
+}
+
 const buttons = ['Timeline', 'Map', 'Relationship', 'Update'];
-const MainPanel = () => (
-  <div id="main-panel">
-    <h2 className="g-title">Cohort Explanation View </h2>
+const { Option } = Select;
 
-    <div className="op-container">
-      {buttons.map((item) => (
-        <Button text={item} key={item} />
-      ))}
-    </div>
+const personList: { [k: string]: string } = {
+  normalPeople: 'Included list',
+  recommendPeople: 'Candidate list',
+  refusedPeople: 'Excluded list',
+};
 
-    <div className="feature-view g-divider">
-      <div className="feature-view--header">
-        <h3 className="g-title">Cohort Feature View</h3>
-      </div>
-      <h3 className="g-title">Atomic Feature View</h3>
-    </div>
+const MainPanel = () => {
+  const [selectedList, setSelectedList] = useState<string>('normalPeople');
 
-    <div className="auxiliary">
-      <div className="auxiliary-view">
-        <h3 className="g-title">Cohort Map</h3>
-        <FigureTraces />
+  const onChangePersonList = useCallback((v) => {
+    setSelectedList(v);
+  }, []);
+
+  const [tipInfo, setTipInfo] = useState<ITipInfo>({ content: '' });
+
+  return (
+    <div id="main-panel">
+      <h2 className="g-title">Cohort Explanation View </h2>
+
+      <div className="op-container">
+        {buttons.map((item) => (
+          <Button text={item} key={item} />
+        ))}
       </div>
-      <div className="auxiliary-view">
-        <h3 className="g-title">Cohort Timeline</h3>
-        <FigureTimeline />
+
+      <div className="feature-view g-divider">
+        <div className="feature-view--header">
+          <div className="left-header">
+            <h3 className="g-title">Cohort Feature View</h3>
+          </div>
+          <div className="right-header">
+            <Select
+              showSearch
+              style={{ width: 150 }}
+              placeholder="Include List"
+              optionFilterProp="children"
+              size="small"
+              value={selectedList}
+              onChange={onChangePersonList}
+            >
+              {Object.keys(personList).map((value) => (
+                <Option key={value} value={value}>
+                  {personList[value]}
+                </Option>
+              ))}
+            </Select>
+          </div>
+        </div>
+        <FeaturePanel selectedList={selectedList} updateTip={setTipInfo} />
+        <h3 className="g-title">Atomic Feature View</h3>
       </div>
-      <div className="auxiliary-view">
-        <h3 className="g-title">Cohort Relationship</h3>
+
+      <div className="auxiliary">
+        <div className="auxiliary-view">
+          <h3 className="g-title">Cohort Map</h3>
+          <FigureTraces />
+        </div>
+        <div className="auxiliary-view">
+          <h3 className="g-title">Cohort Timeline</h3>
+          <FigureTimeline />
+        </div>
+        <div className="auxiliary-view">
+          <h3 className="g-title">Cohort Relationship</h3>
+        </div>
+        <div className="auxiliary-view">
+          <h3 className="g-title">Hierarchy Dictionary</h3>
+        </div>
       </div>
-      <div className="auxiliary-view">
-        <h3 className="g-title">Hierarchy Dictionary</h3>
-      </div>
+
+      {tipInfo.content && (
+        <div id="tip" style={{ left: tipInfo.left, top: tipInfo.top }}>
+          {tipInfo.content}
+        </div>
+      )}
     </div>
-  </div>
-);
+  );
+};
 
 export default MainPanel;
