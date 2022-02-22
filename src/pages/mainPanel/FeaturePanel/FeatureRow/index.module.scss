@@ -4,9 +4,15 @@
 }
 
 .menu {
-  width: 170px;
-  padding-right: 5px;
+  width: 180px;
   border-right: 1px solid #979797;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  margin: 8px 0;
+  min-height: 40px;
 
   p {
     font-family: Arial;
@@ -14,18 +20,41 @@
     text-align: right;
     font-weight: 700;
     margin: 0;
+    max-width: 160px;
+    word-break: break-word;
+    user-select: none;
     // white-space: nowrap;
     // text-overflow: ellipsis;
   }
+
+  span:first-child {
+    flex: 1;
+  }
+}
+
+.menu-icon {
+  width: 8px;
+  height: 8px;
+  display: inline-block;
+  border: 1px solid #ccc;
+  flex: 0 0 8px;
+  margin: 0 5px;
+  cursor: pointer;
+}
+
+.circle-wrapper {
+  display: flex;
+  flex-direction: column;
 }
 
 .circle {
-  margin: 0 5px 0 10px;
+  margin: 3px 2px;
 }
 
 .icon {
   display: flex;
   align-items: center;
-  margin: 0 0 0 8px;
+  margin: 0 8px 0 8px;
   cursor: pointer;
+  height: 52px;
 }

@@ -58,13 +58,14 @@ const handleFeatureData = (data, chosenClassifier) => {
               descript = id2node[parms[key]].en_name;
             }
           }
-          let text = `${modelName2Topic[type]}("${descript}")&`;
+          let text = `("${descript}")&`;
           if (i === subFeatureDescriptors.length - 1) {
             text = text.slice(0, -1);
           }
           subDescriptorArr.push({
             text,
             id: descriptorId,
+            type: modelName2Topic[type],
           });
         });
         subFeatures.push({
@@ -133,13 +134,14 @@ const handleFeatureData = (data, chosenClassifier) => {
             descript = id2node[parms[key]].en_name;
           }
         }
-        let text = `${modelName2Topic[type] || ''}("${descript}")&`;
+        let text = `("${descript}")&`;
         if (i === model_descriptors.length - 1) {
           text = text.slice(0, -1);
         }
         redundancyDescriptorArr.push({
           text,
           id: descriptorId,
+          type: modelName2Topic[type],
         });
       });
       return {

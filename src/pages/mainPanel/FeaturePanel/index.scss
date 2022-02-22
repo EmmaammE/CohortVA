@@ -15,11 +15,30 @@
   }
 
   .x-container {
-    margin-left: 190px;
+    margin-left: 230px;
+    display: flex;
+    font-family: Arial;
+    font-size: 14px;
+    color: #979797;
+    font-weight: 700;
+
+    span:first-child {
+      display: inline-block;
+      width: 5px;
+      line-height: 18px;
+    }
   }
 
   .handle {
     stroke: #979797;
     // fill: #d8d8d8;
+  }
+
+  .names-text {
+    font-family: Arial;
+    font-size: 10px;
+    fill: #706e6e;
+    font-weight: 400;
+    user-select: none;
   }
 }

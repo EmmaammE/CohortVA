@@ -8,14 +8,16 @@ import React, {
 import * as d3 from 'd3';
 import { SVG_WDITH as WIDTH, SVG_HEIGHT as HEIGHT } from '../constant';
 
+export interface IName {
+  text: string;
+  index: number;
+}
 interface INames {
-  // people: Array<{
-  //   // eslint-disable-next-line camelcase
-  //   en_name: string;
-  //   id: string;
-  // }>;
-  [key: string]: any;
+  interval: any;
   xScale: any;
+  setInterval: Function;
+  selectedPeopleSize: number;
+  selectedNames: IName[];
 }
 
 const MARGIN = {
@@ -27,46 +29,43 @@ const MARGIN = {
 
 export const width = WIDTH - MARGIN.left - MARGIN.right;
 
-const invert = (xScale: any) => {
-  const domain = xScale.domain();
-  const range = xScale.range();
-  const scale = d3.scaleQuantize().domain(range).range(domain);
-
-  return (x: any) => scale(x);
-};
-
-const Names = ({ xScale }: INames) => {
-  // const names = useMemo(() => people.map((item) => item.en_name).sort(), [
-  //   people,
-  // ]);
-  const [selectedNames, setSelectedNames] = useState<string[]>([]);
+const Names = ({
+  interval,
+  xScale,
+  setInterval,
+  selectedPeopleSize,
+  selectedNames,
+}: INames) => {
   const $brush = useRef<any>(null);
-
-  const names = useMemo(() => xScale.domain(), [xScale]);
+  const [selection, setSelection] = useState<[number, number]>([0, width]);
 
   const brushended = useCallback(
     (e) => {
-      if (e.selection) {
+      if (e.selection && e.selection.join(' ') !== selection.join(' ')) {
         const [x0, x1] = e.selection;
-        const selection = [Math.floor(x0), Math.ceil(x1)].map(invert(xScale));
-        const tmpNames = [];
-        let flag = names.length;
-        for (let i = 0; i < names.length; i += 1) {
-          if (names[i] === selection[0]) {
-            flag = i;
-          }
-          if (names[i] === selection[1]) break;
+        // 选择的序号
+        const index1 = Math.floor(xScale.invert(x0));
+        const index2 = Math.ceil(xScale.invert(x1));
 
-          if (i >= flag) {
-            tmpNames.push(names[i]);
-          }
-        }
-        setSelectedNames(
-          tmpNames.slice(tmpNames.length / 4, (tmpNames.length * 3) / 4)
-        );
+        const x2 = xScale(index1);
+        const x3 = xScale(index2);
+        // console.log('brushended', index1, index2, selection, x0, x1);
+        const range: [number, number] = [
+          x2 / 2,
+          x3 + (selectedPeopleSize - x3) / 2,
+        ];
+
+        setInterval({
+          range,
+          domain: [
+            Math.max(0, index1 - 1),
+            Math.min(index2 + 1, selectedPeopleSize),
+          ],
+        });
+        setSelection(range);
       }
     },
-    [names, xScale]
+    [selectedPeopleSize, selection, setInterval, xScale]
   );
 
   const brush = useMemo(
@@ -77,15 +76,19 @@ const Names = ({ xScale }: INames) => {
           [MARGIN.left, MARGIN.top + 1],
           [WIDTH - MARGIN.right, 12],
         ])
-        // .on("brush", brushed)
         .on('end', brushended),
     [brushended]
   );
 
   useEffect(() => {
-    const defaultSelection = [10, 50].map(invert(xScale)).map(xScale);
-    d3.select($brush.current).call(brush).call(brush.move, defaultSelection);
-  }, [brush, xScale]);
+    d3.select($brush.current).call(brush);
+  }, [brush]);
+
+  useEffect(() => {
+    if (interval?.range) {
+      d3.select($brush.current).call(brush.move, interval.range);
+    }
+  }, [brush, interval?.range]);
 
   return (
     <svg
@@ -107,15 +110,19 @@ const Names = ({ xScale }: INames) => {
         pointerEvents="none"
       />
 
-      {selectedNames.map((name, i) => (
+      {selectedNames.map((d, i) => (
         <text
-          key={name}
-          transform={`translate(${xScale(name)}, 10)`}
+          key={d.text}
+          transform={`translate(${xScale(d.index) + MARGIN.left}, 18)`}
           writingMode="vertical-lr"
+          fontSize="10px"
+          className="names-text"
         >
-          {name}
+          {d.text}
         </text>
       ))}
+
+      {/* <line x1="0" y1="0" x2={`${WIDTH}px`} y2="0" stroke="#979797" /> */}
     </svg>
   );
 };

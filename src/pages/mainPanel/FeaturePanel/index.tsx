@@ -1,17 +1,23 @@
 /* eslint-disable camelcase */
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import * as d3 from 'd3';
 import featureData from '../../../data/features.json';
-import FeatureRow, { FeatureRowProps } from './FeatureRow/FeatureRow';
+import FeatureRow from './FeatureRow/FeatureRow';
 import handleFeatureData, { getFigure2Feature, getPeople } from './features';
 import './index.scss';
 import Names, { width } from './Names';
 import { RECT_HEIGHT } from './constant';
-import { invert } from '../../../utils/scale';
 
 interface IFeaturePanel {
   selectedList: string;
   updateTip: Function;
+}
+
+interface IRange {
+  // 放大区间
+  range: [number, number];
+  // 和selectedPeople对应的下标
+  domain: [number, number];
 }
 
 const FeaturePanel = ({ selectedList, updateTip }: IFeaturePanel) => {
@@ -24,6 +30,7 @@ const FeaturePanel = ({ selectedList, updateTip }: IFeaturePanel) => {
     '-7395654180000042124'
   );
 
+  // const [selectedNames, setSelectedNames] = useState<IName[]>([]);
   // todo
   // useEffect(() => {
   //   setFeatureIdToSort(features?.[0].id || '');
@@ -49,10 +56,38 @@ const FeaturePanel = ({ selectedList, updateTip }: IFeaturePanel) => {
     [maxFigureWeight]
   );
 
-  const xScale = useMemo(() => {
-    const names = selectedPeople.map((item: any) => item.id);
-    return d3.scaleBand().domain(names).range([0, width]);
-  }, [selectedPeople]);
+  const [interval, setInterval] = useState<IRange | null>({
+    range: [width / 10, width / 2],
+    domain: [selectedPeople.length / 10, selectedPeople.length / 6],
+  });
+
+  const selectedNames = useMemo(() => {
+    if (interval?.domain) {
+      const [i1, i2] = interval?.domain;
+
+      return selectedPeople.slice(i1, i2 + 1).map((d, i: number) => ({
+        text: d.en_name,
+        index: i1 + i,
+      }));
+    }
+    return [];
+  }, [interval?.domain, selectedPeople]);
+
+  const xScale2 = useMemo(() => {
+    if (interval === null) {
+      return d3
+        .scaleLinear()
+        .domain([0, selectedPeople.length])
+        .range([0, width]);
+    }
+
+    const { range, domain } = interval;
+    return d3
+      .scaleLinear()
+      .domain([1, domain[0], domain[1], selectedPeople.length])
+      .range([0, range[0], range[1], width]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [JSON.stringify(interval), selectedPeople.length]);
 
   const updateTipHandle = useCallback(
     (x, y, fid) => {
@@ -72,16 +107,27 @@ const FeaturePanel = ({ selectedList, updateTip }: IFeaturePanel) => {
           <FeatureRow
             key={feature.id}
             {...(feature as any)}
-            xScale={xScale}
+            xScale={xScale2}
             yScale={yScale}
+            selectedPeople={selectedPeople}
             fid2weight={fid2weight[feature.id]}
-            sorted={feature.id === featureIdToSort}
+            sorted={featureIdToSort}
             invokeSort={setFeatureIdToSort}
             updateTip={updateTipHandle}
           />
         ))}
       </div>
-      <div className="x-container">{/* <Names xScale={xScale} /> */}</div>
+      <div className="x-container">
+        <span>1</span>
+        <Names
+          interval={interval}
+          xScale={xScale2}
+          setInterval={setInterval}
+          selectedPeopleSize={selectedPeople.length}
+          selectedNames={selectedNames}
+        />
+        <span>{selectedPeople.length}</span>
+      </div>
     </div>
   );
 };
