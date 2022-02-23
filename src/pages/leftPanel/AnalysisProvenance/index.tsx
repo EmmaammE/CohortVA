@@ -6,6 +6,7 @@ import CohortFeature from './CohortFeature';
 // import Collapsible from '../../../components/collapsible/Collapsible';
 import Header from './Header';
 import './index.scss';
+import { db } from '../../../database/db';
 
 interface IAnalysisProvenanceProps {
   setPath: (d: string) => void;
@@ -37,20 +38,25 @@ const drawCurve = ([x, y]: TPos) =>
 const AnalysisPanel = ({ setPath }: IAnalysisProvenanceProps) => {
   const dispatch = useAppDispatch();
   const groups = useAppSelector(getGroups);
+  const id2group = useAppSelector((state) => state.cohorts.id2group);
   // 第几组群体
   const [activeIndex, setActiveIndex] = useState<number>(0);
   // 每组群体中选择的群体编号
   const [activeCohortIndexArr, setActiveCohortIndex] = useState<number[]>([0]);
+  const groupIndex = useAppSelector((state) => state.cohorts.groupIndex);
+  const classifierIndex = useAppSelector(
+    (state) => state.cohorts.classifierIndex
+  );
 
   const clickItem = useCallback(
     (e, i, j) => {
-      setActiveIndex(i);
-      setActiveCohortIndex([j]);
+      // setActiveIndex(i);
+      // setActiveCohortIndex([j]);
       dispatch(setGroupIndex([i, j]));
 
       const target = e.target as HTMLElement;
       const y = target.offsetTop + target.offsetHeight / 2;
-      const x = target.offsetLeft + target.offsetWidth;
+      const x = 290;
 
       setPath(drawCurve([x, y]) as string);
     },
@@ -62,26 +68,28 @@ const AnalysisPanel = ({ setPath }: IAnalysisProvenanceProps) => {
       {groups.map((groupId, i) => (
         // eslint-disable-next-line react/no-array-index-key
         <div className="cohort-item" key={i}>
-          <Header open={activeIndex === i} index={i + 1} />
+          <Header
+            open={groupIndex === i}
+            index={i + 1}
+            cnt={id2group[groupId].size}
+          />
           <div className="cohort-item-content">
-            {/* todo: multiple items */}
-            <div
-              className="cohort-item-row active"
-              onClick={(e) => clickItem(e, i, 0)}
-            >
-              <span className="menu">1</span>
-              <span className="text">200</span>
-              <span className="svg-wrapper">
-                <CohortFeature />
-              </span>
-            </div>
-            <div className="cohort-item-row">
-              <span className="menu">2</span>
-              <span className="text">200</span>
-              <span className="svg-wrapper">
-                <CohortFeature />
-              </span>
-            </div>
+            {id2group[groupId].atomFeature.map((feature: any, j: number) => (
+              <div
+                className={`cohort-item-row ${
+                  classifierIndex === j && groupIndex === i ? 'active' : ''
+                }`}
+                onClick={(e) => clickItem(e, i, j)}
+              >
+                <span className="menu">{j + 1}</span>
+                <span className="text">
+                  {id2group[groupId].classifiers[j].normal_pids.length}
+                </span>
+                <span className="svg-wrapper">
+                  <CohortFeature features={feature} />
+                </span>
+              </div>
+            ))}
           </div>
         </div>
       ))}

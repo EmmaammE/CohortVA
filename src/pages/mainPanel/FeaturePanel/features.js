@@ -96,7 +96,7 @@ const handleFeatureData = (data, chosenClassifier) => {
             }
           });
         } else {
-          descript = id2node[parms[key]].en_name;
+          descript += id2node[parms[key]].en_name;
         }
       }
       descriptorsArr.push({

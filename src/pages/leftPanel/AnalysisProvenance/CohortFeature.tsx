@@ -36,7 +36,7 @@ const tmp = [
 
 const WIDTH = 17;
 const HEIGHT = 17;
-const PADDING = 2;
+const PADDING = 1;
 
 const getPos = (features: Feature): TData => {
   const res = [];
@@ -55,7 +55,7 @@ const getPos = (features: Feature): TData => {
 
     const x2 = x1 + WIDTH * feature.length;
     // TODO 确定这个的计算方式
-    const size = cnt * HEIGHT;
+    const size = cnt * HEIGHT * 0.9;
     const ix = (x2 - x1 - size) / 2 + x1;
 
     res.push({
@@ -73,8 +73,8 @@ const getPos = (features: Feature): TData => {
   };
 };
 
-const CohortFeature = ({ features = tmp }: ICohortFeature) => {
-  const { info, maxV } = useMemo(() => getPos(features), [features]);
+const CohortFeature = ({ features }: ICohortFeature) => {
+  const { info, maxV } = useMemo(() => getPos(features || []), [features]);
 
   return (
     <svg height="17" width={maxV}>
@@ -90,7 +90,6 @@ const CohortFeature = ({ features = tmp }: ICohortFeature) => {
                 width={WIDTH}
                 height={HEIGHT}
                 fill={item.fill}
-                pointerEvents="none"
               />
             ))}
             <rect
@@ -99,7 +98,6 @@ const CohortFeature = ({ features = tmp }: ICohortFeature) => {
               width={size}
               height={size}
               fill="#fff"
-              pointerEvents="none"
             />
           </g>
         );

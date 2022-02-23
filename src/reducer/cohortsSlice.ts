@@ -1,8 +1,11 @@
 /* eslint-disable no-param-reassign */
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import Dexie from 'dexie';
 import Apis from '../api/apis';
 import { post } from '../api/tools';
+import { db } from '../database/db';
 import type { RootState } from '../store';
+import { getAtomFeature } from '../utils/feature';
 
 type TPerson = {
   [pid: string]: {
@@ -21,8 +24,7 @@ type Map = { [key: string]: any };
 
 interface ICohorts {
   // 群体的id
-  groups: string[][];
-  pid2data: TPerson;
+  groups: string[];
   id2group: TGroup & Map;
   // 当前探索的群体组序号
   groupIndex: number;
@@ -32,7 +34,6 @@ interface ICohorts {
 
 const initialState: ICohorts = {
   groups: [],
-  pid2data: {},
   id2group: {},
   groupIndex: 0,
   classifierIndex: 0,
@@ -45,6 +46,22 @@ export const fetchCohortsAsync = createAsyncThunk(
       url: Apis.get_cohort_by_ranges,
       data: payload,
     });
+
+    console.log(res.data);
+
+    // eslint-disable-next-line camelcase
+    const { id2node, main_data } = res.data;
+
+    await db.node
+      .bulkAdd(Object.values(id2node))
+      .then((lastKey) => {
+        console.log(`Last raindrop's id was: ${lastKey}`);
+      })
+      .catch(Dexie.BulkError, (e) => {
+        // Explicitely catching the bulkAdd() operation makes those successful
+        // additions commit despite that there were errors.
+        console.log(e.message);
+      });
 
     return res.data;
   }
@@ -64,14 +81,20 @@ export const cohortsSlice = createSlice({
     builder.addCase(fetchCohortsAsync.fulfilled, (state, action) => {
       const { payload } = action;
       const {
-        id2group,
-        main_data: { groups, pid2data },
+        main_data: { size, groups, classifiers },
       } = payload;
 
-      // console.log(payload);
-      state.groups.push(groups);
-      state.pid2data = pid2data;
-      state.id2group = id2group;
+      const atomFeature = getAtomFeature(payload);
+
+      console.log(atomFeature);
+
+      state.groups.push(groups[0]);
+      // state.pid2data = pid2data;
+      state.id2group[groups[0]] = {
+        size,
+        classifiers,
+        atomFeature,
+      };
     });
   },
 });
