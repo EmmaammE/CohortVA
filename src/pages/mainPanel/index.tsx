@@ -47,7 +47,6 @@ const MainPanel = () => {
           </div>
           <div className="right-header">
             <Select
-              showSearch
               style={{ width: 150 }}
               placeholder="Include List"
               optionFilterProp="children"
@@ -64,7 +63,6 @@ const MainPanel = () => {
           </div>
         </div>
         <FeaturePanel selectedList={selectedList} updateTip={setTipInfo} />
-        <h3 className="g-title">Atomic Feature View</h3>
       </div>
 
       <div className="auxiliary">

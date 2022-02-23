@@ -7,6 +7,7 @@ import handleFeatureData, { getFigure2Feature, getPeople } from './features';
 import './index.scss';
 import Names, { width } from './Names';
 import { RECT_HEIGHT } from './constant';
+import AtomView from './AtomFeature';
 
 interface IFeaturePanel {
   selectedList: string;
@@ -29,6 +30,27 @@ const FeaturePanel = ({ selectedList, updateTip }: IFeaturePanel) => {
   const [featureIdToSort, setFeatureIdToSort] = useState<string>(
     '-7395654180000042124'
   );
+
+  const atomFeature = useMemo(() => {
+    const type2feature: any = {};
+    features.forEach((f) => {
+      f.descriptorsArr.forEach((af) => {
+        const { type } = af;
+        if (!type2feature[type]) {
+          type2feature[type] = [];
+        }
+        type2feature[type].push({
+          ...af,
+          text: af.text
+            .replace(/[()]/g, '')
+            .replace(/"+/g, '')
+            .replace(/&+/g, ''),
+        });
+      });
+    });
+
+    return type2feature;
+  }, [features]);
 
   // const [selectedNames, setSelectedNames] = useState<IName[]>([]);
   // todo
@@ -101,34 +123,38 @@ const FeaturePanel = ({ selectedList, updateTip }: IFeaturePanel) => {
   );
 
   return (
-    <div id="feature-view">
-      <div className="content g-scroll">
-        {features.map((feature) => (
-          <FeatureRow
-            key={feature.id}
-            {...(feature as any)}
+    <>
+      <div id="feature-view">
+        <div className="content g-scroll">
+          {features.map((feature) => (
+            <FeatureRow
+              key={feature.id}
+              {...(feature as any)}
+              xScale={xScale2}
+              yScale={yScale}
+              selectedPeople={selectedPeople}
+              fid2weight={fid2weight[feature.id]}
+              sorted={featureIdToSort}
+              invokeSort={setFeatureIdToSort}
+              updateTip={updateTipHandle}
+            />
+          ))}
+        </div>
+        <div className="x-container">
+          <span>1</span>
+          <Names
+            interval={interval}
             xScale={xScale2}
-            yScale={yScale}
-            selectedPeople={selectedPeople}
-            fid2weight={fid2weight[feature.id]}
-            sorted={featureIdToSort}
-            invokeSort={setFeatureIdToSort}
-            updateTip={updateTipHandle}
+            setInterval={setInterval}
+            selectedPeopleSize={selectedPeople.length}
+            selectedNames={selectedNames}
           />
-        ))}
+          <span>{selectedPeople.length}</span>
+        </div>
       </div>
-      <div className="x-container">
-        <span>1</span>
-        <Names
-          interval={interval}
-          xScale={xScale2}
-          setInterval={setInterval}
-          selectedPeopleSize={selectedPeople.length}
-          selectedNames={selectedNames}
-        />
-        <span>{selectedPeople.length}</span>
-      </div>
-    </div>
+      <h3 className="g-title">Atomic Feature View</h3>
+      <AtomView data={atomFeature} />
+    </>
   );
 };
 

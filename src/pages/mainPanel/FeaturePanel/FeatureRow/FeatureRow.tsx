@@ -6,12 +6,7 @@ import style from './index.module.scss';
 import { ReactComponent as SortICON } from '../../../../assets/icons/sort.svg';
 import { ReactComponent as SortedICON } from '../../../../assets/icons/sorted.svg';
 import Circle from './Circle';
-
-interface IAtomFeature {
-  id: string;
-  text: string;
-  type: string;
-}
+import { IAtomFeature } from '../../types';
 
 interface ICFeature {
   id: string;

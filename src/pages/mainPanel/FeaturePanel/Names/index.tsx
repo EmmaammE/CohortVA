@@ -112,8 +112,13 @@ const Names = ({
 
       {selectedNames.map((d, i) => (
         <text
-          key={d.text}
-          transform={`translate(${xScale(d.index) + MARGIN.left}, 18)`}
+          // eslint-disable-next-line react/no-array-index-key
+          key={i}
+          transform={`translate(${
+            xScale(d.index) +
+            MARGIN.left +
+            (xScale(d.index) - xScale(d.index - 1)) / 2
+          }, 18)`}
           writingMode="vertical-lr"
           fontSize="10px"
           className="names-text"
