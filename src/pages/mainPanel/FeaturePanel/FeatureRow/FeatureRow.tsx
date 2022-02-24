@@ -7,6 +7,7 @@ import { ReactComponent as SortICON } from '../../../../assets/icons/sort.svg';
 import { ReactComponent as SortedICON } from '../../../../assets/icons/sorted.svg';
 import Circle from './Circle';
 import { IAtomFeature } from '../../types';
+import { getNodeById } from '../../../../database/db';
 
 interface ICFeature {
   id: string;
@@ -97,6 +98,23 @@ const FeatureRow = ({
     setFeature(f);
   }, []);
 
+  const onClickRect = useCallback(
+    (fid) => {
+      getNodeById(fid)
+        .then((res) => {
+          if (res) {
+            // eslint-disable-next-line camelcase
+            const { en_name } = res;
+            choseFigure(en_name);
+          }
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    },
+    [choseFigure]
+  );
+
   return (
     <div className={style['feature-row']}>
       <div className={style.menu}>
@@ -150,7 +168,7 @@ const FeatureRow = ({
                   height={yScale(fid2weight[p.id])}
                   fill="#ccc"
                   onMouseMove={(e) => handleMouseMove(e, p.id)}
-                  onClick={() => choseFigure(p.id)}
+                  onClick={() => onClickRect(p.id)}
                 />
               )
           )}

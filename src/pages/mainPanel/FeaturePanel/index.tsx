@@ -196,6 +196,7 @@ const FeaturePanel = ({ selectedList, updateTip }: IFeaturePanel) => {
             setInterval={setInterval}
             selectedPeopleSize={selectedPeople.length}
             selectedNames={selectedNames}
+            choseFigure={choseFigure}
           />
           <span>{!!selectedPeople.length && selectedPeople.length}</span>
         </div>

@@ -18,6 +18,7 @@ interface INames {
   setInterval: Function;
   selectedPeopleSize: number;
   selectedNames: IName[];
+  choseFigure: Function;
 }
 
 const MARGIN = {
@@ -35,6 +36,7 @@ const Names = ({
   setInterval,
   selectedPeopleSize,
   selectedNames,
+  choseFigure,
 }: INames) => {
   const $brush = useRef<any>(null);
   const [selection, setSelection] = useState<[number, number]>([0, width]);
@@ -122,6 +124,7 @@ const Names = ({
           writingMode="vertical-lr"
           fontSize="10px"
           className="names-text"
+          onClick={() => choseFigure(d.text)}
         >
           {d.text}
         </text>
