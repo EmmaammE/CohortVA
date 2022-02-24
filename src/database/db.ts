@@ -10,7 +10,13 @@ export interface INode {
 
 export interface IGroup {
   id: string;
-  pids: string[];
+  pids: Object;
+}
+
+export interface ICohort {
+  id: string;
+  index: number;
+  value: any;
 }
 
 export class MySubClassedDexie extends Dexie {
@@ -18,16 +24,18 @@ export class MySubClassedDexie extends Dexie {
 
   group!: Table<IGroup>;
 
-  atomFeature!: Table<{ id: string; value: any }>;
+  cohorts!: Table<ICohort, [string, number]>;
 
   constructor() {
     super('db');
     this.version(1).stores({
       node: 'id,label,name,en_name',
+      cohorts: '[id+index],value',
       group: 'id,pids',
-      atomFeature: 'id,value',
     });
   }
 }
 
 export const db = new MySubClassedDexie();
+
+export const getNodeById = (id: number) => db.node.get({ id });

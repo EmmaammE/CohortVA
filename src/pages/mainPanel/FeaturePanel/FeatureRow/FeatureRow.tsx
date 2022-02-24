@@ -24,6 +24,7 @@ export interface FeatureRowProps extends ICFeature {
   invokeSort: Function;
   updateTip: Function;
   selectedPeople?: any;
+  choseFigure: Function;
 }
 
 type FeatureType = 'main' | 'sub' | 'redundancy';
@@ -61,11 +62,12 @@ const FeatureRow = ({
   subFeatures,
   xScale,
   yScale,
-  fid2weight,
+  fid2weight = {},
   sorted,
   invokeSort,
   updateTip,
   selectedPeople,
+  choseFigure,
 }: FeatureRowProps) => {
   const [expand, setExpand] = useState(false);
   const [feature, setFeature] = useState<ICFeature | null>(null);
@@ -134,6 +136,7 @@ const FeatureRow = ({
       <svg
         width={`${SVG_WDITH}px`}
         height={`${RECT_HEIGHT + (feature ? RECT_HEIGHT : 0) + 2}px`}
+        onMouseOut={handleMouseOut}
       >
         <g>
           {selectedPeople.map(
@@ -147,7 +150,7 @@ const FeatureRow = ({
                   height={yScale(fid2weight[p.id])}
                   fill="#ccc"
                   onMouseMove={(e) => handleMouseMove(e, p.id)}
-                  onMouseOut={handleMouseOut}
+                  onClick={() => choseFigure(p.id)}
                 />
               )
           )}

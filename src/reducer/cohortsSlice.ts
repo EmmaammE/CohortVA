@@ -1,23 +1,29 @@
+/* eslint-disable camelcase */
 /* eslint-disable no-param-reassign */
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import Dexie from 'dexie';
 import Apis from '../api/apis';
 import { post } from '../api/tools';
 import { db } from '../database/db';
+import { processData } from '../pages/mainPanel/FeaturePanel/features';
 import type { RootState } from '../store';
 import { getAtomFeature } from '../utils/feature';
 
 type TPerson = {
-  [pid: string]: {
-    // eslint-disable-next-line camelcase
-    en_name: string;
-    id: string;
-    label: string;
-  };
+  // eslint-disable-next-line camelcase
+  en_name: string;
+  id: string;
+  label: string;
 };
 
 type TGroup = {
-  pids?: string[];
+  [key: string]: {
+    size: number;
+    classifiers: {
+      index: number;
+      pids: string[];
+    }[];
+    atomFeature: unknown[];
+  };
 };
 
 type Map = { [key: string]: any };
@@ -36,7 +42,7 @@ const initialState: ICohorts = {
   groups: [],
   id2group: {},
   groupIndex: 0,
-  classifierIndex: 0,
+  classifierIndex: -1,
 };
 
 export const fetchCohortsAsync = createAsyncThunk(
@@ -47,21 +53,15 @@ export const fetchCohortsAsync = createAsyncThunk(
       data: payload,
     });
 
-    console.log(res.data);
+    try {
+      const { id2node } = res.data;
 
-    // eslint-disable-next-line camelcase
-    const { id2node, main_data } = res.data;
+      await db.node.bulkAdd(Object.values(id2node));
 
-    await db.node
-      .bulkAdd(Object.values(id2node))
-      .then((lastKey) => {
-        console.log(`Last raindrop's id was: ${lastKey}`);
-      })
-      .catch(Dexie.BulkError, (e) => {
-        // Explicitely catching the bulkAdd() operation makes those successful
-        // additions commit despite that there were errors.
-        console.log(e.message);
-      });
+      await db.cohorts.bulkAdd(processData(res.data));
+    } catch (e) {
+      console.log((e as any).message);
+    }
 
     return res.data;
   }
@@ -89,10 +89,12 @@ export const cohortsSlice = createSlice({
       console.log(atomFeature);
 
       state.groups.push(groups[0]);
-      // state.pid2data = pid2data;
       state.id2group[groups[0]] = {
         size,
-        classifiers,
+        classifiers: classifiers.map((c: any, index: number) => ({
+          index,
+          pids: c.normal_pids.map((p: TPerson) => p.id),
+        })),
         atomFeature,
       };
     });
@@ -111,6 +113,10 @@ export const getCohort = (state: RootState) => {
 
 // 返回所有的群体id
 export const getGroups = (state: RootState) => state.cohorts.groups;
+
+// 返回当前选择的群体id
+export const getGroupId = (state: RootState) =>
+  state.cohorts.groups[state.cohorts.groupIndex] || '';
 
 export const { setGroupIndex } = cohortsSlice.actions;
 export default cohortsSlice.reducer;

@@ -6,16 +6,18 @@ interface IHeader {
   info?: string;
   cnt?: string;
   index: number;
+  onClickMenu: (e: React.MouseEvent<HTMLElement, MouseEvent>) => void;
 }
-const Header = ({ open, info, cnt, index }: IHeader) => (
+const Header = ({ open, info, cnt, index, onClickMenu }: IHeader) => (
   <div className={style.header}>
     <div>
       <div
         className={style.indicator}
         {...(open && { style: { transform: 'rotate(-90deg)' } })}
       />
-
-      <span className={style.tag}>{index}</span>
+      <span className={style.tag} onClick={onClickMenu}>
+        {index}
+      </span>
     </div>
     <div className={style.title}>
       <p>Figures</p>

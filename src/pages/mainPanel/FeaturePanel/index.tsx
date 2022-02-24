@@ -1,13 +1,16 @@
 /* eslint-disable camelcase */
-import React, { useCallback, useMemo, useState } from 'react';
+/* eslint-disable no-shadow */
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import * as d3 from 'd3';
-import featureData from '../../../data/features.json';
 import FeatureRow from './FeatureRow/FeatureRow';
-import handleFeatureData, { getFigure2Feature, getPeople } from './features';
 import './index.scss';
 import Names, { width } from './Names';
 import { RECT_HEIGHT } from './constant';
 import AtomView from './AtomFeature';
+import { useAppDispatch, useAppSelector } from '../../../store/hooks';
+import { getGroupId } from '../../../reducer/cohortsSlice';
+import { db, getNodeById } from '../../../database/db';
+import { setFigureId } from '../../../reducer/statusSlice';
 
 interface IFeaturePanel {
   selectedList: string;
@@ -22,19 +25,48 @@ interface IRange {
 }
 
 const FeaturePanel = ({ selectedList, updateTip }: IFeaturePanel) => {
-  const features = handleFeatureData(featureData, 0);
-  const people = getPeople(featureData, 0);
-  const { maxFigureWeight, fid2weight } = getFigure2Feature(featureData, 0);
-  const { id2node } = featureData as any;
-
-  const [featureIdToSort, setFeatureIdToSort] = useState<string>(
-    '-7395654180000042124'
+  const groupId = useAppSelector(getGroupId);
+  const classifierIndex = useAppSelector(
+    (state) => state.cohorts.classifierIndex
   );
+  const dispatch = useAppDispatch();
+
+  const [features, setFeatures] = useState<any>([]);
+  const [people, setPeople] = useState<any>({});
+  const [maxFigureWeight, setMaxFigureWeight] = useState<number>(0);
+  const [fid2weight, setFid2Weight] = useState<any>({});
+  const [featureIdToSort, setFeatureIdToSort] = useState<string>('');
+
+  useEffect(() => {
+    async function load() {
+      const item = await db.cohorts.get({
+        id: groupId,
+        index: classifierIndex,
+      });
+
+      const {
+        features = [],
+        people = {},
+        maxFigureWeight = 0,
+        fid2weight = {},
+      } = item?.value || {};
+
+      console.log(groupId, item?.value);
+
+      setFeatures(features);
+      setPeople(people);
+      setMaxFigureWeight(maxFigureWeight);
+      setFid2Weight(fid2weight);
+      setFeatureIdToSort(features?.[0]?.id || '');
+    }
+
+    load();
+  }, [classifierIndex, groupId]);
 
   const atomFeature = useMemo(() => {
     const type2feature: any = {};
-    features.forEach((f) => {
-      f.descriptorsArr.forEach((af) => {
+    (features || []).forEach((f: { descriptorsArr: any[] }) => {
+      f.descriptorsArr.forEach((af: { text?: any; type?: any }) => {
         const { type } = af;
         if (!type2feature[type]) {
           type2feature[type] = [];
@@ -52,15 +84,9 @@ const FeaturePanel = ({ selectedList, updateTip }: IFeaturePanel) => {
     return type2feature;
   }, [features]);
 
-  // const [selectedNames, setSelectedNames] = useState<IName[]>([]);
-  // todo
-  // useEffect(() => {
-  //   setFeatureIdToSort(features?.[0].id || '');
-  // }, [features]);
-
   // 根据选择的list和排序的复合特征id排序，返回当前显示的人
   const selectedPeople = useMemo(() => {
-    const curPeople = (people as any)[selectedList] || [];
+    const curPeople = (people || {})[selectedList] || [];
 
     if (featureIdToSort !== '') {
       curPeople.sort(
@@ -78,10 +104,7 @@ const FeaturePanel = ({ selectedList, updateTip }: IFeaturePanel) => {
     [maxFigureWeight]
   );
 
-  const [interval, setInterval] = useState<IRange | null>({
-    range: [width / 10, width / 2],
-    domain: [selectedPeople.length / 10, selectedPeople.length / 6],
-  });
+  const [interval, setInterval] = useState<IRange | null>(null);
 
   const selectedNames = useMemo(() => {
     if (interval?.domain) {
@@ -113,20 +136,44 @@ const FeaturePanel = ({ selectedList, updateTip }: IFeaturePanel) => {
 
   const updateTipHandle = useCallback(
     (x, y, fid) => {
-      updateTip({
-        left: x - 320,
-        top: y - 50,
-        content: (id2node as any)?.[fid]?.en_name || '',
-      });
+      if (fid) {
+        getNodeById(fid)
+          .then((res) => {
+            if (res) {
+              const { name, en_name } = res;
+              updateTip({
+                left: x - 320,
+                top: y - 50,
+                content: `${fid}\n${name}\n${en_name}` || '',
+              });
+            }
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      } else {
+        updateTip({
+          left: 0,
+          top: 0,
+          content: '',
+        });
+      }
     },
-    [id2node, updateTip]
+    [updateTip]
+  );
+
+  const choseFigure = useCallback(
+    (fid: string) => {
+      dispatch(setFigureId(fid));
+    },
+    [dispatch]
   );
 
   return (
     <>
       <div id="feature-view">
         <div className="content g-scroll">
-          {features.map((feature) => (
+          {(features || []).map((feature: { id: string }) => (
             <FeatureRow
               key={feature.id}
               {...(feature as any)}
@@ -137,11 +184,12 @@ const FeaturePanel = ({ selectedList, updateTip }: IFeaturePanel) => {
               sorted={featureIdToSort}
               invokeSort={setFeatureIdToSort}
               updateTip={updateTipHandle}
+              choseFigure={choseFigure}
             />
           ))}
         </div>
         <div className="x-container">
-          <span>1</span>
+          <span>{selectedPeople.length ? 1 : ''}</span>
           <Names
             interval={interval}
             xScale={xScale2}
@@ -149,7 +197,7 @@ const FeaturePanel = ({ selectedList, updateTip }: IFeaturePanel) => {
             selectedPeopleSize={selectedPeople.length}
             selectedNames={selectedNames}
           />
-          <span>{selectedPeople.length}</span>
+          <span>{!!selectedPeople.length && selectedPeople.length}</span>
         </div>
       </div>
       <h3 className="g-title">Atomic Feature View</h3>

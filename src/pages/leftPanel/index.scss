@@ -29,6 +29,11 @@
       border: 1px solid #989898;
       cursor: pointer;
     }
+
+    &--content {
+      height: 460px;
+      transition: height 300ms ease-out;
+    }
   }
 
   .identification-view {

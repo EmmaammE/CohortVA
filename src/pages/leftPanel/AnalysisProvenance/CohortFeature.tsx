@@ -1,5 +1,4 @@
 import React, { useMemo } from 'react';
-import * as d3 from 'd3';
 import { featureMap } from '../../../utils/atomTopic';
 
 type Feature = {
@@ -54,8 +53,7 @@ const getPos = (features: Feature): TData => {
     }));
 
     const x2 = x1 + WIDTH * feature.length;
-    // TODO 确定这个的计算方式
-    const size = cnt * HEIGHT * 0.9;
+    const size = cnt * HEIGHT * 0.8;
     const ix = (x2 - x1 - size) / 2 + x1;
 
     res.push({

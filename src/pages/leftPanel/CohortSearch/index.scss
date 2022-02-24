@@ -1,8 +1,11 @@
 #searcher-panel {
   $width: 285px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 
   .searcher-items {
-    height: 460px;
+    flex: 1;
     margin-top: -15px;
     overflow-y: auto;
     overflow-x: hidden;

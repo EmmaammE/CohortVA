@@ -331,3 +331,20 @@ export const getFigure2Feature = (data, chosenClassifier) => {
     fid2weight,
   };
 };
+
+export const processData = (data) => {
+  const { main_data } = data;
+  const { classifiers, } = main_data;
+ 
+  return classifiers.map((classifiler, chosenClassifier) => {
+    return {
+      id: main_data.groups[0],
+      index: chosenClassifier,
+      value: {
+        features: handleFeatureData(data, chosenClassifier),
+        people: getPeople(data, chosenClassifier),
+        ...getFigure2Feature(data, chosenClassifier),
+      }
+    }
+  })
+}

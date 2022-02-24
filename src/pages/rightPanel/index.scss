@@ -1,0 +1,16 @@
+#right-panel {
+  display: flex;
+  flex-direction: column;
+  padding: 0 15px;
+
+  h2 {
+    line-height: 50px;
+  }
+
+  .person-view {
+    flex: 1;
+  }
+  .view {
+    flex: 0 0 330px;
+  }
+}
