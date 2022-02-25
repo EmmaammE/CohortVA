@@ -144,7 +144,7 @@ const FeaturePanel = ({ selectedList, updateTip }: IFeaturePanel) => {
               updateTip({
                 left: x - 320,
                 top: y - 50,
-                content: `${fid}\n${name}\n${en_name}` || '',
+                content: `id:${fid}\n${name}\n${en_name}` || '',
               });
             }
           })
