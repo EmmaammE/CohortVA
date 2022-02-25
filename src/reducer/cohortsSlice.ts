@@ -1,10 +1,14 @@
+/* eslint-disable no-console */
 /* eslint-disable camelcase */
 /* eslint-disable no-param-reassign */
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import Apis from '../api/apis';
 import { post } from '../api/tools';
 import { db } from '../database/db';
-import { processData } from '../pages/mainPanel/FeaturePanel/features';
+import {
+  descriptions,
+  processData,
+} from '../pages/mainPanel/FeaturePanel/features';
 import type { RootState } from '../store';
 import { getAtomFeature } from '../utils/feature';
 
@@ -56,11 +60,19 @@ export const fetchCohortsAsync = createAsyncThunk(
     try {
       const { id2node } = res.data;
 
-      await db.node.bulkAdd(Object.values(id2node));
-
-      await db.cohorts.bulkAdd(processData(res.data));
+      await db.node
+        .bulkAdd(Object.values(id2node))
+        .catch((e) => console.log(e));
+      await db.cohorts
+        .bulkAdd(processData(res.data))
+        .catch((e) => console.log(e));
+      await db.group.add({
+        id: res.data.main_data.groups[0],
+        cf2cf_pmi: res.data.main_data.cf2cf_pmi,
+        descriptions: descriptions(res.data),
+      });
     } catch (e) {
-      console.log((e as any).message);
+      console.error((e as any).message);
     }
 
     return res.data;

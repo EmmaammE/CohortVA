@@ -332,6 +332,38 @@ export const getFigure2Feature = (data, chosenClassifier) => {
   };
 };
 
+export const descriptions = (data) => {
+  const {
+    main_data,
+    id2composite_features,
+    id2model_descriptor,
+    id2node
+  } = data;
+  const { cf2pmi } = main_data;
+
+  return Object.keys(cf2pmi).map((cfid) => {
+    const { model_descriptors, proportion } = id2composite_features[cfid];
+    
+    return {
+      proportion,
+      text: model_descriptors.map((descriptorId, i) => {
+        const model_descriptor = id2model_descriptor[descriptorId];
+        const { type, parms } = model_descriptor;
+
+        const descript = Object.keys(parms).map((key) => {
+          if (Array.isArray(parms[key])) {
+            return parms[key].map((d) => id2node[d].en_name).join(', ');
+          } else {
+            return id2node[parms[key]].en_name;
+          }
+        })
+
+        return `${modelName2Topic[type]}("${descript}")&`;
+      }).join('&'),
+    }
+  });
+}
+
 export const processData = (data) => {
   const { main_data } = data;
   const { classifiers, } = main_data;

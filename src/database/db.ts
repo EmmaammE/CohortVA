@@ -1,6 +1,18 @@
 /* eslint-disable camelcase */
 import Dexie, { Table } from 'dexie';
 
+export interface IData {
+  cf2cf_pmi: {
+    [key: string]: {
+      [key: string]: number;
+    };
+  };
+  descriptions: {
+    text: string;
+    proportion: number;
+  }[];
+}
+
 export interface INode {
   id: number;
   label: string;
@@ -8,9 +20,9 @@ export interface INode {
   en_name?: string;
 }
 
-export interface IGroup {
+export interface IGroup extends IData {
   id: string;
-  pids: Object;
+  // pids: Object;
 }
 
 export interface ICohort {
@@ -31,7 +43,7 @@ export class MySubClassedDexie extends Dexie {
     this.version(1).stores({
       node: 'id,label,name,en_name',
       cohorts: '[id+index],value',
-      group: 'id,pids',
+      group: 'id,cf2cf_pmi,descriptions',
     });
   }
 }

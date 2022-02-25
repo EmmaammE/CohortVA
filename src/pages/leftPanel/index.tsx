@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import AnalysisPanel from './AnalysisProvenance';
 import CohortSearcherPanel from './CohortSearch';
 import './index.scss';
+import Overview from './Overview';
 
 type TPos = [number, number];
 
@@ -92,8 +93,9 @@ const LeftPanel = () => {
             <h3 className="g-title">Cohort Analysis Provenance</h3>
             <AnalysisPanel setPath={setClickedElement} />
           </div>
-          <div>
+          <div id="overview">
             <h3 className="g-title">Cohort Feature Overview</h3>
+            <Overview />
           </div>
         </div>
       </div>
