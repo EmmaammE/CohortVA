@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import AnalysisPanel from './AnalysisProvenance';
 import CohortSearcherPanel from './CohortSearch';
 import './index.scss';
@@ -37,23 +37,31 @@ const LeftPanel = () => {
   const [d, setPath] = useState<string | null>(null);
   const [$clicked, setClickedElement] = useState<any>(null);
 
-  const toggleShow = useCallback(() => {
-    setShow(!show);
-    setPath(null);
+  const prevPos = useRef<[number, number] | null>(null);
 
-    // setTimeout(() => {
-    //   // const [x, y] = getPos($clicked);
-    //   // console.log('x, y', x, y);
-    //   // setPath(drawCurve([x, y + show ? 460 : -460]) as string);
-    // }, 0);
+  useEffect(() => {
+    if (prevPos.current) {
+      const [x, y] = prevPos.current;
+      if (show) {
+        setPath(drawCurve([x, y + 460]) as string);
+      } else {
+        setPath(drawCurve([x, y - 460]) as string);
+      }
+    }
   }, [show]);
 
   useEffect(() => {
     if ($clicked) {
       const [x, y] = getPos($clicked);
       setPath(drawCurve([x, y]) as string);
+      prevPos.current = [x, y];
     }
-  }, [$clicked, show]);
+  }, [$clicked]);
+
+  const toggleShow = useCallback(() => {
+    setShow(!show);
+    setPath(null);
+  }, [show]);
 
   return (
     <div id="left-panel">

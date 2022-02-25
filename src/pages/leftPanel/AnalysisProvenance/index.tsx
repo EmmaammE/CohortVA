@@ -20,8 +20,6 @@ const AnalysisPanel = ({ setPath }: IAnalysisProvenanceProps) => {
     (state) => state.cohorts.classifierIndex
   );
 
-  const $clicked = useRef<any>(null);
-
   // 展开第几组群体
   const [activeIndex, setActiveIndex] = useState<number>(groupIndex);
   // 每组群体中在不展开时留下的群体
@@ -43,12 +41,6 @@ const AnalysisPanel = ({ setPath }: IAnalysisProvenanceProps) => {
       // setActiveCohortIndex([j]);
       dispatch(setGroupIndex([i, j]));
       setPath(e.currentTarget);
-
-      // $clicked.current = e.currentTarget;
-      // const bound = $clicked.current.getBoundingClientRect();
-      // const y = bound.top - 40;
-      // const x = bound.left + bound.width;
-      // setPath(drawCurve([x, y]) as string);
     },
     [dispatch, setPath]
   );
