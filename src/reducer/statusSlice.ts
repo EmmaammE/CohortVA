@@ -3,10 +3,13 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 interface IStatus {
   // selectedFigure
   figureId: string;
+  // cf ids of selected classifier
+  cfids: string[];
 }
 
 const initialState: IStatus = {
   figureId: '',
+  cfids: [],
 };
 
 export const statusSlice = createSlice({
@@ -14,11 +17,13 @@ export const statusSlice = createSlice({
   initialState,
   reducers: {
     setFigureId: (state, action: PayloadAction<string>) => {
-      // eslint-disable-next-line no-param-reassign
       state.figureId = action.payload;
+    },
+    setCfids: (state, action: PayloadAction<string[]>) => {
+      state.cfids = action.payload;
     },
   },
 });
 
-export const { setFigureId } = statusSlice.actions;
+export const { setFigureId, setCfids } = statusSlice.actions;
 export default statusSlice.reducer;

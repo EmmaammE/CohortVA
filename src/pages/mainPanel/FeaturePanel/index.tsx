@@ -10,7 +10,7 @@ import AtomView from './AtomFeature';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import { getGroupId } from '../../../reducer/cohortsSlice';
 import { db, getNodeById } from '../../../database/db';
-import { setFigureId } from '../../../reducer/statusSlice';
+import { setCfids, setFigureId } from '../../../reducer/statusSlice';
 
 interface IFeaturePanel {
   selectedList: string;
@@ -58,10 +58,12 @@ const FeaturePanel = ({ selectedList, updateTip }: IFeaturePanel) => {
       setMaxFigureWeight(maxFigureWeight);
       setFid2Weight(fid2weight);
       setFeatureIdToSort(features?.[0]?.id || '');
+
+      dispatch(setCfids(features.map((f: any) => f.id)));
     }
 
     load();
-  }, [classifierIndex, groupId]);
+  }, [classifierIndex, dispatch, groupId]);
 
   const atomFeature = useMemo(() => {
     const type2feature: any = {};

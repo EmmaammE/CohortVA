@@ -1,10 +1,8 @@
 /* eslint-disable no-console */
-/* eslint-disable camelcase */
-/* eslint-disable no-param-reassign */
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import Apis from '../api/apis';
 import { post } from '../api/tools';
-import { db } from '../database/db';
+import { db, IData } from '../database/db';
 import {
   descriptions,
   processData,
@@ -69,7 +67,7 @@ export const fetchCohortsAsync = createAsyncThunk(
       await db.group.add({
         id: res.data.main_data.groups[0],
         cf2cf_pmi: res.data.main_data.cf2cf_pmi,
-        descriptions: descriptions(res.data),
+        descriptions: descriptions(res.data) as IData['descriptions'],
       });
     } catch (e) {
       console.error((e as any).message);

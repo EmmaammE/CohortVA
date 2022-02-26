@@ -2,15 +2,18 @@
 import Dexie, { Table } from 'dexie';
 
 export interface IData {
+  id: string;
   cf2cf_pmi: {
     [key: string]: {
       [key: string]: number;
     };
   };
   descriptions: {
-    text: string;
-    proportion: number;
-  }[];
+    [key: string]: {
+      features: { text: string; type: string }[];
+      proportion: number;
+    };
+  };
 }
 
 export interface INode {

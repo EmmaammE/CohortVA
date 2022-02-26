@@ -340,13 +340,14 @@ export const descriptions = (data) => {
     id2node
   } = data;
   const { cf2pmi } = main_data;
+  const res = {};
 
-  return Object.keys(cf2pmi).map((cfid) => {
+  Object.keys(cf2pmi).forEach((cfid) => {
     const { model_descriptors, proportion } = id2composite_features[cfid];
     
-    return {
+    res[cfid] = {
       proportion,
-      text: model_descriptors.map((descriptorId, i) => {
+      features: model_descriptors.map((descriptorId, i) => {
         const model_descriptor = id2model_descriptor[descriptorId];
         const { type, parms } = model_descriptor;
 
@@ -358,10 +359,15 @@ export const descriptions = (data) => {
           }
         })
 
-        return `${modelName2Topic[type]}("${descript}")&`;
-      }).join('&'),
+        return ({
+          type: modelName2Topic[type],
+          text: descript,
+        })
+      }),
     }
   });
+
+  return res;
 }
 
 export const processData = (data) => {
