@@ -2,6 +2,7 @@
   text-align: left;
   max-height: 630px;
   overflow-y: auto;
+  transition: height 300ms ease-out;
 }
 .figure-table-container .figure-table-title {
   font-family: 'Helvetica-Bold';

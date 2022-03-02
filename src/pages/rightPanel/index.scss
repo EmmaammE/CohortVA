@@ -13,4 +13,20 @@
   .view {
     flex: 0 0 330px;
   }
+
+  .loading-border {
+    height: 5px;
+    margin: 2px 0 0 0;
+    animation: rotate 10s infinite linear;
+    background: linear-gradient(to right, #eee, #ccc, #eee);
+  }
+
+  @keyframes rotate {
+    from {
+      background-position: -3000px;
+    }
+    to {
+      background-position: 0px;
+    }
+  }
 }

@@ -9,6 +9,8 @@ const { Panel } = Collapse;
 
 const FigureTable = ({ chosenFigure }) => {
   const [figure, setFigure] = useState({});
+  const [loading, setLoading] = useState(false);
+
   const isValid = (data) => {
     if (
       data === '未知' ||
@@ -34,6 +36,7 @@ const FigureTable = ({ chosenFigure }) => {
         url: `https://cbdb.fas.harvard.edu/cbdbapi/person.php?o=json&name=${queryString}`,
         // url: `https://cbdb.fas.harvard.edu/cbdbapi/person.php?o=json&id=${queryString}`, 
       };
+      setLoading(true);
       get(settings).then((res) => {
         if (!res.data.Package) {
           alert('这个人的资料有问题。');
@@ -110,6 +113,7 @@ const FigureTable = ({ chosenFigure }) => {
             : {},
         };
         setFigure({ ...showFigure });
+        setLoading(false)
         // setActiveId([0])
       });
     }
@@ -167,7 +171,8 @@ const FigureTable = ({ chosenFigure }) => {
     // }
   }, [chosenFigure]);
   return (
-    <div className="figure-table-container g-scroll">
+    <div className="figure-table-container mod g-scroll">
+      {loading && <div className='loading-border'></div>}
       <div className="figure-detail-list">
         {figure['Personal Info'] ? (
           <div className="basic-info">
