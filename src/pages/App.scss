@@ -5,6 +5,10 @@ $secondary: #706e6e;
   box-sizing: border-box;
 }
 
+body {
+  line-height: 1.2;
+}
+
 .App {
   width: 1920px;
   height: 1080px;
@@ -67,6 +71,7 @@ $secondary: #706e6e;
           vertical-align: middle;
           font-weight: 400;
           letter-spacing: 0;
+          margin: 0;
         }
       }
     }
@@ -78,6 +83,7 @@ $secondary: #706e6e;
     grid-column-gap: 6px;
     background: #f2ede0;
     height: 1030px;
+    overflow: hidden;
 
     #left-panel,
     #main-panel,

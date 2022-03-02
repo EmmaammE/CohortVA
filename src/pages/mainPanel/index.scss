@@ -20,8 +20,6 @@
   }
 
   .feature-view {
-    flex: 1;
-
     &--header {
       display: flex;
       justify-content: space-between;
@@ -34,7 +32,7 @@
   }
 
   .auxiliary {
-    flex: 0 0 330px;
+    flex: 0 0 32%;
     display: flex;
     width: 100%;
 
@@ -52,18 +50,42 @@
       }
     }
   }
+}
 
-  #tip {
-    position: absolute;
-    z-index: 2;
-    background-color: #000000;
-    color: #ffffff;
-    padding: 5px;
-    border-radius: 3px;
-    cursor: pointer;
-    pointer-events: none;
-    opacity: 0.7;
-    white-space: pre-wrap;
-    text-align: center;
+.ant-slider {
+  margin: 7px 4px 0;
+  flex: 1;
+  padding: 0;
+
+  .ant-slider-handle {
+    width: 9px;
+    height: 9px;
+    border: 2px solid #ddd;
+    background-color: #ddd;
+    border-radius: 50%;
+    margin-top: -2px;
+
+    &.ant-tooltip-open {
+      border: 2px solid #ddd;
+    }
+    &:focus {
+      border-color: #ddd;
+      outline: none;
+      box-shadow: 0 0 0 2px #ddd1;
+    }
+
+    &:not(.ant-tooltip-open) {
+      border-color: #ddd !important;
+    }
+  }
+
+  .ant-slider-track {
+    background-color: #ccc !important;
+    height: 6px;
+  }
+
+  .ant-slider-rail {
+    background-color: #efefef;
+    height: 6px;
   }
 }

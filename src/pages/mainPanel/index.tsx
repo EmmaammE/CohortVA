@@ -5,12 +5,8 @@ import FeaturePanel from './FeaturePanel';
 import FigureTimeline from './FigureTimeline';
 import FigureTraces from './FigureTraces';
 import './index.scss';
-
-interface ITipInfo {
-  content: string;
-  left?: number;
-  top?: number;
-}
+import InterpersonalEvent from './InterpersonalEvent';
+import useTooltip from '../../hooks/useTooltip';
 
 const buttons = ['Timeline', 'Map', 'Relationship', 'Update'];
 const { Option } = Select;
@@ -27,8 +23,7 @@ const MainPanel = () => {
   const onChangePersonList = useCallback((v) => {
     setSelectedList(v);
   }, []);
-
-  const [tipInfo, setTipInfo] = useState<ITipInfo>({ content: '' });
+  const { element, setTipInfo } = useTooltip();
 
   return (
     <div id="main-panel">
@@ -76,17 +71,14 @@ const MainPanel = () => {
         </div>
         <div className="auxiliary-view">
           <h3 className="g-title">Cohort Relationship</h3>
+          <InterpersonalEvent />
         </div>
         <div className="auxiliary-view">
           <h3 className="g-title">Hierarchy Dictionary</h3>
         </div>
       </div>
 
-      {tipInfo.content && (
-        <div id="tip" style={{ left: tipInfo.left, top: tipInfo.top }}>
-          {tipInfo.content}
-        </div>
-      )}
+      {element}
     </div>
   );
 };

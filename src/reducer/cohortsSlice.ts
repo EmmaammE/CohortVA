@@ -8,7 +8,7 @@ import {
   processData,
 } from '../pages/mainPanel/FeaturePanel/features';
 import type { RootState } from '../store';
-import { getAtomFeature } from '../utils/feature';
+import { getAtomFeature, preprocessData } from '../utils/feature';
 
 type TPerson = {
   // eslint-disable-next-line camelcase
@@ -56,19 +56,31 @@ export const fetchCohortsAsync = createAsyncThunk(
     });
 
     try {
-      const { id2node } = res.data;
+      const { id2node, id2edge } = res.data;
+
+      await db.group
+        .add({
+          id: res.data.main_data.groups[0],
+          cf2cf_pmi: res.data.main_data.cf2cf_pmi,
+          descriptions: descriptions(res.data) as IData['descriptions'],
+          sentences: preprocessData(res.data),
+        })
+        .catch((e) => console.log(e));
 
       await db.node
         .bulkAdd(Object.values(id2node))
         .catch((e) => console.log(e));
+      await db.node
+        .bulkAdd(
+          Object.keys(id2edge).map((key) => ({
+            id: +key,
+            label: id2edge[key].label,
+          }))
+        )
+        .catch((e) => console.log(e));
       await db.cohorts
         .bulkAdd(processData(res.data))
         .catch((e) => console.log(e));
-      await db.group.add({
-        id: res.data.main_data.groups[0],
-        cf2cf_pmi: res.data.main_data.cf2cf_pmi,
-        descriptions: descriptions(res.data) as IData['descriptions'],
-      });
     } catch (e) {
       console.error((e as any).message);
     }

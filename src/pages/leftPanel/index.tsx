@@ -43,13 +43,10 @@ const LeftPanel = () => {
   useEffect(() => {
     if (prevPos.current) {
       const [x, y] = prevPos.current;
-      if (show) {
-        setPath(drawCurve([x, y + 460]) as string);
-      } else {
-        setPath(drawCurve([x, y - 460]) as string);
-      }
+      setPath(drawCurve([x, y + (!show ? -1 : 1) * 460]) as string);
+      prevPos.current = [x, y + (!show ? -1 : 1) * 460];
     }
-  }, [show]);
+  }, [$clicked, show]);
 
   useEffect(() => {
     if ($clicked) {
@@ -89,13 +86,13 @@ const LeftPanel = () => {
       <div className="identification-view panel">
         <h2 className="g-title">Cohort Identification View</h2>
         <div className="iv--content">
-          <div className="g-divider" style={{ flex: '0 0 44%' }}>
+          <div className="g-divider" style={{ flex: '1 0 30%' }}>
             <h3 className="g-title">Cohort Analysis Provenance</h3>
             <AnalysisPanel setPath={setClickedElement} />
           </div>
           <div id="overview">
             <h3 className="g-title">Cohort Feature Overview</h3>
-            <Overview />
+            <Overview show={show} />
           </div>
         </div>
       </div>

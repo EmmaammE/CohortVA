@@ -1,0 +1,29 @@
+.container {
+  position: relative;
+}
+
+.btns {
+  position: absolute;
+  right: 5px;
+  left: 160px;
+  top: -24px;
+
+  font-family: Arial;
+  font-size: 10px;
+  color: #747474;
+  font-weight: 400;
+  line-height: 19px;
+}
+
+.wrapper {
+  position: relative;
+  display: flex;
+}
+
+.legend {
+  flex: 1;
+  display: inline-block;
+  margin: 6px 5px 0;
+  height: 8px;
+  background: linear-gradient(to right, #ddd, #111);
+}

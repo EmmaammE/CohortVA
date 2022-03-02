@@ -14,6 +14,7 @@ export interface IData {
       proportion: number;
     };
   };
+  sentences: Object;
 }
 
 export interface INode {
@@ -46,7 +47,7 @@ export class MySubClassedDexie extends Dexie {
     this.version(1).stores({
       node: 'id,label,name,en_name',
       cohorts: '[id+index],value',
-      group: 'id,cf2cf_pmi,descriptions',
+      group: 'id,cf2cf_pmi,descriptions,sentences',
     });
   }
 }

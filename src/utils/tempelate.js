@@ -1,3 +1,4 @@
+import { db } from '../database/db';
 import {genderTemplate,
     familyTemplate,
     socialDisTemplate,
@@ -79,5 +80,15 @@ const Template = (sentenceLabel,vKey, KEY,nodeEdgeDict) => {
     }
     return  senDiscription ;
 }
+
+const generate = async (sentenceLabel, vKey, KEY) => {
+    const res = await db.node.bulkGet(vKey);
+    const dict = res.reduce((acc, cur) => {
+        acc[cur.id] = cur;
+        return acc;
+    }, {})
+
+    return Template(sentenceLabel,vKey, KEY,dict)
+}
  
-export default Template;
+export default generate;

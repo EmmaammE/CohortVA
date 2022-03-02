@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.scss';
 import title from '../assets/icons/title.png';
-
+import 'antd/dist/antd.css';
 import topics from '../utils/atomTopic';
 import LeftPanel from './leftPanel';
 import MainPanel from './mainPanel';

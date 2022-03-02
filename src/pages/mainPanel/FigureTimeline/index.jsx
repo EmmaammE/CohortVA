@@ -1,11 +1,35 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import FigureTimeline from './FigureTimeline';
+import { db } from '../../../database/db';
+import { getGroupId } from '../../../reducer/cohortsSlice';
+import { useAppSelector } from '../../../store/hooks';
 
-const tmpProps = {
-  extract_feature: {},
-  chosenDescriptorId: {}
-}
+export default () => {
+  const [yearToS, setyearToS] = useState({})
 
-export default () => (
-    <FigureTimeline {...tmpProps} />
+  const groupId = useAppSelector(getGroupId);
+  const [data, setData] = useState(null);
+
+
+  useEffect(() => {
+    async function load() {
+      const groupData = await db.group.get({
+        id: groupId,
+      });
+      if (groupData) {
+        setData(groupData.sentences);
+      }
+    }
+
+    load();
+  }, [groupId]);
+
+  useEffect(() => {
+    // setFeatureId
+    setyearToS(data?.yearToS||{});
+  }, [data])
+
+  return (
+    <FigureTimeline  yearToS={yearToS}/>
   )
+}

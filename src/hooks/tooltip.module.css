@@ -1,0 +1,13 @@
+.tip {
+  position: absolute;
+  z-index: 2;
+  background-color: #000000;
+  color: #ffffff;
+  padding: 5px;
+  border-radius: 3px;
+  cursor: pointer;
+  pointer-events: none;
+  opacity: 0.7;
+  white-space: pre-wrap;
+  text-align: center;
+}

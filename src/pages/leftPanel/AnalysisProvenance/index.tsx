@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { getGroups, setGroupIndex } from '../../../reducer/cohortsSlice';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import CohortFeature from './CohortFeature';
