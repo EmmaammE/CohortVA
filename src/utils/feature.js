@@ -57,7 +57,8 @@ export const preprocessData = (data) => {
         })
       })
 
-      let flag = false;
+      let addrFlag = false;
+      let yearFlag = false;
       // 整理出句子中含有地点/年份的词
       for(let i=0; i<words.length; i+=1) {
         const wordId = words[i];
@@ -65,28 +66,28 @@ export const preprocessData = (data) => {
 
         switch(label) {
           case 'Addr':
-            if(!posToS[wordId]) {
-              posToS[wordId] = [];
+            if(!addrFlag) {
+              if(!posToS[wordId]) {
+                posToS[wordId] = [];
+              }
+              posToS[wordId].push(sentence);
+              addrFlag = true;
             }
-            posToS[wordId].push(sentence);
-            flag = true;
             break;
           case 'Year':
             // eslint-disable-next-line no-case-declarations
             const year = id2node[wordId].en_name;
-            if(year!=='0' && year !=='None') {
+            if(!yearFlag && year!=='0' && year !=='None') {
               if(!yearToS[year]) {
                 yearToS[year] = [];
               }
               yearToS[year].push(sentence);
-              flag = true;
+              yearFlag = true;
             }
             break;
           default:
             break;
         }
-
-        if(flag) break; // 只取第一个地址和年份
       }
     });
   });
