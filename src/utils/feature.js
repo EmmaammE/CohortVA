@@ -74,11 +74,13 @@ export const preprocessData = (data) => {
           case 'Year':
             // eslint-disable-next-line no-case-declarations
             const year = id2node[wordId].en_name;
-            if(!yearToS[year]) {
-              yearToS[year] = [];
+            if(year!=='0' && year !=='None') {
+              if(!yearToS[year]) {
+                yearToS[year] = [];
+              }
+              yearToS[year].push(sentence);
+              flag = true;
             }
-            yearToS[year].push(sentence);
-            flag = true;
             break;
           default:
             break;

@@ -1,0 +1,9 @@
+.my-ticks line,
+.my-ticks path {
+  stroke: #ccc;
+}
+
+.my-legends text {
+  text-align: center;
+  dominant-baseline: middle;
+}
