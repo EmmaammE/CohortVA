@@ -10,7 +10,11 @@ import AtomView from './AtomFeature';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import { getGroupId } from '../../../reducer/cohortsSlice';
 import { db, getNodeById } from '../../../database/db';
-import { setCfids, setFigureId } from '../../../reducer/statusSlice';
+import {
+  setCfids,
+  setFigureId,
+  setFigureName,
+} from '../../../reducer/statusSlice';
 
 interface IFeaturePanel {
   selectedList: string;
@@ -165,8 +169,9 @@ const FeaturePanel = ({ selectedList, updateTip }: IFeaturePanel) => {
   );
 
   const choseFigure = useCallback(
-    (fid: string) => {
+    (fid: string, name: string) => {
       dispatch(setFigureId(fid));
+      dispatch(setFigureName(name));
     },
     [dispatch]
   );

@@ -179,7 +179,7 @@ const FigureTable = ({ chosenFigure }) => {
             <p className="title">Personal Info</p>
             <p className="basic-info-panel">
               {Object.keys(figure['Personal Info']).map((param) => (
-                <li>
+                <li key={param}>
                   {' '}
                   <span className="param">{param}</span>
                   <span className="value">

@@ -105,7 +105,7 @@ const FeatureRow = ({
           if (res) {
             // eslint-disable-next-line camelcase
             const { en_name } = res;
-            choseFigure(en_name);
+            choseFigure(fid, en_name);
           }
         })
         .catch((e) => {

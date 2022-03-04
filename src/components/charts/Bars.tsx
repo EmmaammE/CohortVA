@@ -30,11 +30,12 @@ const Bars = ({ data, listeners }: IBars) => {
 
   return (
     <g>
-      {transition(({ opacity, y }, { width, height, x, ...rest }) => (
+      {transition(({ opacity }, { width, height, x, y, ...rest }) => (
         <animated.rect
           width={width}
           height={height}
           x={x}
+          y={y}
           {...barStyle}
           {...rest}
           opacity={opacity}

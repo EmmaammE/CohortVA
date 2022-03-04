@@ -1,3 +1,21 @@
+import Apis from "./apis";
+import { post } from "./tools";
 
-export default Object.assign(
-);
+// eslint-disable-next-line import/prefer-default-export
+export const getCohortByName = (params) => {
+  const url = Apis.get_cohort_by_figure_names;
+
+  return post({
+    url,
+    data: params,
+  })
+}
+
+export const getFeatureByName = (params) => {
+  const url = Apis.extract_features;
+
+  return post({
+    url,
+    data: params,
+  })
+}
