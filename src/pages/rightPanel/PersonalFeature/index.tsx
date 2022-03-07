@@ -59,7 +59,7 @@ export default () => {
     <div>
       {loading && <div className="loading-border" />}
       <svg viewBox="0 0 200 200">
-        <g transform="translate(-50%, -50%)">
+        <g>
           {nodes.map(
             (node: any) =>
               data?.descriptions?.[node.id]?.features &&

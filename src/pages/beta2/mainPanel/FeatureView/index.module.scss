@@ -1,0 +1,18 @@
+.container {
+  height: calc(100% - 28px);
+
+  display: grid;
+  grid-template-columns: 2fr 2fr 1fr 1fr 1fr 2fr;
+  grid-template-rows: auto 1fr;
+}
+
+.header {
+  border-bottom: 1px dashed #979797;
+  grid-column: 1/7;
+  grid-row: 1;
+}
+
+.content {
+  grid-column: 1/7;
+  grid-row: 2;
+}

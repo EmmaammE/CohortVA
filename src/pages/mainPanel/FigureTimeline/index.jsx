@@ -4,7 +4,7 @@ import { db } from '../../../database/db';
 import { getGroupId } from '../../../reducer/cohortsSlice';
 import { useAppSelector } from '../../../store/hooks';
 
-export default () => {
+export default ({width = 300, height= 280}) => {
   const [yearToS, setyearToS] = useState({})
 
   const groupId = useAppSelector(getGroupId);
@@ -30,6 +30,6 @@ export default () => {
   }, [data])
 
   return (
-    <FigureTimeline  yearToS={yearToS}/>
+    <FigureTimeline  yearToS={yearToS} width={width} height={height}/>
   )
 }

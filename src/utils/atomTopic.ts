@@ -30,11 +30,11 @@ const atomTopic = [
     text: 'Popular',
   },
   {
-    color: '#DDB997',
+    color: '#AAB0BE',
     text: 'TimeRange',
   },
   {
-    color: '#AAB0BE',
+    color: '#DDB997',
     text: 'Frequent',
   },
 ];

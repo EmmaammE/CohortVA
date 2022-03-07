@@ -61,7 +61,7 @@ const Overview = ({ show }: IOverview) => {
     <div className={style.container}>
       <div className={style['svg-wrapper']}>
         <svg viewBox="0 0 200 200" style={show ? { width: '50%' } : {}}>
-          <g transform="translate(-50%, -50%)">
+          <g>
             <g>
               {links.map((link: any) => {
                 if (

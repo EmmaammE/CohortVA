@@ -8,10 +8,8 @@ import Axes from '../../../components/charts/Axes';
 import Bars from '../../../components/charts/Bars';
 
 const margin = { top: 5, bottom: 25, left: 40, right: 10 };
-const height = 300;
-const width = 280;
 
-const FigureTimeline = ({ yearToS }) => {
+const FigureTimeline = ({ yearToS, width, height }) => {
   const [state, setState] = useState({
     style: { opacity: 0 },
     data: [],
@@ -23,7 +21,7 @@ const FigureTimeline = ({ yearToS }) => {
     setState({ ...state, style });
   };
 
-  const [xRange, setXRange] = useState([]);
+  const [xRange, setXRange] = useState([0]);
   const [yMax, setYMax] = useState(0);
 
   useEffect(() => {
@@ -36,20 +34,24 @@ const FigureTimeline = ({ yearToS }) => {
     .scaleBand()
     .domain(xRange)
     .range([0, width - margin.right - margin.left])
-    .padding(0.5), [xRange])
+    .padding(0.5), [width, xRange])
 
   const yScale = useMemo(() => d3
     .scaleLinear()
     .domain([0, yMax])
-    .range([height - margin.top - margin.bottom, 0]),[yMax])
+    .range([height - margin.top - margin.bottom, 0]),[height, yMax])
 
-  const bars = useMemo(() => Object.keys(yearToS).map(year => ({
+  const bars = useMemo(() => {
+    if(Number.isNaN(yScale(0))) return [];
+
+    return Object.keys(yearToS).map(year => ({
       x: xScale(year)+xScale.bandwidth()/2,
       y: yScale(yearToS[year].length),
       width: xScale.bandwidth()/2,
       height:yScale(0)- yScale(yearToS[year].length),
       year,
-    })), [xScale, yScale, yearToS])
+    }))
+  }, [xScale, yScale, yearToS])
 
   const xFormat = useCallback((axis) => axis.tickValues(xScale.domain().filter((d,i)=> !(i%20))), [xScale]);
 

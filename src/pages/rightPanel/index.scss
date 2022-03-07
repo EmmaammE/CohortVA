@@ -11,7 +11,11 @@
     flex: 1;
   }
   .view {
-    flex: 0 0 32%;
+    flex: 0 0 330px;
+
+    h3 {
+      margin: 6px 0;
+    }
   }
 
   .loading-border {

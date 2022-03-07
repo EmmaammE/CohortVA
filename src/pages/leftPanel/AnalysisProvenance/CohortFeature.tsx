@@ -53,7 +53,7 @@ const getPos = (features: Feature): TData => {
     }));
 
     const x2 = x1 + WIDTH * feature.length;
-    const size = cnt * HEIGHT * 0.8;
+    const size = cnt * HEIGHT * 0.7;
     const ix = (x2 - x1 - size) / 2 + x1;
 
     res.push({
