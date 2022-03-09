@@ -79,7 +79,7 @@ const MainPanel = () => {
       d3
         .scaleLinear()
         .domain([0, maxFigureWeight + padding])
-        .range([width, 0]), // 100
+        .range([0, width]), // 100
     [maxFigureWeight]
   );
 
@@ -125,6 +125,15 @@ const MainPanel = () => {
     setEndPoints(curEndPoints.map(scale));
   }, [people]);
 
+  const sortedFeatures = useMemo(() => {
+    if (featureToSort?.id) {
+      return features
+        .filter((d: any) => d.id === featureToSort.id)
+        .map((d: any) => d.id);
+    }
+    return features.map((d: any) => d.id);
+  }, [featureToSort?.id, features]);
+
   return (
     <div id="main-panel">
       <h2 className="g-title">Cohort Explanation View </h2>
@@ -161,9 +170,7 @@ const MainPanel = () => {
             data={fid2weight}
             yScale={yScale}
             xScale={xScale}
-            groups={features
-              .map((f: any) => f.id)
-              .sort((a: any, b: any) => (a === featureToSort?.id ? -1 : 1))}
+            groups={sortedFeatures}
             endPoints={endPoints}
           />
         </div>

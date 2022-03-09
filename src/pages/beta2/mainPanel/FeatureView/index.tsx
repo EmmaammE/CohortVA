@@ -39,13 +39,14 @@ const FeatureView = ({ data, features }: IFeatureView) => {
     [features]
   );
 
-  const groups = useMemo(
-    () =>
-      features
-        .map((f: any) => f.id)
-        .sort((a: any, b: any) => (a === featureToSort?.id ? -1 : 1)),
-    [featureToSort?.id, features]
-  );
+  const groups = useMemo(() => {
+    if (featureToSort?.id) {
+      return features
+        .filter((d: any) => d.id === featureToSort.id)
+        .map((d: any) => d.id);
+    }
+    return features.map((d: any) => d.id);
+  }, [featureToSort?.id, features]);
   const figureIdArr = useAppSelector((state) => state.status.figureIdArr);
 
   const stack = useStack(data, groups, figureIdArr);
@@ -79,7 +80,7 @@ const FeatureView = ({ data, features }: IFeatureView) => {
       d3
         .scaleLinear()
         .domain([0, Math.max(...figureIdArr.map((id) => data[id]?.sum || 0))])
-        .range([width, 0]),
+        .range([0, width]),
     [data, figureIdArr]
   );
 
@@ -114,6 +115,32 @@ const FeatureView = ({ data, features }: IFeatureView) => {
     return matrix;
   }, [colorScale, sortedFigureIds]);
 
+  const linesData = useMemo(() => {
+    const matrix = [];
+    const n = figureIdArr.length;
+
+    for (let i = 0; i < n + 1; i += 1) {
+      matrix.push({
+        pos: [
+          [-15, 2 * n - (i + i)],
+          [0, 2 * n - (i + i) - 1 / 2],
+          [n - i, 2 * n - (i + n) - 1 / 2],
+        ],
+        target: n - i,
+      });
+
+      matrix.push({
+        pos: [
+          [-15, i + i - 1 / 2],
+          [0, i + i - 1 / 2],
+          [n - i, i + n - 1 / 2],
+        ],
+        source: i,
+      });
+    }
+    return matrix;
+  }, [figureIdArr.length]);
+
   const { rangeX, rangeY } = useMemo(
     () => ({
       rangeX: [0, figureIdArr.length - 1],
@@ -121,8 +148,6 @@ const FeatureView = ({ data, features }: IFeatureView) => {
     }),
     [figureIdArr.length]
   );
-
-  console.log(rangeX, rangeY);
 
   return (
     <div className={style.container}>
@@ -159,7 +184,7 @@ const FeatureView = ({ data, features }: IFeatureView) => {
                   <rect
                     key={figureIdArr[j]}
                     id={`${figureIdArr[j]}`}
-                    x={xScale(d[1])}
+                    x={xScale(d[0])}
                     y={2 + (yScale(figureIdArr[j]) || 0)}
                     width={Math.abs(xScale(d[1]) - xScale(d[0]))}
                     height={height - 4}
@@ -191,9 +216,12 @@ const FeatureView = ({ data, features }: IFeatureView) => {
       <div className={style.wrapper}>
         <Matrix
           data={matrixData as any}
+          linesData={linesData}
           boxSize={610 / sortedFigureIds.length / 2}
-          rangeX={rangeX as any}
-          rangeY={rangeY as any}
+          rangeX={rangeX}
+          rangeY={rangeY}
+          source={0}
+          target={5}
         />
       </div>
     </div>
