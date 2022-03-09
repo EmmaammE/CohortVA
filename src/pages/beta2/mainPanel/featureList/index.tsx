@@ -5,6 +5,7 @@ import useBrush from './useBursh';
 import { invert } from '../../../../utils/scale';
 import { useAppDispatch } from '../../../../store/hooks';
 import { setFigureIdArr } from '../../../../reducer/statusSlice';
+import useStack from '../FeatureView/useStack';
 
 interface FeatureListProps {
   data: any;
@@ -14,21 +15,8 @@ interface FeatureListProps {
   endPoints: number[];
 }
 
-const useData = (data: any, groups: string[]) => {
-  const stack = useMemo(() => {
-    const dataArr = Object.keys(data);
-    return d3
-      .stack()
-      .keys(groups)
-      .value((d, key) => data?.[d as any]?.[key] || 0)(dataArr as any);
-  }, [data, groups]);
-
-  return stack;
-};
-
-export const width = 300;
+export const width = 220;
 export const height = 920;
-export const padding = 0.01;
 
 const colors = ['#fff', '#c4c4c4', '#818181'];
 const strokes = ['#b1b1b1', '#c4c4c4', '#818181'];
@@ -39,6 +27,7 @@ const margin = {
   top: 1,
   bottom: 1,
 };
+
 const FeatureList = ({
   data,
   xScale,
@@ -46,9 +35,8 @@ const FeatureList = ({
   groups,
   endPoints,
 }: FeatureListProps) => {
-  const stack = useData(data, groups);
   const keys = useMemo(() => Object.keys(data).map((d) => +d), [data]);
-
+  const stack = useStack(data, groups, keys);
   const dispatch = useAppDispatch();
   const setFigureIdArrCb = useCallback(
     (figureIdArr: string[]) => {
@@ -75,7 +63,7 @@ const FeatureList = ({
           }
         }
 
-        setFigureIdArrCb(names);
+        setFigureIdArrCb(result);
       }
     },
     [setFigureIdArrCb, yScale]
@@ -87,25 +75,20 @@ const FeatureList = ({
   return (
     <div className={style.wrapper}>
       <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`}>
-        {stack.map((dArr, i) => (
+        {stack.map((dArr: any[], i: number) => (
           <g key={groups[i]}>
-            {dArr.map(
-              (d, j) =>
-                !!(d[1] - d[0]) &&
-                !!yScale(keys[j]) && (
-                  <rect
-                    key={keys[j]}
-                    id={`${keys[j]}`}
-                    y={yScale(keys[j])}
-                    x={xScale(d[1] + padding * i)}
-                    width={-xScale(d[1]) + xScale(d[0])}
-                    height={(yScale as any).bandwidth()}
-                    stroke="none"
-                    strokeWidth={0}
-                    fill={`url(#Gradient${groups[i]})`}
-                  />
-                )
-            )}
+            {dArr.map((d, j) => (
+              <rect
+                key={keys[j]}
+                id={`${keys[j]}`}
+                y={yScale(keys[j])}
+                x={xScale(d[1])}
+                width={-xScale(d[1]) + xScale(d[0])}
+                height={(yScale as any).bandwidth()}
+                stroke="none"
+                fill={`url(#Gradient${groups[i]})`}
+              />
+            ))}
           </g>
         ))}
 

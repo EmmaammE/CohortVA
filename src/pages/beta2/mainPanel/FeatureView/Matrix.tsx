@@ -1,96 +1,53 @@
-import React, { useEffect, useMemo } from 'react';
-import * as d3 from 'd3';
+import React from 'react';
 
 interface IMatrix {
-  height: number;
   data: {
-    [key: string]: {
-      [key: string]: any[];
-    };
-  };
+    x: number;
+    y: number;
+    color: string;
+  }[];
+  boxSize: number;
+
+  rangeX: number[];
+  rangeY: number[];
 }
 
-const diamondPath = (x: number, y: number, size: number) =>
-  `M${x} ${y} 
-    ${x + size} ${y - size} 
-    ${x + size * 2} ${y} 
-    ${x + size} ${y - size * 2} ${x} ${y}Z`;
+const diamondPath = (x: number, y: number, width: number, height: number) =>
+  `M${x} ${y - height} 
+    ${x + width} ${y} 
+    ${x} ${y + height} 
+    ${x - width} ${y} ${x} ${y - height}Z`;
 
-const rectScale = (n: number, size: number) => {
-  const width = n * size;
-  return (i: number): number => i * size;
+const trianglePath = (rangeX: number[], rangeY: number[], boxSize: number) => {
+  const [minX, maxX] = rangeX;
+  const [minY, maxY] = rangeY;
+
+  return [
+    [minX, minY - 1],
+    [maxX + 1, (minY + maxY) / 2],
+    [minX, maxY + 1],
+  ]
+    .map(([a, b]) => [a * boxSize, b * boxSize])
+    .join(' ');
 };
-const Matrix = ({ height, data }: IMatrix) => {
-  const scale = useMemo(
-    () =>
-      d3
-        .scaleBand()
-        .domain(Object.keys(data))
-        .range([0, (1.414 * height) / 2]),
-    [data, height]
-  );
 
-  const indexScale: any = useMemo(
-    () =>
-      d3
-        .scaleBand()
-        .domain(Object.keys(data))
-        .range([1, Object.keys(data).length]),
-    [data]
-  );
-
-  const bandwidth = scale.bandwidth();
-
-  const boxSize = useMemo(() => {
-    const size = scale.bandwidth() / 2;
-    return size * 1.414;
-  }, [scale]);
-
-  console.log(1.414 * 0.5 * scale.bandwidth(), boxSize);
-
-  const colorScale = useMemo(() => {
-    let maxCnt = 0;
-    Object.values(data).forEach((personToPerson) => {
-      Object.values(personToPerson).forEach((events) => {
-        maxCnt = Math.max(maxCnt, events.length);
-      });
-    });
-
-    return d3
-      .scaleLinear()
-      .domain([0, maxCnt])
-      .range(['#ddd', '#111'] as any);
-  }, [data]);
-
-  return (
-    <g style={{ transform: 'rotate(135deg)', transformOrigin: '50% 50%' }}>
-      {Object.keys(data).map((source) =>
-        Object.keys(data[source]).map(
-          (target, i) =>
-            !!scale(target) &&
-            !!scale(source) && (
-              <rect
-                key={`${source}-${target}`}
-                x={scale(source)}
-                y={scale(target)}
-                width={boxSize}
-                height={boxSize}
-                fill="#eee"
-                stroke="#ccc"
-              />
-              // <path
-              //   key={`${source}-${target}`}
-              //   d={diamondPath(
-              //     scale(source) || 0,
-              //     scale(target) || 0,
-              //     boxSize / 2
-              //   )}
-              // />
-            )
-        )
-      )}
+const Matrix = ({ data, boxSize, rangeX, rangeY }: IMatrix) => (
+  <svg height="100%" width="100%">
+    <g transform={`translate(0,${boxSize / 2})`}>
+      <path
+        fill="#acc"
+        d={`M ${trianglePath(rangeX, rangeY, boxSize)}`}
+        opacity={0.3}
+      />
+      {data.map((d) => (
+        <path
+          key={`${d.x}-${d.y}-${boxSize}`}
+          d={diamondPath(d.x * boxSize, d.y * boxSize, boxSize, boxSize)}
+          fill={d.color}
+        />
+      ))}
     </g>
-  );
-};
+  </svg>
+);
 
 export default Matrix;

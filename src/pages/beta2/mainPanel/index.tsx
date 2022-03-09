@@ -8,25 +8,15 @@ import FigureTraces from '../../mainPanel/FigureTraces';
 import FigureTimeline from '../../mainPanel/FigureTimeline';
 import './index.scss';
 import FeatureView from './FeatureView';
-import FeatureList, { width, height, padding } from './featureList';
+import FeatureList, { width, height } from './featureList';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import { getGroupId } from '../../../reducer/cohortsSlice';
 import { db } from '../../../database/db';
 import { setCfids } from '../../../reducer/statusSlice';
 import Gradients from './Gradients';
-
-type TFeature = {
-  descriptorsArr: {
-    type: string;
-    id: string;
-  }[];
-};
+import { getDisplayedFeatureText, padding } from './utils';
 
 const { Option } = Select;
-
-const getDisplayedFeatureText = (feature: TFeature) =>
-  feature?.descriptorsArr?.map((d: any) => `${d.type}(${d.text})`).join('&') ||
-  '';
 
 const MainPanel = () => {
   const { element, setTipInfo } = useTooltip();
@@ -180,7 +170,7 @@ const MainPanel = () => {
         <div className="feature-content-right">
           <div className="feature-content-right-top">
             <h3 className="g-title">Figure Selection</h3>
-            <FeatureView />
+            <FeatureView data={fid2weight} features={features} />
           </div>
           <div className="map-view">
             <h3 className="g-title">Cohort Map</h3>
