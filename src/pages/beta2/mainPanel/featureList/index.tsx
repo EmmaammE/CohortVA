@@ -81,11 +81,12 @@ const FeatureList = ({
               <rect
                 key={keys[j]}
                 id={`${keys[j]}`}
-                y={yScale(keys[j])}
+                y={yScale(keys[j]) - 0.5}
                 x={xScale(d[0])}
                 width={xScale(d[1]) - xScale(d[0])}
-                height={(yScale as any).bandwidth()}
-                stroke="none"
+                height={(yScale as any).bandwidth() + 1}
+                stroke="#fff"
+                strokeWidth={0.5}
                 fill={`url(#Gradient${groups[i]})`}
               />
             ))}

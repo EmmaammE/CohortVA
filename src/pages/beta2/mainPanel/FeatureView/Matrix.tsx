@@ -47,7 +47,7 @@ const Matrix = ({
   source,
   target,
 }: IMatrix) => (
-  <svg height="100%" width="100%">
+  <svg height="610px" width="100%">
     <defs>
       <clipPath id="triangle">
         <path

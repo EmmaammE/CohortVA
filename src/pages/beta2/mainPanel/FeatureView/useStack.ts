@@ -18,7 +18,7 @@ const stackWithPadding = (stack: any, config: number) => {
     }
   }
 
-  console.log(stack);
+  // console.log(stack);
 
   return stack;
 };
@@ -33,7 +33,7 @@ const useStack = (data: any, groups: string[], keys: string[] | number[]) => {
     [data, groups, keys]
   );
 
-  return stackWithPadding(stack, padding);
+  return stack;
 };
 
 export default useStack;

@@ -1,13 +1,22 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { Select, Radio } from 'antd';
 import * as d3 from 'd3';
 import Matrix from './Matrix';
 import style from './index.module.scss';
 import { getDisplayedFeatureText } from '../utils';
 import useStack from './useStack';
-import { useAppSelector } from '../../../../store/hooks';
+import { useAppDispatch, useAppSelector } from '../../../../store/hooks';
 import useNamesMap from './useNodeNamesMap';
 import relationData from '../../../../data/relation.json';
+import drawCurve from '../../../../utils/curve';
+import { setFigureId, setFigureName } from '../../../../reducer/statusSlice';
+import useVisibleIndex from './useVisibleIndex';
 
 interface IFeatureView {
   data: {
@@ -26,8 +35,12 @@ const width = 220;
 const matrixWidth = 300;
 const matrixHeight = 650;
 
+const visibleCnt = 29;
+
 const FeatureView = ({ data, features }: IFeatureView) => {
   const [featureToSort, setfeatureToSort] = useState<any>(null);
+  const dispatch = useAppDispatch();
+
   const onChange = useCallback(
     (index) => {
       if (index === '') {
@@ -149,6 +162,16 @@ const FeatureView = ({ data, features }: IFeatureView) => {
     [figureIdArr.length]
   );
 
+  const { initIndex, $container, offset } = useVisibleIndex(21);
+
+  const choseFigure = useCallback(
+    (fid: string, name: string) => {
+      dispatch(setFigureId(fid));
+      dispatch(setFigureName(name));
+    },
+    [dispatch]
+  );
+
   return (
     <div className={style.container}>
       <div className={style.header}>
@@ -171,7 +194,7 @@ const FeatureView = ({ data, features }: IFeatureView) => {
           ))}
         </Select>
       </div>
-      <div className={[style.content, 'g-scroll'].join(' ')}>
+      <div className={[style.content, 'g-scroll'].join(' ')} ref={$container}>
         <div className={style['content-inner']}>
           <svg
             width={width}
@@ -189,6 +212,8 @@ const FeatureView = ({ data, features }: IFeatureView) => {
                     width={Math.abs(xScale(d[1]) - xScale(d[0]))}
                     height={height - 4}
                     fill={`url(#Gradient${groups[i]})`}
+                    stroke="#fff"
+                    strokeWidth={2}
                   />
                 ))}
               </g>
@@ -198,7 +223,10 @@ const FeatureView = ({ data, features }: IFeatureView) => {
 
           <div className={style.names}>
             {sortedFigureIds.map((name, i) => (
-              <p key={name}>{nodesMap[name]}</p>
+              // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
+              <p key={name} onClick={() => choseFigure(name, nodesMap[name])}>
+                {nodesMap[name]}
+              </p>
             ))}
           </div>
 
@@ -214,6 +242,22 @@ const FeatureView = ({ data, features }: IFeatureView) => {
         </div>
       </div>
       <div className={style.wrapper}>
+        <svg width="100px" height="610px">
+          {sortedFigureIds.map(
+            (d, i) =>
+              !!(i >= initIndex && i < initIndex + visibleCnt) && (
+                <path
+                  key={d}
+                  d={`${drawCurve(
+                    [0, 21 * (i - initIndex) + 13 - offset],
+                    [70, (610 / sortedFigureIds.length) * (i + 0.5)]
+                  )}`}
+                  fill="none"
+                  stroke="#bbb"
+                />
+              )
+          )}
+        </svg>
         <Matrix
           data={matrixData as any}
           linesData={linesData}
