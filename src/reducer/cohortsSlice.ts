@@ -56,14 +56,14 @@ export const fetchCohortsAsync = createAsyncThunk(
     });
 
     try {
-      const { id2node, id2edge } = res.data;
+      const { id2node, id2edge, id2sentence } = res.data;
 
       await db.group
         .add({
           id: res.data.main_data.groups[0],
           cf2cf_pmi: res.data.main_data.cf2cf_pmi,
           descriptions: descriptions(res.data) as IData['descriptions'],
-          sentences: preprocessData(res.data),
+          // sentences: preprocessData(res.data),
         })
         .catch((e) => console.log(e));
 
@@ -80,6 +80,15 @@ export const fetchCohortsAsync = createAsyncThunk(
         .catch((e) => console.log(e));
       await db.cohorts
         .bulkAdd(processData(res.data))
+        .catch((e) => console.log(e));
+
+      await db.sentence
+        .bulkAdd(
+          Object.keys(id2sentence).map((key) => ({
+            id: key,
+            ...id2sentence[key],
+          }))
+        )
         .catch((e) => console.log(e));
     } catch (e) {
       console.error((e as any).message);

@@ -381,6 +381,8 @@ export const descriptions = (data) => {
           text: descript,
         })
       }),
+      // 复合特征的sentence就是从最后一个原子特征模型提取出来的句子
+      sentence: id2model_descriptor[model_descriptors[model_descriptors.length - 1]].sentences,
     }
   });
 

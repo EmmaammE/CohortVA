@@ -57,7 +57,7 @@ const Matrix = ({
         />
       </clipPath>
     </defs>
-    <g transform={`translate(15,${boxSize / 2})`}>
+    <g transform={`translate(0,${boxSize / 2})`}>
       <path
         fill="#acc"
         d={`M ${trianglePath(rangeX, rangeY, boxSize)}`}

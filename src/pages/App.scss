@@ -136,3 +136,10 @@ h3.g-title {
     border: 1px solid #c6c6c6;
   }
 }
+
+.loading-border {
+  height: 5px;
+  margin: 2px 0 0 0;
+  animation: rotate 10s infinite linear;
+  background: linear-gradient(to right, #eee, #ccc, #eee);
+}

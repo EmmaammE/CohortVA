@@ -12,9 +12,10 @@ export interface IData {
     [key: string]: {
       features: { text: string; type: string }[];
       proportion: number;
+      sentence: string[];
     };
   };
-  sentences: Object;
+  // sentences: Object;
 }
 
 export interface INode {
@@ -35,6 +36,12 @@ export interface ICohort {
   value: any;
 }
 
+export interface ISentence {
+  id: string;
+  words: string[];
+  edges: string[];
+}
+
 export class MySubClassedDexie extends Dexie {
   node!: Table<INode>;
 
@@ -42,12 +49,15 @@ export class MySubClassedDexie extends Dexie {
 
   cohorts!: Table<ICohort, [string, number]>;
 
+  sentence!: Table<ISentence, string>;
+
   constructor() {
     super('db');
     this.version(1).stores({
       node: 'id,label,name,en_name',
       cohorts: '[id+index],value',
       group: 'id,cf2cf_pmi,descriptions,sentences',
+      sentence: 'id,words,edges',
     });
   }
 }

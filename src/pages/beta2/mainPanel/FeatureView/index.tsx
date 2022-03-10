@@ -13,7 +13,6 @@ import { getDisplayedFeatureText } from '../utils';
 import useStack from './useStack';
 import { useAppDispatch, useAppSelector } from '../../../../store/hooks';
 import useNamesMap from './useNodeNamesMap';
-import relationData from '../../../../data/relation.json';
 import drawCurve from '../../../../utils/curve';
 import { setFigureId, setFigureName } from '../../../../reducer/statusSlice';
 import useVisibleIndex from './useVisibleIndex';
@@ -25,6 +24,11 @@ interface IFeatureView {
     };
   };
   features: any;
+  relationData: {
+    [key: string]: {
+      [key: string]: any;
+    };
+  };
 }
 
 const { Option } = Select;
@@ -37,7 +41,7 @@ const matrixHeight = 650;
 
 const visibleCnt = 29;
 
-const FeatureView = ({ data, features }: IFeatureView) => {
+const FeatureView = ({ data, features, relationData }: IFeatureView) => {
   const [featureToSort, setfeatureToSort] = useState<any>(null);
   const dispatch = useAppDispatch();
 
@@ -126,7 +130,7 @@ const FeatureView = ({ data, features }: IFeatureView) => {
       }
     }
     return matrix;
-  }, [colorScale, sortedFigureIds]);
+  }, [colorScale, relationData, sortedFigureIds]);
 
   const linesData = useMemo(() => {
     const matrix = [];
@@ -135,7 +139,6 @@ const FeatureView = ({ data, features }: IFeatureView) => {
     for (let i = 0; i < n + 1; i += 1) {
       matrix.push({
         pos: [
-          [-15, 2 * n - (i + i)],
           [0, 2 * n - (i + i) - 1 / 2],
           [n - i, 2 * n - (i + n) - 1 / 2],
         ],
@@ -144,7 +147,6 @@ const FeatureView = ({ data, features }: IFeatureView) => {
 
       matrix.push({
         pos: [
-          [-15, i + i - 1 / 2],
           [0, i + i - 1 / 2],
           [n - i, i + n - 1 / 2],
         ],

@@ -4,8 +4,8 @@ import { Select } from 'antd';
 import * as d3 from 'd3';
 import Button from '../../../components/button/Button';
 import useTooltip from '../../../hooks/useTooltip';
-import FigureTraces from '../../mainPanel/FigureTraces';
-import FigureTimeline from '../../mainPanel/FigureTimeline';
+import FigureTraces from '../../mainPanel/FigureTraces/FigureTraces';
+import FigureTimeline from '../../mainPanel/FigureTimeline/FigureTimeline';
 import './index.scss';
 import FeatureView from './FeatureView';
 import FeatureList, { width, height } from './featureList';
@@ -15,6 +15,7 @@ import { db } from '../../../database/db';
 import { setCfids } from '../../../reducer/statusSlice';
 import Gradients from './Gradients';
 import { getDisplayedFeatureText, padding } from './utils';
+import useSentence from './useSentence';
 
 const { Option } = Select;
 
@@ -32,6 +33,8 @@ const MainPanel = () => {
   const [maxFigureWeight, setMaxFigureWeight] = useState<number>(0);
   const [fid2weight, setFid2Weight] = useState<any>({});
   const [featureToSort, setfeatureToSort] = useState<any>(null);
+
+  const pids = useMemo(() => Object.keys(fid2weight), [fid2weight]);
 
   const [endPoints, setEndPoints] = useState<number[]>([]);
 
@@ -68,6 +71,7 @@ const MainPanel = () => {
       setFid2Weight(fid2weight);
       setfeatureToSort(features?.[0]?.id || '');
 
+      // TODO 会存在cfids被替换的情况
       dispatch(setCfids(features.map((f: any) => f.id)));
     }
 
@@ -112,7 +116,7 @@ const MainPanel = () => {
 
     // const sum: any = list.reduce((acc, cur) => acc + (cur as any).length, 0);
 
-    console.log(list);
+    // console.log(list);
 
     let sum = 0;
     const curEndPoints: number[] = [];
@@ -134,6 +138,10 @@ const MainPanel = () => {
     return features.map((d: any) => d.id);
   }, [featureToSort?.id, features]);
 
+  const { loading, posToS, yearToS, personToPerson } = useSentence(
+    features,
+    pids
+  );
   return (
     <div id="main-panel">
       <h2 className="g-title">Cohort Explanation View </h2>
@@ -177,15 +185,21 @@ const MainPanel = () => {
         <div className="feature-content-right">
           <div className="feature-content-right-top">
             <h3 className="g-title">Figure Selection</h3>
-            <FeatureView data={fid2weight} features={features} />
+            <FeatureView
+              data={fid2weight}
+              features={features}
+              relationData={personToPerson}
+            />
           </div>
           <div className="map-view">
             <h3 className="g-title">Cohort Map</h3>
-            <FigureTraces />
+            {loading && <div className="loading-border" />}
+            <FigureTraces posToS={posToS} />
           </div>
           <div className="timeline-view">
             <h3 className="g-title">Cohort Timeline</h3>
-            <FigureTimeline width={800} height={280} />
+            {loading && <div className="loading-border" />}
+            <FigureTimeline yearToS={yearToS} width={800} height={280} />
           </div>
         </div>
       </div>
