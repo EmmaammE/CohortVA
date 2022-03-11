@@ -115,19 +115,19 @@ export const cohortsSlice = createSlice({
         main_data: { size, groups, classifiers },
       } = payload;
 
-      const atomFeature = getAtomFeature(payload);
+      // const atomFeature = getAtomFeature(payload);
 
-      console.log(atomFeature);
+      // console.log(atomFeature);
 
       state.groups.push(groups[0]);
-      state.id2group[groups[0]] = {
-        size,
-        classifiers: classifiers.map((c: any, index: number) => ({
-          index,
-          pids: c.normal_pids.map((p: TPerson) => p.id),
-        })),
-        atomFeature,
-      };
+      // state.id2group[groups[0]] = {
+      //   size,
+      //   classifiers: classifiers.map((c: any, index: number) => ({
+      //     index,
+      //     pids: c.normal_pids.map((p: TPerson) => p.id),
+      //   })),
+      //   atomFeature,
+      // };
     });
   },
 });

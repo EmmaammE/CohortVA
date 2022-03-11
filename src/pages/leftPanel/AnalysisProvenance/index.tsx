@@ -1,7 +1,10 @@
-import React, { useCallback, useEffect, useState } from 'react';
+/* eslint-disable react/no-array-index-key */
+import { useLiveQuery } from 'dexie-react-hooks';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { db } from '../../../database/db';
 import { getGroups, setGroupIndex } from '../../../reducer/cohortsSlice';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
-import CohortFeature from './CohortFeature';
+import CohortFeature from './CohortFeature2';
 // import Collapsible from '../../../components/collapsible/Collapsible';
 import Header from './Header';
 import './index.scss';
@@ -13,7 +16,27 @@ interface IAnalysisProvenanceProps {
 const AnalysisPanel = ({ setPath }: IAnalysisProvenanceProps) => {
   const dispatch = useAppDispatch();
   const groups = useAppSelector(getGroups);
-  const id2group = useAppSelector((state) => state.cohorts.id2group);
+
+  const groupsTable = useLiveQuery(() => db.cohorts.toArray());
+  const groupsMap = useMemo(() => {
+    const res: { [k: string]: any } = {};
+    groupsTable?.forEach((item) => {
+      const { id, index, value } = item;
+      if (!res[id]) {
+        res[id] = {};
+        res[id].size =
+          value.people.normalPeople.length + value.people.refusedPeople.length;
+
+        res[id].classifiers = [];
+      }
+      res[id].classifiers[index] = {
+        features: value.features,
+        pids: value.people.normalPeople.length,
+      };
+    });
+
+    return res;
+  }, [groupsTable]);
 
   const groupIndex = useAppSelector((state) => state.cohorts.groupIndex);
   const classifierIndex = useAppSelector(
@@ -47,7 +70,6 @@ const AnalysisPanel = ({ setPath }: IAnalysisProvenanceProps) => {
 
   const expandItem = useCallback(
     (i) => {
-      console.log('expandItem', i);
       if (activeIndex === i) {
         setActiveIndex(-1);
       } else {
@@ -60,44 +82,45 @@ const AnalysisPanel = ({ setPath }: IAnalysisProvenanceProps) => {
   return (
     <div id="analysis-panel">
       {groups.map((groupId, i) => (
-        // eslint-disable-next-line react/no-array-index-key
         <div className="cohort-item" key={i}>
           <Header
             open={activeIndex === i}
             index={i + 1}
-            cnt={id2group[groupId].size}
+            cnt={groupsMap[groupId].size}
             onClickMenu={() => expandItem(i)}
           />
           <div className="cohort-item-content">
-            {id2group[groupId].atomFeature.map((feature: any, j: number) => {
-              if (
-                activeCohortIndexArr[i] === -1 ||
-                activeIndex === i ||
-                activeCohortIndexArr[i] === j
-              ) {
-                return (
-                  <div
-                    // eslint-disable-next-line react/no-array-index-key
-                    key={j}
-                    className={`cohort-item-row ${
-                      classifierIndex === j && groupIndex === i ? 'active' : ''
-                    }`}
-                    onClick={(e) =>
-                      clickItem(e, i, id2group[groupId].classifiers[j].index)
-                    }
-                  >
-                    <span className="menu">{j + 1}</span>
-                    <span className="text">
-                      {id2group[groupId].classifiers[j].pids.length}
-                    </span>
-                    <span className="svg-wrapper">
-                      <CohortFeature features={feature} />
-                    </span>
-                  </div>
-                );
+            {groupsMap[groupId].classifiers.map(
+              ({ features, pids }: any, j: number) => {
+                if (
+                  activeCohortIndexArr[i] === -1 ||
+                  activeIndex === i ||
+                  activeCohortIndexArr[i] === j
+                ) {
+                  return (
+                    <div
+                      key={j}
+                      className={`cohort-item-row ${
+                        classifierIndex === j && groupIndex === i
+                          ? 'active'
+                          : ''
+                      }`}
+                      onClick={(e) => clickItem(e, i, j)}
+                    >
+                      <span className="menu">{j + 1}</span>
+                      <span className="text">{pids}</span>
+                      <span className="svg-wrapper">
+                        <CohortFeature
+                          features={features}
+                          expand={classifierIndex === j && groupIndex === i}
+                        />
+                      </span>
+                    </div>
+                  );
+                }
+                return null;
               }
-              return null;
-            })}
+            )}
           </div>
         </div>
       ))}

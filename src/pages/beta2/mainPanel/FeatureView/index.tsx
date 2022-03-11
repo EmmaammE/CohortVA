@@ -16,6 +16,7 @@ import useNamesMap from './useNodeNamesMap';
 import drawCurve from '../../../../utils/curve';
 import { setFigureId, setFigureName } from '../../../../reducer/statusSlice';
 import useVisibleIndex from './useVisibleIndex';
+import { mainColors, mainColors2 } from '../../../../utils/atomTopic';
 
 interface IFeatureView {
   data: {
@@ -213,7 +214,8 @@ const FeatureView = ({ data, features, relationData }: IFeatureView) => {
                     y={2 + (yScale(figureIdArr[j]) || 0)}
                     width={Math.abs(xScale(d[1]) - xScale(d[0]))}
                     height={height - 4}
-                    fill={`url(#Gradient${groups[i]})`}
+                    // fill={`url(#Gradient${groups[i]})`}
+                    fill={mainColors[i]}
                     stroke="#fff"
                     strokeWidth={2}
                   />

@@ -6,6 +6,7 @@ import { invert } from '../../../../utils/scale';
 import { useAppDispatch } from '../../../../store/hooks';
 import { setFigureIdArr } from '../../../../reducer/statusSlice';
 import useStack from '../FeatureView/useStack';
+import { mainColors, mainColors2 } from '../../../../utils/atomTopic';
 
 interface FeatureListProps {
   data: any;
@@ -87,7 +88,8 @@ const FeatureList = ({
                 height={(yScale as any).bandwidth() + 1}
                 stroke="#fff"
                 strokeWidth={0.5}
-                fill={`url(#Gradient${groups[i]})`}
+                // fill={`url(#Gradient${groups[i]})`}
+                fill={mainColors[i]}
               />
             ))}
           </g>

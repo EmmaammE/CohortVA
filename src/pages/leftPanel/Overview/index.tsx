@@ -1,16 +1,16 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import * as d3 from 'd3';
 import { db, IData } from '../../../database/db';
 import { getGroupId } from '../../../reducer/cohortsSlice';
 import { useAppSelector } from '../../../store/hooks';
-import FeatureNode from './FeatureNode';
+import FeatureNode, { SIZE } from './FeatureNode2';
 import useForceGraph from './useForceGraph';
 import style from './index.module.scss';
 import useTooltip from '../../../hooks/useTooltip';
 
 const initOpacity = 1;
 const afterOpacity = 0.4;
-const rScale = d3.scaleLinear<number, number>().domain([0, 1]).range([0, 8]);
+// const rScale = d3.scaleLinear<number, number>().domain([0, 1]).range([0, 8]);
 
 interface IOverview {
   show: boolean;
@@ -21,8 +21,22 @@ const Overview = ({ show }: IOverview) => {
   const [data, setData] = useState<IData | null>(null);
   const [hoveredDesId, setDesId] = useState<string | null>(null);
 
-  const { nodes, links, scale } = useForceGraph(data?.cf2cf_pmi || null);
+  const { nodes, scale } = useForceGraph(data?.cf2cf_pmi || null);
   const { element, setTipInfo } = useTooltip();
+
+  const [sortedIndex, setSortedIndex] = useState<number>(0);
+  const keys = useMemo(() => {
+    const curKeys = Object.keys(data?.descriptions || {});
+
+    if (sortedIndex === 0) {
+      curKeys.sort(
+        (k1, k2) =>
+          (data?.descriptions?.[k2]?.proportion || 0) -
+          (data?.descriptions?.[k1]?.proportion || 0)
+      );
+    }
+    return curKeys;
+  }, [data?.descriptions, sortedIndex]);
 
   useEffect(() => {
     async function load() {
@@ -62,30 +76,6 @@ const Overview = ({ show }: IOverview) => {
       <div className={style['svg-wrapper']}>
         <svg viewBox="0 0 200 200" style={show ? { width: '50%' } : {}}>
           <g>
-            <g>
-              {links.map((link: any) => {
-                if (
-                  link.source?.id !== link.target?.id &&
-                  cfids.has(link.source.id) &&
-                  cfids.has(link.target.id)
-                ) {
-                  return (
-                    <line
-                      key={link.index}
-                      x1={scale(link.source?.x)}
-                      y1={scale(link.source?.y)}
-                      x2={scale(link.target?.x)}
-                      y2={scale(link.target?.y)}
-                      strokeWidth={1}
-                      stroke="#979797"
-                      strokeDasharray="2 2"
-                    />
-                  );
-                }
-
-                return null;
-              })}
-            </g>
             {nodes.map(
               (node: any) =>
                 data?.descriptions?.[node.id]?.features &&
@@ -96,12 +86,13 @@ const Overview = ({ show }: IOverview) => {
                     id={node.id}
                     x={scale(node.x)}
                     y={scale(node.y)}
-                    r={rScale(data.descriptions?.[node.id].proportion || 0)}
+                    r={data.descriptions?.[node.id].proportion || 0}
                     opacity={
                       hoveredDesId === null || hoveredDesId === node.id
                         ? initOpacity
                         : afterOpacity
                     }
+                    stroke={cfids.has(node.id) ? '#000' : ''}
                     data={data.descriptions?.[node.id].features || []}
                     handleMouseOut={handleMouseOut}
                     handleMouseOver={handleMouseOver}
@@ -111,12 +102,18 @@ const Overview = ({ show }: IOverview) => {
           </g>
         </svg>
       </div>
+      <div className={style.btns}>
+        <div style={sortedIndex === 0 ? { background: '#efefef' } : {}}>
+          Figure Count
+        </div>
+        <div style={sortedIndex === 1 ? { background: '#efefef' } : {}}>
+          Feature Weight
+        </div>
+      </div>
       <div className={[style.list, 'g-scroll'].join(' ')}>
-        {Object.keys(data?.descriptions || {}).map((cfid) => {
+        {keys.map((cfid) => {
           const value = data?.descriptions?.[cfid] || null;
           if (value) {
-            const size = rScale(value.proportion) * value.features.length * 2;
-
             return (
               // eslint-disable-next-line jsx-a11y/mouse-events-have-key-events
               <div
@@ -127,19 +124,17 @@ const Overview = ({ show }: IOverview) => {
               >
                 <span>
                   <svg
-                    width={size + 2}
-                    height={rScale(value.proportion) * 2 + 2}
-                    style={{
-                      width: `${size + 2}px`,
-                      height: `${rScale(value.proportion) * 2 + 2}px`,
-                    }}
+                    width={`${SIZE * 1.5}px`}
+                    height={`${SIZE * 1.5}px`}
+                    viewBox={`0 0 ${SIZE} ${SIZE}`}
                   >
                     <FeatureNode
-                      x={size / 2 + 1}
-                      y={rScale(value.proportion) + 1}
-                      r={rScale(value.proportion)}
+                      x={5}
+                      y={5}
+                      r={value.proportion}
                       opacity={initOpacity}
                       data={value.features}
+                      id={cfid}
                     />
                   </svg>
                 </span>

@@ -29,16 +29,23 @@ const Gradients = ({ features }: IGradients) => (
               offset={`${(i * 100) / feature.length}%`}
               stopColor={featureMap[f.type]}
             /> */}
-        {feature.map(
-          (f, i) =>
-            !!(i > 0) && (
+        {feature.map((f, i) => (
+          <>
+            {!!(i > 0) && (
               <stop
                 key={f.id}
                 offset={`${(i * 100) / feature.length}%`}
                 stopColor={featureMap[feature[i - 1].type]}
               />
-            )
-        )}
+            )}
+            <stop
+              // eslint-disable-next-line react/no-array-index-key
+              key={`${(i * 100) / feature.length}%-${i}`}
+              offset={`${(i * 100) / feature.length}%`}
+              stopColor={featureMap[f.type]}
+            />
+          </>
+        ))}
         <stop
           offset="100%"
           stopColor={featureMap[feature[feature.length - 1].type]}
