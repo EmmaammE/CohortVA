@@ -25,7 +25,7 @@ const FigureTimeline = ({ yearToS, width, height }) => {
   const [yMax, setYMax] = useState(0);
 
   useEffect(() => {
-    const years = Object.keys(yearToS).map(d => +d).sort((a,b) => b-a)
+    const years = Object.keys(yearToS)
     setXRange(years);
     setYMax(d3.max(years, (d) => yearToS[d].length));
   }, [yearToS])

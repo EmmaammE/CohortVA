@@ -86,11 +86,11 @@ const AnalysisPanel = ({ setPath }: IAnalysisProvenanceProps) => {
           <Header
             open={activeIndex === i}
             index={i + 1}
-            cnt={groupsMap[groupId].size}
+            cnt={groupsMap[groupId]?.size || 0}
             onClickMenu={() => expandItem(i)}
           />
           <div className="cohort-item-content">
-            {groupsMap[groupId].classifiers.map(
+            {groupsMap[groupId]?.classifiers.map(
               ({ features, pids }: any, j: number) => {
                 if (
                   activeCohortIndexArr[i] === -1 ||

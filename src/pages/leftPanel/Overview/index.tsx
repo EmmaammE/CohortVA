@@ -129,6 +129,7 @@ const Overview = ({ show }: IOverview) => {
                     viewBox={`0 0 ${SIZE} ${SIZE}`}
                   >
                     <FeatureNode
+                      key={`${cfid}-list`}
                       x={5}
                       y={5}
                       r={value.proportion}

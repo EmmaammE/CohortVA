@@ -42,6 +42,17 @@ export interface ISentence {
   edges: string[];
 }
 
+export interface IFeature {
+  id: string;
+  model_descriptors: {
+    type: string;
+    parms: any;
+  }[];
+  proportion: number;
+  type: string;
+  weight: number;
+}
+
 export class MySubClassedDexie extends Dexie {
   node!: Table<INode>;
 
@@ -51,6 +62,8 @@ export class MySubClassedDexie extends Dexie {
 
   sentence!: Table<ISentence, string>;
 
+  features!: Table<IFeature, string>;
+
   constructor() {
     super('db');
     this.version(1).stores({
@@ -58,6 +71,7 @@ export class MySubClassedDexie extends Dexie {
       cohorts: '[id+index],value',
       group: 'id,cf2cf_pmi,descriptions,sentences',
       sentence: 'id,words,edges',
+      features: 'id,model_descriptors,proportion,type,weight',
     });
   }
 }

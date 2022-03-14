@@ -10,9 +10,12 @@ import './index.scss';
 import FeatureView from './FeatureView';
 import FeatureList, { width, height } from './featureList';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
-import { getGroupId } from '../../../reducer/cohortsSlice';
+import {
+  fetchCohortByRegexAsync,
+  getGroupId,
+} from '../../../reducer/cohortsSlice';
 import { db } from '../../../database/db';
-import { setCfids } from '../../../reducer/statusSlice';
+import { setCfids, setFigureStatus } from '../../../reducer/statusSlice';
 import Gradients from './Gradients';
 import { getDisplayedFeatureText, padding } from './utils';
 import useSentence from './useSentence';
@@ -27,6 +30,12 @@ const MainPanel = () => {
     (state) => state.cohorts.classifierIndex
   );
   const dispatch = useAppDispatch();
+  const setFigureStatusCb = useCallback(
+    (s) => {
+      dispatch(setFigureStatus(s));
+    },
+    [dispatch]
+  );
 
   const [features, setFeatures] = useState<any>([]);
   const [people, setPeople] = useState<any>({});
@@ -112,22 +121,28 @@ const MainPanel = () => {
   }, [featureToSort, fid2weight, people]);
 
   useEffect(() => {
-    const list: any[] = Object.values(people || {});
-
-    // const sum: any = list.reduce((acc, cur) => acc + (cur as any).length, 0);
-
-    // console.log(list);
+    // 根据people设置默认的人的状态, 获得bar的数据
+    const peopleKeys = ['normalPeople', 'refusedPeople', 'recommendPeople'];
 
     let sum = 0;
     const curEndPoints: number[] = [];
-    list.forEach((item: any) => {
-      sum += item.length;
-      curEndPoints.unshift(sum);
+    const pid2status: { [k: string]: number } = {};
+
+    peopleKeys.forEach((key, i) => {
+      const peopleList = people[key];
+      if (peopleList) {
+        peopleList.forEach((p: any) => {
+          pid2status[p.id] = i;
+        });
+        sum += peopleList.length;
+        curEndPoints.unshift(sum);
+      }
     });
 
     const scale = d3.scaleLinear().domain([1, sum]).range([0, 920]);
     setEndPoints(curEndPoints.map(scale));
-  }, [people]);
+    setFigureStatusCb(pid2status);
+  }, [people, setFigureStatusCb]);
 
   const sortedFeatures = useMemo(() => {
     if (featureToSort?.id) {
@@ -142,12 +157,30 @@ const MainPanel = () => {
     features,
     pids
   );
+
+  const featuresParam = useMemo(async () => {
+    const results = await db.features
+      .bulkGet(features.map((f: any) => f.id))
+      .catch((e) => console.log(e));
+
+    return results;
+  }, [features]);
+
+  const handleUpdate = useCallback(() => {
+    const param = {
+      use_weight: true,
+      search_group: Object.keys(fid2weight),
+      features: featuresParam,
+    };
+
+    dispatch(fetchCohortByRegexAsync(param));
+  }, [dispatch, featuresParam, fid2weight]);
   return (
     <div id="main-panel">
       <h2 className="g-title">Cohort Explanation View </h2>
 
       <div className="op-container">
-        <Button text="Update" />
+        <Button text="Update" onClick={handleUpdate} />
       </div>
 
       <div className="feature-content">

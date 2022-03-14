@@ -147,17 +147,17 @@ const FeatureGradient = ({ features }: { features: IGradient['features'] }) => (
   <>
     {features.map(({ id, descriptorsArr }) => (
       <linearGradient key={id} id={`g${id}`} x1="0" x2="1" y1="0" y2="0">
-        {descriptorsArr.map((f, i) => (
-          <>
-            {!!(i > 0) && (
+        {descriptorsArr.map(
+          (f, i) =>
+            !!(i > 0) && (
               <stop
-                key={f.type}
+                // eslint-disable-next-line react/no-array-index-key
+                key={i}
                 offset={`${(i * 100) / descriptorsArr.length}%`}
                 stopColor={featureMap[descriptorsArr[i - 1].type]}
               />
-            )}
-          </>
-        ))}
+            )
+        )}
         <stop
           offset="100%"
           stopColor={featureMap[descriptorsArr[descriptorsArr.length - 1].type]}

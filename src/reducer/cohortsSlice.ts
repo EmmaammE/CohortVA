@@ -1,5 +1,10 @@
 /* eslint-disable no-console */
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import {
+  createAction,
+  createAsyncThunk,
+  createSlice,
+  PayloadAction,
+} from '@reduxjs/toolkit';
 import Apis from '../api/apis';
 import { post } from '../api/tools';
 import { db, IData } from '../database/db';
@@ -47,6 +52,54 @@ const initialState: ICohorts = {
   classifierIndex: -1,
 };
 
+const handleResData = async (res: any) => {
+  try {
+    const { id2node, id2edge, id2sentence, id2composite_features } = res.data;
+
+    await db.group
+      .add({
+        id: res.data.main_data.groups[0],
+        cf2cf_pmi: res.data.main_data.cf2cf_pmi,
+        descriptions: descriptions(res.data) as IData['descriptions'],
+        // sentences: preprocessData(res.data),
+      })
+      .catch((e) => console.log(e));
+
+    await db.node.bulkAdd(Object.values(id2node)).catch((e) => console.log(e));
+    await db.node
+      .bulkAdd(
+        Object.keys(id2edge).map((key) => ({
+          id: +key,
+          label: id2edge[key].label,
+        }))
+      )
+      .catch((e) => console.log(e));
+    await db.cohorts
+      .bulkAdd(processData(res.data))
+      .catch((e) => console.log(e));
+
+    await db.sentence
+      .bulkAdd(
+        Object.keys(id2sentence).map((key) => ({
+          id: key,
+          ...id2sentence[key],
+        }))
+      )
+      .catch((e) => console.log(e));
+
+    await db.features
+      .bulkAdd(
+        Object.keys(id2composite_features).map((key) => ({
+          id: key,
+          ...id2composite_features[key],
+        }))
+      )
+      .catch((e) => console.log(e));
+  } catch (e) {
+    console.error((e as any).message);
+  }
+};
+
 export const fetchCohortsAsync = createAsyncThunk(
   'cohorts/fetchCohorts',
   async (payload) => {
@@ -55,48 +108,63 @@ export const fetchCohortsAsync = createAsyncThunk(
       data: payload,
     });
 
-    try {
-      const { id2node, id2edge, id2sentence } = res.data;
-
-      await db.group
-        .add({
-          id: res.data.main_data.groups[0],
-          cf2cf_pmi: res.data.main_data.cf2cf_pmi,
-          descriptions: descriptions(res.data) as IData['descriptions'],
-          // sentences: preprocessData(res.data),
-        })
-        .catch((e) => console.log(e));
-
-      await db.node
-        .bulkAdd(Object.values(id2node))
-        .catch((e) => console.log(e));
-      await db.node
-        .bulkAdd(
-          Object.keys(id2edge).map((key) => ({
-            id: +key,
-            label: id2edge[key].label,
-          }))
-        )
-        .catch((e) => console.log(e));
-      await db.cohorts
-        .bulkAdd(processData(res.data))
-        .catch((e) => console.log(e));
-
-      await db.sentence
-        .bulkAdd(
-          Object.keys(id2sentence).map((key) => ({
-            id: key,
-            ...id2sentence[key],
-          }))
-        )
-        .catch((e) => console.log(e));
-    } catch (e) {
-      console.error((e as any).message);
-    }
+    await handleResData(res);
 
     return res.data;
   }
 );
+
+export const fetchCohortByNameAsync = createAsyncThunk(
+  'cohorts/fetchCohortByName',
+  async (payload) => {
+    const res = await post({
+      url: Apis.get_cohort_by_name,
+      data: payload,
+    });
+    await handleResData(res);
+
+    return res.data;
+  }
+);
+
+export const fetchCohortByNamesAsync = createAsyncThunk(
+  'cohorts/fetchCohortByNames',
+  async (payload) => {
+    const res = await post({
+      url: Apis.get_cohort_by_figure_names,
+      data: payload,
+    });
+    await handleResData(res);
+
+    return res.data;
+  }
+);
+
+export const fetchCohortByRegexAsync = createAsyncThunk<
+  any,
+  {
+    use_weight: boolean;
+    features: any;
+    search_group: string[];
+  }
+>('cohorts/fetchCohortByRegex', async (payload) => {
+  const res = await post({
+    url: Apis.get_cohort_by_regex,
+    data: payload,
+  });
+  await handleResData(res);
+
+  return res.data;
+});
+
+const handleFetchCohortAction = (state: ICohorts, action: any) => {
+  const { payload } = action;
+  const {
+    main_data: { size, groups, classifiers },
+  } = payload;
+
+  state.groups.push(groups[0]);
+};
 
 export const cohortsSlice = createSlice({
   name: 'cohorts',
@@ -109,26 +177,11 @@ export const cohortsSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(fetchCohortsAsync.fulfilled, (state, action) => {
-      const { payload } = action;
-      const {
-        main_data: { size, groups, classifiers },
-      } = payload;
-
-      // const atomFeature = getAtomFeature(payload);
-
-      // console.log(atomFeature);
-
-      state.groups.push(groups[0]);
-      // state.id2group[groups[0]] = {
-      //   size,
-      //   classifiers: classifiers.map((c: any, index: number) => ({
-      //     index,
-      //     pids: c.normal_pids.map((p: TPerson) => p.id),
-      //   })),
-      //   atomFeature,
-      // };
-    });
+    builder
+      .addCase(fetchCohortsAsync.fulfilled, handleFetchCohortAction)
+      .addCase(fetchCohortByNameAsync.fulfilled, handleFetchCohortAction)
+      .addCase(fetchCohortByNamesAsync.fulfilled, handleFetchCohortAction)
+      .addCase(fetchCohortByRegexAsync.fulfilled, handleFetchCohortAction);
   },
 });
 
@@ -150,4 +203,6 @@ export const getGroupId = (state: RootState) =>
   state.cohorts.groups[state.cohorts.groupIndex] || '';
 
 export const { setGroupIndex } = cohortsSlice.actions;
+
+export const setClientId = createAction<string>('setClientId');
 export default cohortsSlice.reducer;

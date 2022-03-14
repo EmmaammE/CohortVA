@@ -14,7 +14,11 @@ import useStack from './useStack';
 import { useAppDispatch, useAppSelector } from '../../../../store/hooks';
 import useNamesMap from './useNodeNamesMap';
 import drawCurve from '../../../../utils/curve';
-import { setFigureId, setFigureName } from '../../../../reducer/statusSlice';
+import {
+  setFigureId,
+  setFigureName,
+  updateFigureStatusById,
+} from '../../../../reducer/statusSlice';
 import useVisibleIndex from './useVisibleIndex';
 import { mainColors, mainColors2 } from '../../../../utils/atomTopic';
 
@@ -44,6 +48,7 @@ const visibleCnt = 29;
 
 const FeatureView = ({ data, features, relationData }: IFeatureView) => {
   const [featureToSort, setfeatureToSort] = useState<any>(null);
+  const figureStatus = useAppSelector((state) => state.status.figureStatus);
   const dispatch = useAppDispatch();
 
   const onChange = useCallback(
@@ -175,6 +180,20 @@ const FeatureView = ({ data, features, relationData }: IFeatureView) => {
     [dispatch]
   );
 
+  const onChangeRadio = useCallback(
+    (pid: string, e: any) => {
+      if (e.target.value !== undefined) {
+        dispatch(
+          updateFigureStatusById({
+            id: pid,
+            status: e.target.value,
+          })
+        );
+      }
+    },
+    [dispatch]
+  );
+
   return (
     <div className={style.container}>
       <div className={style.header}>
@@ -236,10 +255,14 @@ const FeatureView = ({ data, features, relationData }: IFeatureView) => {
 
           <div className={style.radios}>
             {sortedFigureIds.map((name, i) => (
-              <Radio.Group key={name}>
+              <Radio.Group
+                key={name}
+                value={figureStatus[name]}
+                onChange={(e) => onChangeRadio(name, e)}
+              >
+                <Radio value={0} />
                 <Radio value={1} />
                 <Radio value={2} />
-                <Radio value={3} />
               </Radio.Group>
             ))}
           </div>

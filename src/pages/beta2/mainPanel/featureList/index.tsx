@@ -19,7 +19,7 @@ interface FeatureListProps {
 export const width = 220;
 export const height = 920;
 
-const colors = ['#fff', '#c4c4c4', '#818181'];
+const colors = ['var(--excluded)', 'var(--uncertain)', 'var(--included)'];
 const strokes = ['#b1b1b1', '#c4c4c4', '#818181'];
 
 const margin = {
@@ -75,6 +75,19 @@ const FeatureList = ({
   // console.log(keys, stack.length, stack[0].length);
   return (
     <div className={style.wrapper}>
+      <svg width="8" height={height} id="people-bar">
+        {endPoints.map((ep, i) => (
+          <rect
+            // eslint-disable-next-line react/no-array-index-key
+            key={`${ep}-${i}`}
+            x="0"
+            y="0"
+            width="8"
+            height={ep}
+            fill={colors[i]}
+          />
+        ))}
+      </svg>
       <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`}>
         {stack.map((dArr: any[], i: number) => (
           <g key={groups[i]}>
@@ -96,19 +109,6 @@ const FeatureList = ({
         ))}
 
         <g ref={$brush} />
-      </svg>
-      <svg width="8" height={height} id="people-bar">
-        {endPoints.map((ep, i) => (
-          <rect
-            key={ep}
-            x="0"
-            y="0"
-            width="8"
-            height={ep}
-            fill={colors[i]}
-            stroke={strokes[i]}
-          />
-        ))}
       </svg>
     </div>
   );

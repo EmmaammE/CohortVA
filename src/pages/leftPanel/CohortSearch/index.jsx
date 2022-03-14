@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import Apis from '../../../api/apis';
 import { post } from '../../../api/tools';
-import { fetchCohortsAsync } from '../../../reducer/cohortsSlice';
+import { fetchCohortByRegexAsync, fetchCohortsAsync, fetchCohortByNameAsync, fetchCohortByNamesAsync} from '../../../reducer/cohortsSlice';
 import { useAppDispatch } from '../../../store/hooks';
 import CohortSearcherPanel from './CohortSearchPanel';
 
@@ -11,6 +11,18 @@ const SearchPanel = () => {
 
   const onSubmitCondition = useCallback((condition)=> {
     dispatch(fetchCohortsAsync(condition))
+  }, [dispatch])
+
+  const onSubmitRegex = useCallback((regex)=> {
+    dispatch(fetchCohortByRegexAsync(regex))
+  }, [dispatch])
+
+  const onSubmitName = useCallback((name)=> {
+    dispatch(fetchCohortByNameAsync(name))
+  }, [dispatch])
+
+  const onSubmitFigureNames = useCallback((figureNames)=> {
+    dispatch(fetchCohortByNamesAsync(figureNames))
   }, [dispatch])
   
   useEffect(()=> {
@@ -29,6 +41,9 @@ const SearchPanel = () => {
     <CohortSearcherPanel 
       searcherOptions={searcherOptions}
       onSubmitCondition={onSubmitCondition}
+      onSubmitRegex={onSubmitRegex}
+      onSubmitName={onSubmitName}
+      onSubmitFigureNames={onSubmitFigureNames}
     />
   )
 };
