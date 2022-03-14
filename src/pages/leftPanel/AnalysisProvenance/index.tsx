@@ -2,6 +2,7 @@
 import { useLiveQuery } from 'dexie-react-hooks';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { db } from '../../../database/db';
+import useTooltip from '../../../hooks/useTooltip';
 import { getGroups, setGroupIndex } from '../../../reducer/cohortsSlice';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import CohortFeature from './CohortFeature2';
@@ -79,6 +80,21 @@ const AnalysisPanel = ({ setPath }: IAnalysisProvenanceProps) => {
     [activeIndex]
   );
 
+  const { element, setTipInfo } = useTooltip();
+  const handleMouseOver = useCallback(
+    (content: string, e: any) => {
+      setTipInfo({
+        content,
+        left: e.pageX,
+        top: e.pageY - 50,
+      });
+    },
+    [setTipInfo]
+  );
+
+  const handleMouseOut = useCallback(() => {
+    setTipInfo({ content: '' });
+  }, [setTipInfo]);
   return (
     <div id="analysis-panel">
       {groups.map((groupId, i) => (
@@ -113,6 +129,8 @@ const AnalysisPanel = ({ setPath }: IAnalysisProvenanceProps) => {
                         <CohortFeature
                           features={features}
                           expand={classifierIndex === j && groupIndex === i}
+                          handleMouseOver={handleMouseOver}
+                          handleMouseOut={handleMouseOut}
                         />
                       </span>
                     </div>
@@ -124,6 +142,8 @@ const AnalysisPanel = ({ setPath }: IAnalysisProvenanceProps) => {
           </div>
         </div>
       ))}
+
+      {element}
     </div>
   );
 };

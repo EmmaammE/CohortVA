@@ -16,6 +16,8 @@ interface Features extends ICFeature {
 interface ICohortFeature {
   features: Features[];
   expand: boolean;
+  handleMouseOver: Function;
+  handleMouseOut: Function;
 }
 
 const WIDTH = 18;
@@ -55,7 +57,12 @@ const getUniqueFeatures = (features: Features[]) => {
   return res;
 };
 
-const CohortFeature = ({ features, expand }: ICohortFeature) => (
+const CohortFeature = ({
+  features,
+  expand,
+  handleMouseOut,
+  handleMouseOver,
+}: ICohortFeature) => (
   <svg
     height={expand ? HEIGHT * 5 + PADDING * 4 : HEIGHT}
     width={WIDTH * 5 + PADDING * 4}
@@ -69,7 +76,17 @@ const CohortFeature = ({ features, expand }: ICohortFeature) => (
       const { proportion: cnt, id, redundancyFeatures, subFeatures } = feature;
       return (
         <g key={id}>
-          <FeatureBox cnt={cnt} id={id} x={i * (WIDTH + PADDING)} y={0} />
+          <FeatureBox
+            cnt={cnt}
+            id={id}
+            x={i * (WIDTH + PADDING)}
+            y={0}
+            content={feature.descriptorsArr
+              .map((d) => `${d.type}${d.text}`)
+              .join('\n')}
+            handleMouseOut={handleMouseOut}
+            handleMouseOver={handleMouseOver}
+          />
 
           {expand &&
             redundancyFeatures?.map((rf, j) => (
@@ -79,6 +96,11 @@ const CohortFeature = ({ features, expand }: ICohortFeature) => (
                 id={rf.id}
                 x={i * (WIDTH + PADDING)}
                 y={(1 + j) * (HEIGHT + PADDING)}
+                content={rf.descriptorsArr
+                  .map((d) => `${d.type}${d.text}`)
+                  .join('\n')}
+                handleMouseOut={handleMouseOut}
+                handleMouseOver={handleMouseOver}
               />
             ))}
 
@@ -91,6 +113,11 @@ const CohortFeature = ({ features, expand }: ICohortFeature) => (
                 id={`${id}-${j}`}
                 x={i * (WIDTH + PADDING)}
                 y={(3 + j) * (HEIGHT + PADDING)}
+                content={sf.descriptorsArr
+                  .map((d) => `${d.type}${d.text}`)
+                  .join('\n')}
+                handleMouseOut={handleMouseOut}
+                handleMouseOver={handleMouseOver}
               />
             ))}
 
@@ -117,13 +144,23 @@ const FeatureBox = ({
   id,
   x,
   y,
+  content,
+  handleMouseOut,
+  handleMouseOver,
 }: {
   cnt: number;
   id: string | number;
   x: number;
   y: number;
+  content: string;
+  handleMouseOut: any;
+  handleMouseOver: any;
 }) => (
-  <g transform={`translate(${x}, ${y})`}>
+  <g
+    transform={`translate(${x}, ${y})`}
+    onMouseOver={(e) => handleMouseOver(content, e)}
+    onMouseOut={handleMouseOut}
+  >
     <rect
       x={0}
       y={0}
