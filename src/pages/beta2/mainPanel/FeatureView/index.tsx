@@ -9,7 +9,7 @@ import { Select, Radio } from 'antd';
 import * as d3 from 'd3';
 import Matrix from './Matrix';
 import style from './index.module.scss';
-import { getDisplayedFeatureText } from '../utils';
+import { getDisplayedFeatureText, histogramHeight } from '../utils';
 import useStack from './useStack';
 import { useAppDispatch, useAppSelector } from '../../../../store/hooks';
 import useNamesMap from './useNodeNamesMap';
@@ -21,6 +21,7 @@ import {
 } from '../../../../reducer/statusSlice';
 import useVisibleIndex from './useVisibleIndex';
 import { mainColors, mainColors2 } from '../../../../utils/atomTopic';
+import Line from './Line';
 
 interface IFeatureView {
   data: {
@@ -44,7 +45,7 @@ const width = 220;
 const matrixWidth = 300;
 const matrixHeight = 650;
 
-const visibleCnt = 29;
+const visibleCnt = 24;
 
 const FeatureView = ({ data, features, relationData }: IFeatureView) => {
   const [featureToSort, setfeatureToSort] = useState<any>(null);
@@ -194,6 +195,8 @@ const FeatureView = ({ data, features, relationData }: IFeatureView) => {
     [dispatch]
   );
 
+  const [yearRange, setYearRange] = useState([0, 0]);
+
   return (
     <div className={style.container}>
       <div className={style.header}>
@@ -216,74 +219,94 @@ const FeatureView = ({ data, features, relationData }: IFeatureView) => {
           ))}
         </Select>
       </div>
-      <div className={[style.content, 'g-scroll'].join(' ')} ref={$container}>
-        <div className={style['content-inner']}>
-          <svg
-            width={width}
-            height={svgHeight}
-            viewBox={`0 0 ${width} ${svgHeight}`}
-          >
-            {stack.map((dArr: any[], i: number) => (
-              <g key={groups[i]}>
-                {dArr.map((d, j) => (
-                  <rect
-                    key={figureIdArr[j]}
-                    id={`${figureIdArr[j]}`}
-                    x={xScale(d[0])}
-                    y={2 + (yScale(figureIdArr[j]) || 0)}
-                    width={Math.abs(xScale(d[1]) - xScale(d[0]))}
-                    height={height - 4}
-                    // fill={`url(#Gradient${groups[i]})`}
-                    fill={mainColors[i]}
-                    stroke="#fff"
-                    strokeWidth={2}
-                  />
-                ))}
-              </g>
-            ))}
+      <div className={style.content} ref={$container}>
+        <div className={style['content-histogram']}>
+          <svg height={histogramHeight} width="180px" className={style.year}>
+            <text x={0} y="95%">
+              {yearRange?.[0]}
+            </text>
+            <line x1="0" y1="99%" x2="95%" y2="99%" stroke="#ccc" />
+            <text x="80%" y="95%">
+              {yearRange?.[1]}
+            </text>
           </svg>
-          <div>test</div>
+        </div>
 
-          <div className={style.names}>
-            {sortedFigureIds.map((name, i) => (
-              // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
-              <p key={name} onClick={() => choseFigure(name, nodesMap[name])}>
-                {nodesMap[name]}
-              </p>
-            ))}
-          </div>
+        <div className={[style['content-inner'], 'g-scroll'].join(' ')}>
+          <div className={style['scroll-wrapper']}>
+            <svg
+              width={width}
+              height={svgHeight}
+              viewBox={`0 0 ${width} ${svgHeight}`}
+            >
+              {stack.map((dArr: any[], i: number) => (
+                <g key={groups[i]}>
+                  {dArr.map((d, j) => (
+                    <rect
+                      key={figureIdArr[j]}
+                      id={`${figureIdArr[j]}`}
+                      x={xScale(d[0])}
+                      y={2 + (yScale(figureIdArr[j]) || 0)}
+                      width={Math.abs(xScale(d[1]) - xScale(d[0]))}
+                      height={height - 4}
+                      // fill={`url(#Gradient${groups[i]})`}
+                      fill={mainColors[i]}
+                      stroke="#fff"
+                      strokeWidth={2}
+                    />
+                  ))}
+                </g>
+              ))}
+            </svg>
+            <Line
+              pids={sortedFigureIds}
+              rowHeight={height}
+              setYearRange={setYearRange}
+            />
 
-          <div className={style.radios}>
-            {sortedFigureIds.map((name, i) => (
-              <Radio.Group
-                key={name}
-                value={figureStatus[name]}
-                onChange={(e) => onChangeRadio(name, e)}
-              >
-                <Radio value={0} />
-                <Radio value={1} />
-                <Radio value={2} />
-              </Radio.Group>
-            ))}
+            <div className={style.names}>
+              {sortedFigureIds.map((name, i) => (
+                // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
+                <p key={name} onClick={() => choseFigure(name, nodesMap[name])}>
+                  {nodesMap[name]}
+                </p>
+              ))}
+            </div>
+
+            <div className={style.radios}>
+              {sortedFigureIds.map((name, i) => (
+                <Radio.Group
+                  key={name}
+                  value={figureStatus[name]}
+                  onChange={(e) => onChangeRadio(name, e)}
+                >
+                  <Radio value={0} />
+                  <Radio value={1} />
+                  <Radio value={2} />
+                </Radio.Group>
+              ))}
+            </div>
           </div>
         </div>
       </div>
       <div className={style.wrapper}>
         <svg width="100px" height="610px">
-          {sortedFigureIds.map(
-            (d, i) =>
-              !!(i >= initIndex && i < initIndex + visibleCnt) && (
-                <path
-                  key={d}
-                  d={`${drawCurve(
-                    [0, 21 * (i - initIndex) + 13 - offset],
-                    [70, (610 / sortedFigureIds.length) * (i + 0.5)]
-                  )}`}
-                  fill="none"
-                  stroke="#bbb"
-                />
-              )
-          )}
+          <g transform={`translate(0, ${histogramHeight})`}>
+            {sortedFigureIds.map(
+              (d, i) =>
+                !!(i >= initIndex && i < initIndex + visibleCnt) && (
+                  <path
+                    key={d}
+                    d={`${drawCurve(
+                      [0, 21 * (i - initIndex) + 13 - offset],
+                      [70, (610 / sortedFigureIds.length) * (i + 0.5)]
+                    )}`}
+                    fill="none"
+                    stroke="#bbb"
+                  />
+                )
+            )}
+          </g>
         </svg>
         <Matrix
           data={matrixData as any}

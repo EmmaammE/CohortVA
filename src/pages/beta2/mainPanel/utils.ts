@@ -1,5 +1,3 @@
-import * as d3 from 'd3';
-
 type TFeature = {
   descriptorsArr: {
     type: string;
@@ -15,3 +13,5 @@ export const getDisplayedFeatureText = (feature: TFeature) =>
 export const padding = 0.01;
 
 export const fixPadding = (d: any) => (d[0] === d[1] ? 0 : padding);
+
+export const histogramHeight = 80;

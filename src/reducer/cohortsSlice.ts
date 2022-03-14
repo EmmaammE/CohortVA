@@ -54,6 +54,7 @@ const initialState: ICohorts = {
 
 const handleResData = async (res: any) => {
   try {
+    console.log(res.data);
     const { id2node, id2edge, id2sentence, id2composite_features } = res.data;
 
     await db.group
