@@ -45,7 +45,7 @@ const width = 220;
 const matrixWidth = 300;
 const matrixHeight = 650;
 
-const visibleCnt = 24;
+const visibleCnt = 25;
 
 const FeatureView = ({ data, features, relationData }: IFeatureView) => {
   const [featureToSort, setfeatureToSort] = useState<any>(null);
@@ -110,15 +110,12 @@ const FeatureView = ({ data, features, relationData }: IFeatureView) => {
 
   const { nodesMap } = useNamesMap(figureIdArr);
 
-  const colorScale = d3
-    .scaleLinear()
-    .domain([0, 100])
-    .range(['#ccc', '#000'] as any);
   // matrix data
   const matrixData = useMemo(() => {
     const matrix = [];
     const n = sortedFigureIds.length;
 
+    let maxCnt = 0;
     for (let i = 0; i < n; i += 1) {
       for (let j = i; j < n; j += 1) {
         const cnt =
@@ -127,17 +124,30 @@ const FeatureView = ({ data, features, relationData }: IFeatureView) => {
 
         if (cnt > 0) {
           matrix.push({
-            source: sortedFigureIds[i],
-            target: sortedFigureIds[j],
+            source: i,
+            target: j,
             x: j - i,
             y: i + 1 / 2 + j,
-            color: colorScale(cnt),
+            color: cnt,
           });
+
+          if (cnt > maxCnt) {
+            maxCnt = cnt;
+          }
         }
       }
     }
+
+    const colorScale = d3
+      .scaleLinear()
+      .domain([0, maxCnt])
+      .range(['#ccc', '#000'] as any);
+
+    matrix.forEach((item) => {
+      item.color = colorScale(item.color);
+    });
     return matrix;
-  }, [colorScale, relationData, sortedFigureIds]);
+  }, [relationData, sortedFigureIds]);
 
   const linesData = useMemo(() => {
     const matrix = [];
@@ -197,6 +207,9 @@ const FeatureView = ({ data, features, relationData }: IFeatureView) => {
 
   const [yearRange, setYearRange] = useState([0, 0]);
 
+  // 矩阵选中的人
+  const [pair, setPair] = useState<[number, number] | null>(null);
+
   return (
     <div className={style.container}>
       <div className={style.header}>
@@ -219,7 +232,7 @@ const FeatureView = ({ data, features, relationData }: IFeatureView) => {
           ))}
         </Select>
       </div>
-      <div className={style.content} ref={$container}>
+      <div className={style.content}>
         <div className={style['content-histogram']}>
           <svg height={histogramHeight} width="180px" className={style.year}>
             <text x={0} y="95%">
@@ -232,7 +245,10 @@ const FeatureView = ({ data, features, relationData }: IFeatureView) => {
           </svg>
         </div>
 
-        <div className={[style['content-inner'], 'g-scroll'].join(' ')}>
+        <div
+          className={[style['content-inner'], 'g-scroll'].join(' ')}
+          ref={$container}
+        >
           <div className={style['scroll-wrapper']}>
             <svg
               width={width}
@@ -267,7 +283,17 @@ const FeatureView = ({ data, features, relationData }: IFeatureView) => {
             <div className={style.names}>
               {sortedFigureIds.map((name, i) => (
                 // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
-                <p key={name} onClick={() => choseFigure(name, nodesMap[name])}>
+                <p
+                  key={name}
+                  onClick={() => choseFigure(name, nodesMap[name])}
+                  style={
+                    pair?.[0] === i || pair?.[1] === i
+                      ? {
+                          borderBottom: '1px solid #ccc',
+                        }
+                      : {}
+                  }
+                >
                   {nodesMap[name]}
                 </p>
               ))}
@@ -298,8 +324,12 @@ const FeatureView = ({ data, features, relationData }: IFeatureView) => {
                   <path
                     key={d}
                     d={`${drawCurve(
-                      [0, 21 * (i - initIndex) + 13 - offset],
-                      [70, (610 / sortedFigureIds.length) * (i + 0.5)]
+                      [0, 21 * (i - initIndex) + 8 - offset],
+                      [
+                        70,
+                        (610 / sortedFigureIds.length) * (i + 0.5) -
+                          histogramHeight,
+                      ]
                     )}`}
                     fill="none"
                     stroke="#bbb"
@@ -314,8 +344,9 @@ const FeatureView = ({ data, features, relationData }: IFeatureView) => {
           boxSize={610 / sortedFigureIds.length / 2}
           rangeX={rangeX}
           rangeY={rangeY}
-          source={0}
-          target={5}
+          source={pair?.[0]}
+          target={pair?.[1]}
+          handleHover={setPair}
         />
       </div>
     </div>

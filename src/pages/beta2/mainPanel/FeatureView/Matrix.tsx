@@ -5,6 +5,8 @@ interface IMatrix {
     x: number;
     y: number;
     color: string;
+    source: number;
+    target: number;
   }[];
   boxSize: number;
 
@@ -15,8 +17,9 @@ interface IMatrix {
     source?: number;
     target?: number;
   }[];
-  source: number;
-  target: number;
+  source: number | undefined;
+  target: number | undefined;
+  handleHover: any;
 }
 
 const diamondPath = (x: number, y: number, width: number, height: number) =>
@@ -46,6 +49,7 @@ const Matrix = ({
   linesData,
   source,
   target,
+  handleHover,
 }: IMatrix) => (
   <svg height="610px" width="100%">
     <defs>
@@ -57,23 +61,12 @@ const Matrix = ({
         />
       </clipPath>
     </defs>
-    <g transform={`translate(0,${boxSize / 2})`}>
-      <path
+    <g transform={`translate(3,${boxSize / 2})`}>
+      {/* <path
         fill="#acc"
         d={`M ${trianglePath(rangeX, rangeY, boxSize)}`}
         opacity={0.3}
-      />
-
-      <g clipPath="url(#triangle)">
-        {data.map((d) => (
-          <path
-            key={`${d.x}-${d.y}-${boxSize}`}
-            d={diamondPath(d.x * boxSize, d.y * boxSize, boxSize, boxSize)}
-            fill={d.color}
-            stroke="#aaa"
-          />
-        ))}
-      </g>
+      /> */}
 
       {linesData.map(({ pos, source: lineSource, target: lineTarget }, i) => (
         <path
@@ -82,18 +75,33 @@ const Matrix = ({
           d={`M ${pos
             .map((a) => a.map((item: number) => item * boxSize))
             .join(' ')}`}
-          stroke="#bbb"
+          stroke="#d8d8d8"
           fill="none"
+          onClick={() => handleHover(null)}
         />
       ))}
+
+      <g clipPath="url(#triangle)">
+        {data.map((d) => (
+          <path
+            key={`${d.x}-${d.y}-${boxSize}`}
+            d={diamondPath(d.x * boxSize, d.y * boxSize, boxSize, boxSize)}
+            fill={d.color}
+            cursor="pointer"
+            onClick={() => handleHover([d.source, d.target])}
+          />
+        ))}
+      </g>
 
       {linesData.map(
         ({ pos, source: lineSource, target: lineTarget }, i) =>
           !!(
-            lineSource === source ||
-            lineTarget === target ||
-            lineSource === source + 1 ||
-            lineTarget === target + 1
+            source !== undefined &&
+            target !== undefined &&
+            (lineSource === source ||
+              lineTarget === target ||
+              lineSource === source + 1 ||
+              lineTarget === target + 1)
           ) && (
             <path
               // eslint-disable-next-line react/no-array-index-key
