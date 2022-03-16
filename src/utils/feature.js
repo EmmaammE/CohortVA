@@ -98,3 +98,5 @@ export const preprocessData = (data) => {
     personToPerson
   }
 };
+
+export const getFeatureText = (descriptorsArr) => descriptorsArr.map(d => `${d.type}(${d.text})`).join(' ')

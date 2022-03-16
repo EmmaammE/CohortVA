@@ -102,7 +102,7 @@ const FeatureList = ({
                 stroke="#fff"
                 strokeWidth={0.5}
                 // fill={`url(#Gradient${groups[i]})`}
-                fill={mainColors[i]}
+                fill={mainColors2[i]}
               />
             ))}
           </g>

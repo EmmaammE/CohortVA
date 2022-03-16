@@ -87,3 +87,5 @@ export const mainColors2 = [
   '#C8CACC',
   '#E3E3E7',
 ];
+
+export const BASE_CODE = 97;

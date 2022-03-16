@@ -19,6 +19,8 @@ import { setCfids, setFigureStatus } from '../../../reducer/statusSlice';
 import Gradients from './Gradients';
 import { getDisplayedFeatureText, padding } from './utils';
 import useSentence from './useSentence';
+import { BASE_CODE, mainColors, mainColors2 } from '../../../utils/atomTopic';
+import { getFeatureText } from '../../../utils/feature';
 
 const { Option } = Select;
 
@@ -180,6 +182,15 @@ const MainPanel = () => {
       <h2 className="g-title">Cohort Explanation View </h2>
 
       <div className="op-container">
+        <div id="feature-container">
+          {features.map((f: any, i: number) => (
+            <div className="item">
+              <span>{String.fromCharCode(i + BASE_CODE)}</span>
+              <span className="rect" style={{ background: mainColors2[i] }} />
+              <span>{getFeatureText(f.descriptorsArr)}</span>
+            </div>
+          ))}
+        </div>
         <Button text="Update" onClick={handleUpdate} />
       </div>
 
