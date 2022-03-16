@@ -234,7 +234,9 @@ const FeatureView = ({ data, features, relationData }: IFeatureView) => {
 
         figureData.forEach((key) => {
           if (key !== 'sum') {
-            info[indexMap[key]].value += 1;
+            if (info?.[indexMap[key]]?.value) {
+              info[indexMap[key]].value += 1;
+            }
           }
         });
       }

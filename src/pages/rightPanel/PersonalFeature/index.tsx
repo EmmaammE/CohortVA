@@ -33,7 +33,7 @@ export default () => {
     }
   }, [chosenFigure]);
 
-  const { nodes, links, scale } = useForceGraph(data?.cf2cf_pmi || null);
+  const { nodes, scale } = useForceGraph(data?.cf2cf_pmi || null);
 
   const handleMouseOver = useCallback(
     (id: string, e: any) => {

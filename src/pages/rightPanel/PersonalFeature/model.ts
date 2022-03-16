@@ -7,9 +7,16 @@ export const fetchPersonalFeature = (name: string) =>
     getFeatureByName({
       search_group: [name],
     }).then((res) => {
+      const des: any = descriptions(res.data);
+      const { cf2pmi } = res.data.main_data;
+
+      const keys = Object.keys(cf2pmi)
+        .sort((a, b) => cf2pmi[a] - cf2pmi[b])
+        .map((d: any) => des[d]);
       resolve({
-        descriptions: descriptions(res.data),
-        cf2cf_pmi: res.data.main_data.cf2cf_pmi,
+        descriptions: keys,
+        // cf2cf_pmi: res.data.main_data.cf2cf_pmi,
+        // cf2pmi: res.data.main_data.cf2pmi,
       });
     });
   });

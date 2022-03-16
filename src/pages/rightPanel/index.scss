@@ -3,6 +3,14 @@
   flex-direction: column;
   padding: 0 15px;
 
+  #figureStatus {
+    display: flex;
+    justify-content: space-between;
+    span {
+      line-height: 21px;
+    }
+  }
+
   h2 {
     line-height: 50px;
   }
@@ -11,10 +19,29 @@
     flex: 1;
   }
   .view {
-    flex: 0 0 330px;
+    flex: 0 0 310px;
 
     h3 {
       margin: 6px 0;
+    }
+
+    .feature-list-btn {
+      margin: 4px 10px;
+      background: #fff;
+      height: 18px;
+      line-height: 18px;
+      font-family: Helvetica;
+      font-size: 10px;
+      color: #706e6e;
+      vertical-align: top;
+      font-weight: 400;
+      letter-spacing: 0px;
+      border: 1px solid #a3a3a3;
+      box-shadow: 0 4px 8px -8px #0003;
+      border-radius: 3px;
+      text-align: center;
+      cursor: pointer;
+      background: #efefef;
     }
   }
 
