@@ -261,7 +261,9 @@ const FeatureView = ({ data, features, relationData }: IFeatureView) => {
     }));
 
     figureIdArr.forEach((fid) => {
-      info[figureStatus[fid]].value += 1;
+      if (info?.[figureStatus[fid]]?.value) {
+        info[figureStatus[fid]].value += 1;
+      }
     });
 
     return info;
