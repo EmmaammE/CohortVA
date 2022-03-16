@@ -15,10 +15,10 @@ const useVisibleIndex = (height: number) => {
 
   useEffect(() => {
     const node = $container.current;
-    node.addEventListener('scroll', scrollHandler);
+    node?.addEventListener('scroll', scrollHandler);
 
     return () =>
-      node.removeEventListener('scroll', debounce(scrollHandler, 250)) || null;
+      node?.removeEventListener('scroll', debounce(scrollHandler, 250)) || null;
   }, [scrollHandler]);
 
   return {

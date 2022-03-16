@@ -22,6 +22,8 @@ import {
 import useVisibleIndex from './useVisibleIndex';
 import { mainColors, mainColors2 } from '../../../../utils/atomTopic';
 import Line from './Line';
+import InfoGraph from './InfoGraph';
+import useYearData from './useYearData';
 
 interface IFeatureView {
   data: {
@@ -46,6 +48,11 @@ const matrixWidth = 300;
 const matrixHeight = 650;
 
 const visibleCnt = 25;
+
+const defaultLabelColorScale = d3
+  .scaleOrdinal()
+  .range(['#28aeb1', '#eb7478', '#ffca28'])
+  .domain(['included', 'excluded', 'uncertain']);
 
 const FeatureView = ({ data, features, relationData }: IFeatureView) => {
   const [featureToSort, setfeatureToSort] = useState<any>(null);
@@ -73,6 +80,7 @@ const FeatureView = ({ data, features, relationData }: IFeatureView) => {
   }, [featureToSort?.id, features]);
   const figureIdArr = useAppSelector((state) => state.status.figureIdArr);
 
+  // stack按照原序即可，yScale按照排序后的顺序
   const stack = useStack(data, groups, figureIdArr);
 
   const svgHeight = useMemo(() => height * figureIdArr.length, [
@@ -205,10 +213,70 @@ const FeatureView = ({ data, features, relationData }: IFeatureView) => {
     [dispatch]
   );
 
-  const [yearRange, setYearRange] = useState([0, 0]);
+  // const [yearRange, setYearRange] = useState([0, 0]);
 
   // 矩阵选中的人
   const [pair, setPair] = useState<[number, number] | null>(null);
+
+  // 统计选中的人中每个特征有多少人
+  const stackedInfo = useMemo(() => {
+    const indexMap: any = {};
+    const info = features.map((d: any, i: number) => {
+      indexMap[d.id] = i;
+      return {
+        key: d.id,
+        value: 0,
+      };
+    });
+    figureIdArr.forEach((fid) => {
+      if (data[fid]) {
+        const figureData = Object.keys(data[fid]);
+
+        figureData.forEach((key) => {
+          if (key !== 'sum') {
+            info[indexMap[key]].value += 1;
+          }
+        });
+      }
+    });
+
+    return info;
+  }, [data, features, figureIdArr]);
+  const stackedColorScale = useMemo(
+    () =>
+      d3
+        .scaleOrdinal()
+        .domain(features.map((d: any) => d.id))
+        .range(mainColors2),
+    [features]
+  );
+
+  const labelInfo = useMemo(() => {
+    const keys = ['included', 'excluded', 'uncertain'];
+    const info = keys.map((d, i) => ({
+      key: d,
+      value: 0,
+    }));
+
+    figureIdArr.forEach((fid) => {
+      info[figureStatus[fid]].value += 1;
+    });
+
+    return info;
+  }, [figureIdArr, figureStatus]);
+
+  const { data: yearData, range: yearRange } = useYearData(figureIdArr);
+
+  const infoYScale = useMemo(
+    () =>
+      d3
+        .scaleLinear()
+        .domain([0, figureIdArr.length])
+        .range([0, histogramHeight - 30]),
+    [figureIdArr.length]
+  );
+
+  if (figureIdArr.length === 0) return <div />;
 
   return (
     <div className={style.container}>
@@ -234,15 +302,36 @@ const FeatureView = ({ data, features, relationData }: IFeatureView) => {
       </div>
       <div className={style.content}>
         <div className={style['content-histogram']}>
-          <svg height={histogramHeight} width="180px" className={style.year}>
-            <text x={0} y="95%">
+          <div>
+            <InfoGraph
+              width={240}
+              height={histogramHeight - 5}
+              data={stackedInfo}
+              yScale={infoYScale}
+              colorScale={stackedColorScale}
+            />
+          </div>
+          <div>
+            <InfoGraph
+              width={100}
+              height={histogramHeight - 5}
+              data={labelInfo}
+              yScale={infoYScale}
+              colorScale={defaultLabelColorScale}
+            />
+          </div>
+
+          <div className={style.year}>
+            <InfoGraph
+              width={200}
+              height={histogramHeight - 5}
+              data={[]}
+              yScale={infoYScale}
+              colorScale={defaultLabelColorScale}
+            >
               {yearRange?.[0]}
-            </text>
-            <line x1="0" y1="99%" x2="95%" y2="99%" stroke="#ccc" />
-            <text x="80%" y="95%">
-              {yearRange?.[1]}
-            </text>
-          </svg>
+            </InfoGraph>
+          </div>
         </div>
 
         <div
@@ -266,7 +355,7 @@ const FeatureView = ({ data, features, relationData }: IFeatureView) => {
                       width={Math.abs(xScale(d[1]) - xScale(d[0]))}
                       height={height - 4}
                       // fill={`url(#Gradient${groups[i]})`}
-                      fill={mainColors[i]}
+                      fill={stackedColorScale(groups[i]) as string}
                       stroke="#fff"
                       strokeWidth={2}
                     />
@@ -274,11 +363,6 @@ const FeatureView = ({ data, features, relationData }: IFeatureView) => {
                 </g>
               ))}
             </svg>
-            <Line
-              pids={sortedFigureIds}
-              rowHeight={height}
-              setYearRange={setYearRange}
-            />
 
             <div className={style.names}>
               {sortedFigureIds.map((name, i) => (
@@ -312,6 +396,13 @@ const FeatureView = ({ data, features, relationData }: IFeatureView) => {
                 </Radio.Group>
               ))}
             </div>
+
+            <Line
+              pids={sortedFigureIds}
+              rowHeight={height}
+              data={yearData}
+              range={yearRange as any}
+            />
           </div>
         </div>
       </div>
