@@ -227,29 +227,31 @@ export const getFigure2Feature = (data, chosenClassifier) => {
     fid2weight,
   } = classifiers[chosenClassifier];
 
-  const fid2weightMap = {};
-  const peopleSet = new Set([...normal_pids.map(d=>d.id), ...recommend_pids.map(d=>d.id), ...refused_pids.map(d=>d.id)]);
+  // const fid2weightMap = {};
+  // const peopleSet = new Set([...normal_pids.map(d=>d.id), ...recommend_pids.map(d=>d.id), ...refused_pids.map(d=>d.id)]);
   
-  Object.keys(fid2weight).forEach((fid) => {
-      const curFeatureId2weight = fid2weight[fid];
-      Object.keys(curFeatureId2weight).forEach((figureId) => {
-        if(peopleSet.has(+figureId)) {
-          const figure = fid2weightMap[figureId] || {};
-          if(curFeatureId2weight[figureId]) {
-            figure[fid] = curFeatureId2weight[figureId];
-            fid2weightMap[figureId] = figure;
-          }
-        }
-      })
-  });
+  // Object.keys(fid2weight).forEach((fid) => {
+  //     const curFeatureId2weight = fid2weight[fid];
+  //     Object.keys(curFeatureId2weight).forEach((figureId) => {
+  //       if(peopleSet.has(+figureId)) {
+  //         const figure = fid2weightMap[figureId] || {};
+  //         if(curFeatureId2weight[figureId]) {
+  //           figure[fid] = curFeatureId2weight[figureId];
+  //           fid2weightMap[figureId] = figure;
+  //         }
+  //       }
+  //     })
+  // });
 
-  let maxFigureWeight = 0;
-  Object.keys(fid2weightMap).forEach((figureId) => {
-    const figure = fid2weightMap[figureId];
-    const weight = Object.values(figure).reduce((acc, cur) => acc + cur, 0);
-    if (weight > maxFigureWeight) maxFigureWeight = weight;
-    fid2weightMap[figureId].sum = weight;
-  })
+  // let maxFigureWeight = 0;
+  // Object.keys(fid2weightMap).forEach((figureId) => {
+  //   const figure = fid2weightMap[figureId];
+  //   const weight = Object.values(figure).reduce((acc, cur) => acc + cur, 0);
+  //   if (weight > maxFigureWeight) maxFigureWeight = weight;
+  //   fid2weightMap[figureId].sum = weight;
+  // })
+
+  const maxFigureWeight = Math.max(...Object.values(fid2weight).map(d => d.sum))
 
 
   // console.log(fid2weightMap)
@@ -350,7 +352,7 @@ export const getFigure2Feature = (data, chosenClassifier) => {
 
   return {
     maxFigureWeight,
-    fid2weight: fid2weightMap
+    fid2weight: fid2weight
   };
 };
 

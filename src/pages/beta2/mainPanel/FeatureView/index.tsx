@@ -192,9 +192,10 @@ const FeatureView = ({ data, features, relationData }: IFeatureView) => {
   const { initIndex, $container, offset } = useVisibleIndex(21);
 
   const choseFigure = useCallback(
-    (fid: string, name: string) => {
+    (fid: string, name: string, i: number) => {
       dispatch(setFigureId(fid));
       dispatch(setFigureName(name));
+      setPair([i, i]);
     },
     [dispatch]
   );
@@ -234,7 +235,7 @@ const FeatureView = ({ data, features, relationData }: IFeatureView) => {
 
         figureData.forEach((key) => {
           if (key !== 'sum') {
-            if (info?.[indexMap[key]]?.value) {
+            if (info?.[indexMap[key]]) {
               info[indexMap[key]].value += 1;
             }
           }
@@ -255,13 +256,13 @@ const FeatureView = ({ data, features, relationData }: IFeatureView) => {
 
   const labelInfo = useMemo(() => {
     const keys = ['included', 'excluded', 'uncertain'];
-    const info = keys.map((d, i) => ({
+    const info = keys.map((d) => ({
       key: d,
       value: 0,
     }));
 
     figureIdArr.forEach((fid) => {
-      if (info?.[figureStatus[fid]]?.value) {
+      if (info?.[figureStatus[fid]]) {
         info[figureStatus[fid]].value += 1;
       }
     });
@@ -280,7 +281,9 @@ const FeatureView = ({ data, features, relationData }: IFeatureView) => {
     [figureIdArr.length]
   );
 
-  if (figureIdArr.length === 0) return <div />;
+  if (figureIdArr.length === 0) {
+    return <div />;
+  }
 
   return (
     <div className={style.container}>
@@ -297,9 +300,7 @@ const FeatureView = ({ data, features, relationData }: IFeatureView) => {
 
           {features.map((feature: any, index: number) => (
             <Option key={feature.id} value={index}>
-              {feature.descriptorsArr
-                .map((d: any) => `${d.type}(${d.text})`)
-                .join('&')}
+              {feature.descriptorsArr.map((d: any) => `(${d.text})`).join('&')}
             </Option>
           ))}
         </Select>
@@ -342,6 +343,16 @@ const FeatureView = ({ data, features, relationData }: IFeatureView) => {
           className={[style['content-inner'], 'g-scroll'].join(' ')}
           ref={$container}
         >
+          <div
+            className={style.highlight}
+            style={{
+              top: (pair ? pair?.[0] : -10) * 21,
+            }}
+          />
+          <div
+            className={style.highlight}
+            style={{ top: (pair ? pair?.[1] : -10) * 21 }}
+          />
           <div className={style['scroll-wrapper']}>
             <svg
               width={width}
@@ -373,14 +384,7 @@ const FeatureView = ({ data, features, relationData }: IFeatureView) => {
                 // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
                 <p
                   key={name}
-                  onClick={() => choseFigure(name, nodesMap[name])}
-                  style={
-                    pair?.[0] === i || pair?.[1] === i
-                      ? {
-                          borderBottom: '1px solid #ccc',
-                        }
-                      : {}
-                  }
+                  onClick={() => choseFigure(name, nodesMap[name], i)}
                 >
                   {nodesMap[name]}
                 </p>

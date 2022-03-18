@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import * as d3 from 'd3';
 import { db, IData } from '../../../database/db';
 import { getGroupId } from '../../../reducer/cohortsSlice';
 import { useAppSelector } from '../../../store/hooks';
@@ -24,7 +23,7 @@ const Overview = ({ show }: IOverview) => {
   const { nodes, scale } = useForceGraph(data?.cf2cf_pmi || null);
   const { element, setTipInfo } = useTooltip();
 
-  const [sortedIndex, setSortedIndex] = useState<number>(0);
+  const [sortedIndex] = useState<number>(0);
   const keys = useMemo(() => {
     const curKeys = Object.keys(data?.descriptions || {});
 

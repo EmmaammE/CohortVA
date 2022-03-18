@@ -187,7 +187,9 @@ const MainPanel = () => {
             <div className="item">
               <span>{String.fromCharCode(i + BASE_CODE)}</span>
               <span className="rect" style={{ background: mainColors2[i] }} />
-              <span>{getFeatureText(f.descriptorsArr)}</span>
+              <span>
+                {f.descriptorsArr.map((d: any) => `${d.type}`).join('&')}
+              </span>
             </div>
           ))}
         </div>
@@ -210,14 +212,12 @@ const MainPanel = () => {
             {features.map((feature: any, index: number) => (
               <Option key={feature.id} value={index}>
                 {feature.descriptorsArr
-                  .map((d: any) => `${d.type}(${d.text})`)
+                  .map((d: any) => `(${d.text})`)
                   .join('&')}
               </Option>
             ))}
           </Select>
-          <svg className="svg-gradient">
-            <Gradients features={features} />
-          </svg>
+
           <FeatureList
             data={fid2weight}
             yScale={yScale}
