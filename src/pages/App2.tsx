@@ -3,7 +3,7 @@ import './App.scss';
 import title from '../assets/icons/title.png';
 import 'antd/dist/antd.css';
 import topics from '../utils/atomTopic';
-import LeftPanel from './leftPanel';
+import LeftPanel from './beta2/leftPanel';
 import MainPanel from './beta2/mainPanel';
 import RightPanel from './rightPanel';
 

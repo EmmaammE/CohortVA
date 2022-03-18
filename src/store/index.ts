@@ -1,11 +1,13 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 import cohortsReducer from '../reducer/cohortsSlice';
+import featureReducer from '../reducer/featureSlice';
 import statusReducer from '../reducer/statusSlice';
 
 export const store = configureStore({
   reducer: {
     cohorts: cohortsReducer,
     status: statusReducer,
+    feature: featureReducer,
   },
 });
 

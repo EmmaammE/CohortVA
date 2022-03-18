@@ -13,6 +13,7 @@ export interface IData {
       features: { text: string; type: string }[];
       proportion: number;
       sentence: string[];
+      weight: number;
     };
   };
   // sentences: Object;

@@ -48,7 +48,7 @@ const FeatureList = ({
 
   const onBrushEnd = useCallback(
     (e) => {
-      if (e.selection) {
+      if (e.selection && (yScale as any).domain().length) {
         const range = e.selection.map(invert(yScale));
         const result = [];
 

@@ -22,64 +22,68 @@ const handleFeatureData = (data, chosenClassifier) => {
     // 获取每个cf的子特征
     // 对于连线的每一个点，找跟其余所有点的差集
     const subFeatures = [];
-    for (const cfid in id2composite_features) {
-      const targetDescriptors = id2composite_features[cfid].model_descriptors;
-      // 找差集
-      let index = 0;
-      while (
-        index < model_descriptors.length &&
-        index < targetDescriptors.length &&
-        model_descriptors[index] === targetDescriptors[index]
-      ) {
-        index++;
-      }
-      // 符合条件，去找子feature的描述和propotion
-      if (
-        index >= model_descriptors.length &&
-        index < targetDescriptors.length
-      ) {
-        // 子feature包含的descriptors,可能有多个
-        const subFeatureDescriptors = targetDescriptors.slice(index);
-        const subDescriptorArr = []; // 子特征的描述分段存储，可以点击
-        subFeatureDescriptors.forEach((descriptorId, i) => {
-          const model_descriptor = id2model_descriptor[descriptorId];
-          const { parms, type } = model_descriptor;
-          let descript = '';
-          for (const key in parms) {
-            if (Array.isArray(parms[key])) {
-              parms[key].forEach((d, i) => {
-                if (i === 0) {
-                  descript += id2node[d].en_name;
-                } else {
-                  descript += `, ${id2node[d].en_name}`;
-                }
-              });
-            } else {
-              descript = id2node[parms[key]].en_name;
-            }
-          }
-          let text = `("${descript}")&`;
-          if (i === subFeatureDescriptors.length - 1) {
-            text = text.slice(0, -1);
-          }
-          subDescriptorArr.push({
-            text,
-            id: descriptorId,
-            type: modelName2Topic[type],
-          });
-        });
-        subFeatures.push({
-          ids: subFeatureDescriptors,
-          descriptorsArr: subDescriptorArr,
-          proportion:
-            id2model_descriptor[
-              subFeatureDescriptors[subFeatureDescriptors.length - 1]
-            ].proportion,
-        });
-      }
-    }
-    // 按proportion排序，取最大的两个
-    subFeatures.sort((a, b) => b.proportion - a.proportion);
+    // for (const cfid in id2composite_features) {
+    //   const targetDescriptors = id2composite_features[cfid].model_descriptors;
+    //   // 找差集
+    //   let index = 0;
+    //   while (
+    //     index < model_descriptors.length &&
+    //     index < targetDescriptors.length &&
+    //     model_descriptors[index] === targetDescriptors[index]
+    //   ) {
+    //     index++;
+    //   }
+    //   // 符合条件，去找子feature的描述和propotion
+    //   if (
+    //     index >= model_descriptors.length &&
+    //     index < targetDescriptors.length
+    //   ) {
+    //     // 子feature包含的descriptors,可能有多个
+    //     const subFeatureDescriptors = targetDescriptors.slice(index);
+    //     const subDescriptorArr = []; // 子特征的描述分段存储，可以点击
+    //     subFeatureDescriptors.forEach((descriptorId, i) => {
+    //       const model_descriptor = id2model_descriptor[descriptorId];
+    //       const { parms, type } = model_descriptor;
+    //       let descript = '';
+    //       for (const key in parms) {
+    //         if (Array.isArray(parms[key])) {
+    //           parms[key].forEach((d, i) => {
+    //             if (i === 0) {
+    //               descript += id2node[d].en_name;
+    //             } else {
+    //               descript += `, ${id2node[d].en_name}`;
+    //             }
+    //           });
+    //         } else {
+    //           descript = id2node[parms[key]].en_name;
+    //         }
+    //       }
+    //       let text = `("${descript}")&`;
+    //       if (i === subFeatureDescriptors.length - 1) {
+    //         text = text.slice(0, -1);
+    //       }
+    //       subDescriptorArr.push({
+    //         text,
+    //         id: descriptorId,
+    //         type: modelName2Topic[type],
+    //       });
+    //     });
+    //     subFeatures.push({
+    //       ids: subFeatureDescriptors,
+    //       descriptorsArr: subDescriptorArr,
+    //       proportion:
+    //         id2model_descriptor[
+    //           subFeatureDescriptors[subFeatureDescriptors.length - 1]
+    //         ].proportion,
+    //     });
+
+    //     // 如果用减数作子特征，相当于在目前的特征上，再提取了一层。
+    //     // 这种子特征具体的意义是什么？
+    //     // subFeatures.push(id2composite_features[cfid])
+    //   }
+    // }
+    // // 按proportion排序，取最大的两个
+    // subFeatures.sort((a, b) => b.proportion - a.proportion);
 
     const descriptorsArr = [];
     model_descriptors.forEach((descriptorId, i) => {
@@ -157,6 +161,7 @@ const handleFeatureData = (data, chosenClassifier) => {
       descriptorsArr, // 原子特征
       subFeatures: subFeatures.slice(0, 2), // 子特征最多展示两个
       redundancyFeatures,
+      weight: cf2weight[cfid],
     };
   });
 };
@@ -363,6 +368,7 @@ export const descriptions = (data) => {
     const { model_descriptors, proportion } = id2composite_features[cfid];
     
     res[cfid] = {
+      weight: cf2pmi[cfid], 
       proportion,
       features: model_descriptors.map((descriptorId, i) => {
         const model_descriptor = id2model_descriptor[descriptorId];
