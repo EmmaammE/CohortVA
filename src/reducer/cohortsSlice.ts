@@ -55,7 +55,13 @@ const initialState: ICohorts = {
 const handleResData = async (res: any) => {
   try {
     console.log(res.data);
-    const { id2node, id2edge, id2sentence, id2composite_features } = res.data;
+    const {
+      id2node,
+      id2edge,
+      id2sentence,
+      id2composite_features,
+      id2model_descriptor,
+    } = res.data;
 
     await db.group
       .add({
@@ -90,10 +96,19 @@ const handleResData = async (res: any) => {
 
     await db.features
       .bulkAdd(
-        Object.keys(id2composite_features).map((key) => ({
-          id: key,
-          ...id2composite_features[key],
-        }))
+        Object.keys(id2composite_features).map((key) => {
+          const feature = id2composite_features[key];
+          feature.model_descriptors = feature.model_descriptors.map(
+            (d: string) => ({
+              type: id2model_descriptor[d].type,
+              parms: id2model_descriptor[d].parms,
+            })
+          );
+          return {
+            id: key,
+            ...id2composite_features[key],
+          };
+        })
       )
       .catch((e) => console.log(e));
   } catch (e) {
@@ -141,6 +156,22 @@ export const fetchCohortByNamesAsync = createAsyncThunk(
   }
 );
 
+export const updateGroup = createAsyncThunk<
+  any,
+  {
+    search_group: number[];
+  }
+>('cohorts/updateGroup', async (payload) => {
+  const res = await post({
+    url: Apis.extract_features,
+    data: payload,
+  });
+
+  await handleResData(res);
+
+  return res.data;
+});
+
 export const fetchCohortByRegexAsync = createAsyncThunk<
   any,
   {
@@ -164,6 +195,7 @@ const handleFetchCohortAction = (state: ICohorts, action: any) => {
     main_data: { size, groups, classifiers },
   } = payload;
 
+  console.log(groups);
   state.groups.push(groups[0]);
 };
 
@@ -182,7 +214,8 @@ export const cohortsSlice = createSlice({
       .addCase(fetchCohortsAsync.fulfilled, handleFetchCohortAction)
       .addCase(fetchCohortByNameAsync.fulfilled, handleFetchCohortAction)
       .addCase(fetchCohortByNamesAsync.fulfilled, handleFetchCohortAction)
-      .addCase(fetchCohortByRegexAsync.fulfilled, handleFetchCohortAction);
+      .addCase(fetchCohortByRegexAsync.fulfilled, handleFetchCohortAction)
+      .addCase(updateGroup.fulfilled, handleFetchCohortAction);
   },
 });
 

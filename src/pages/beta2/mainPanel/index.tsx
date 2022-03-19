@@ -13,6 +13,7 @@ import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import {
   fetchCohortByRegexAsync,
   getGroupId,
+  updateGroup,
 } from '../../../reducer/cohortsSlice';
 import { db } from '../../../database/db';
 import { setCfids, setFigureStatus } from '../../../reducer/statusSlice';
@@ -38,6 +39,7 @@ const MainPanel = () => {
     },
     [dispatch]
   );
+  const figureStatus = useAppSelector((state) => state.status.figureStatus);
 
   const [features, setFeatures] = useState<any>([]);
   const [people, setPeople] = useState<any>({});
@@ -157,23 +159,51 @@ const MainPanel = () => {
 
   const { loading, posToS, yearToS, personToPerson } = useSentence();
 
-  const featuresParam = useMemo(async () => {
-    const results = await db.features
-      .bulkGet(features.map((f: any) => f.id))
-      .catch((e) => console.log(e));
+  // const featuresParam = useMemo(async () => {
+  //   const results = await db.features
+  //     .bulkGet(features.map((f: any) => f.id))
+  //     .catch((e) => console.log(e));
 
-    return results;
-  }, [features]);
+  //   return results;
+  // }, [features]);
+
+  // console.log(featuresParam);
+
+  // const handleUpdate = useCallback(() => {
+  //   db.features
+  //     .bulkGet(features.map((f: any) => f.id))
+  //     .then((featuresParam) => {
+  //       const param = {
+  //         use_weight: false,
+  //         search_group: Object.keys(figureStatus).filter(
+  //           (id) => figureStatus[id] === 0
+  //         ),
+  //         // .map((d) => +d),
+  //         features: featuresParam.reduce(
+  //           (acc, cur) => ({
+  //             ...acc,
+  //             // [cur?.id || '']: { ...cur, id: +(cur as any).id },
+  //             [cur?.id || '']: { ...cur },
+  //           }),
+  //           {}
+  //         ),
+  //       };
+
+  //       dispatch(fetchCohortByRegexAsync(param));
+  //     })
+  //     .catch((e) => console.log(e));
+  // }, [dispatch, features, figureStatus]);
 
   const handleUpdate = useCallback(() => {
-    const param = {
-      use_weight: true,
-      search_group: Object.keys(fid2weight),
-      features: featuresParam,
-    };
+    dispatch(
+      updateGroup({
+        search_group: Object.keys(figureStatus)
+          .filter((id) => figureStatus[id] === 0)
+          .map((d) => +d),
+      })
+    );
+  }, [dispatch, figureStatus]);
 
-    dispatch(fetchCohortByRegexAsync(param));
-  }, [dispatch, featuresParam, fid2weight]);
   return (
     <div id="main-panel">
       <h2 className="g-title">Cohort Explanation View </h2>
