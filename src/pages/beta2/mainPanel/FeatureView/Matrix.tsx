@@ -7,6 +7,7 @@ interface IMatrix {
     color: string;
     source: number;
     target: number;
+    opacity: number;
   }[];
   boxSize: number;
 
@@ -43,6 +44,8 @@ const trianglePath = (rangeX: number[], rangeY: number[], boxSize: number) => {
     .join(' ');
 };
 
+export const matrixHeight = 550;
+
 const Matrix = ({
   data,
   boxSize,
@@ -55,7 +58,7 @@ const Matrix = ({
   handleMouseOut,
   handleMouseOver,
 }: IMatrix) => (
-  <svg height="610px" width="100%">
+  <svg height={`${matrixHeight}px`} width={`2+${matrixHeight / 2}px`}>
     <defs>
       <clipPath id="triangle">
         <path
@@ -91,10 +94,11 @@ const Matrix = ({
             key={`${d.x}-${d.y}-${boxSize}`}
             d={diamondPath(d.x * boxSize, d.y * boxSize, boxSize, boxSize)}
             fill={d.color}
+            opacity={d.opacity}
             cursor="pointer"
             onClick={(e) => handleClick(e, d.source, d.target)}
-            onMouseOver={(e) => handleMouseOver(e, d.source, d.target)}
-            onMouseOut={handleMouseOut}
+            // onMouseOver={(e) => handleMouseOver(e, d.source, d.target)}
+            // onMouseOut={handleMouseOut}
           />
         ))}
       </g>
@@ -115,7 +119,7 @@ const Matrix = ({
               d={`M ${pos
                 .map((a) => a.map((item: number) => item * boxSize))
                 .join(' ')}`}
-              stroke="#6099c6"
+              stroke="#b0b0b0"
               fill="none"
               strokeWidth={2}
             />

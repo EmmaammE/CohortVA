@@ -19,4 +19,5 @@ const eventMap = {
   },
 };
 
+export type TEventType = keyof typeof eventMap;
 export default eventMap;

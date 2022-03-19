@@ -2,8 +2,8 @@ import React, { Children, useMemo } from 'react';
 import * as d3 from 'd3';
 
 const margin = {
-  left: 20,
-  right: 20,
+  left: 10,
+  right: 10,
   top: 10,
   bottom: 10,
 };
@@ -39,7 +39,7 @@ const InfoGraph = ({
 
   // console.log(colorScale?.domain());
   return (
-    <svg width={width} height={height}>
+    <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`}>
       <path
         d={`M${margin.left} ${height - margin.bottom} 
         ${margin.left} ${height - margin.bottom + 5} 
@@ -62,7 +62,7 @@ const InfoGraph = ({
             {k.value && (
               <text
                 x={(xScale(k.key) || 0) + xScale.bandwidth() / 2}
-                y={height - 20 - yScale(k.value)}
+                y={height - 16 - yScale(k.value)}
                 fontSize="10"
                 textAnchor="middle"
               >

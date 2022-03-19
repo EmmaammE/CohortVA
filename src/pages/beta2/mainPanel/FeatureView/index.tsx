@@ -7,7 +7,7 @@ import React, {
 } from 'react';
 import { Select, Radio } from 'antd';
 import * as d3 from 'd3';
-import Matrix from './Matrix';
+import Matrix, { matrixHeight } from './Matrix';
 import style from './index.module.scss';
 import { getDisplayedFeatureText, histogramHeight } from '../utils';
 import useStack from './useStack';
@@ -28,6 +28,7 @@ import eventMap from '../../../../utils/eventMap';
 import template from '../../../../utils/tempelate';
 import { db } from '../../../../database/db';
 import Tooltip from '../../../../components/tooltip/Tip';
+import useRelationData from './useRelationData';
 
 interface IFeatureView {
   data: {
@@ -48,15 +49,17 @@ const { Option } = Select;
 const height = 21;
 const width = 220;
 
-const matrixWidth = 300;
-const matrixHeight = 650;
-
 const visibleCnt = 25;
 
 const defaultLabelColorScale = d3
   .scaleOrdinal()
   .range(['#28aeb1', '#eb7478', '#ffca28'])
   .domain(['included', 'excluded', 'uncertain']);
+
+const defaultEventColorScale = d3
+  .scaleOrdinal()
+  .range(Object.keys(eventMap).map((d) => (eventMap as any)[d].color))
+  .domain(Object.keys(eventMap));
 
 const FeatureView = ({ data, features, relationData }: IFeatureView) => {
   const [featureToSort, setfeatureToSort] = useState<any>(null);
@@ -122,77 +125,14 @@ const FeatureView = ({ data, features, relationData }: IFeatureView) => {
 
   const { nodesMap } = useNamesMap(figureIdArr);
 
-  // TODO matrix提出来管理数据
   // matrix data
-  const matrixData = useMemo(() => {
-    const matrix = [];
-    const n = sortedFigureIds.length;
-
-    let maxCnt = 0;
-    for (let i = 0; i < n; i += 1) {
-      for (let j = i; j < n; j += 1) {
-        const cnt =
-          (relationData as any)?.[sortedFigureIds[i]]?.[sortedFigureIds[j]]
-            ?.length || 0;
-
-        if (cnt > 0) {
-          matrix.push({
-            source: i,
-            target: j,
-            x: j - i,
-            y: i + 1 / 2 + j,
-            color: cnt,
-          });
-
-          if (cnt > maxCnt) {
-            maxCnt = cnt;
-          }
-        }
-      }
-    }
-
-    const colorScale = d3
-      .scaleLinear()
-      .domain([0, maxCnt])
-      .range(['#ccc', '#000'] as any);
-
-    matrix.forEach((item) => {
-      item.color = colorScale(item.color);
-    });
-    return matrix;
-  }, [relationData, sortedFigureIds]);
-
-  const linesData = useMemo(() => {
-    const matrix = [];
-    const n = figureIdArr.length;
-
-    for (let i = 0; i < n + 1; i += 1) {
-      matrix.push({
-        pos: [
-          [0, 2 * n - (i + i) - 1 / 2],
-          [n - i, 2 * n - (i + n) - 1 / 2],
-        ],
-        target: n - i,
-      });
-
-      matrix.push({
-        pos: [
-          [0, i + i - 1 / 2],
-          [n - i, i + n - 1 / 2],
-        ],
-        source: i,
-      });
-    }
-    return matrix;
-  }, [figureIdArr.length]);
-
-  const { rangeX, rangeY } = useMemo(
-    () => ({
-      rangeX: [0, figureIdArr.length - 1],
-      rangeY: [0.5, figureIdArr.length * 2 + 1 / 2 - 2],
-    }),
-    [figureIdArr.length]
-  );
+  const {
+    matrixData,
+    linesData,
+    rangeX,
+    rangeY,
+    relationInfo,
+  } = useRelationData(sortedFigureIds, relationData);
 
   // matrix tooltip
   const [tooltip, setTooltip] = useState({
@@ -334,8 +274,17 @@ const FeatureView = ({ data, features, relationData }: IFeatureView) => {
       d3
         .scaleLinear()
         .domain([0, figureIdArr.length])
-        .range([0, histogramHeight - 30]),
+        .range([0, histogramHeight - 25]),
     [figureIdArr.length]
+  );
+
+  const relationYScale = useMemo(
+    () =>
+      d3
+        .scaleLinear()
+        .domain(d3.extent(relationInfo, (d) => d.value) as any)
+        .range([0, histogramHeight - 20]),
+    [relationInfo]
   );
 
   if (figureIdArr.length === 0) {
@@ -391,7 +340,7 @@ const FeatureView = ({ data, features, relationData }: IFeatureView) => {
         <div className={style['content-histogram']}>
           <div>
             <InfoGraph
-              width={240}
+              width={220}
               height={histogramHeight - 5}
               data={stackedInfo}
               yScale={infoYScale}
@@ -400,7 +349,7 @@ const FeatureView = ({ data, features, relationData }: IFeatureView) => {
           </div>
           <div>
             <InfoGraph
-              width={100}
+              width={120}
               height={histogramHeight - 5}
               data={labelInfo}
               yScale={infoYScale}
@@ -419,6 +368,8 @@ const FeatureView = ({ data, features, relationData }: IFeatureView) => {
               {yearRange?.[0]}
             </InfoGraph>
           </div>
+
+          <p>Event number</p>
         </div>
 
         <div
@@ -430,7 +381,7 @@ const FeatureView = ({ data, features, relationData }: IFeatureView) => {
             style={
               pair
                 ? { top: pair?.[0] * 21, opacity: 1 }
-                : { opacity: 0, top: -10 }
+                : { opacity: 0, top: 0 }
             }
           />
           <div
@@ -438,7 +389,7 @@ const FeatureView = ({ data, features, relationData }: IFeatureView) => {
             style={
               pair
                 ? { top: pair?.[1] * 21, opacity: 1 }
-                : { opacity: 0, top: -10 }
+                : { opacity: 0, top: 0 }
             }
           />
           <div className={style['scroll-wrapper']}>
@@ -500,36 +451,33 @@ const FeatureView = ({ data, features, relationData }: IFeatureView) => {
               data={yearData}
               range={yearRange as any}
             />
+
+            <div className={style.theme}>
+              <div className={style['theme-item']}>
+                <p>100</p>
+                <span />
+                <span />
+                <span />
+              </div>
+            </div>
           </div>
         </div>
       </div>
       <div className={style.wrapper}>
-        <svg width="100px" height="610px">
-          <g transform={`translate(0, ${histogramHeight})`}>
-            {sortedFigureIds.map(
-              (d, i) =>
-                !!(i >= initIndex && i < initIndex + visibleCnt) && (
-                  <path
-                    key={d}
-                    d={`${drawCurve(
-                      [0, 21 * (i - initIndex) + 8 - offset],
-                      [
-                        70,
-                        (610 / sortedFigureIds.length) * (i + 0.5) -
-                          histogramHeight,
-                      ]
-                    )}`}
-                    fill="none"
-                    stroke="#bbb"
-                  />
-                )
-            )}
-          </g>
-        </svg>
+        <div className={style['matrix-histogram']}>
+          <InfoGraph
+            width={275}
+            height={histogramHeight - 5}
+            data={relationInfo}
+            yScale={relationYScale}
+            colorScale={defaultEventColorScale}
+          />
+        </div>
+
         <Matrix
           data={matrixData as any}
           linesData={linesData}
-          boxSize={610 / sortedFigureIds.length / 2}
+          boxSize={matrixHeight / sortedFigureIds.length / 2}
           rangeX={rangeX}
           rangeY={rangeY}
           source={pair?.[0]}

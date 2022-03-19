@@ -66,7 +66,7 @@ const handleResData = async (res: any) => {
       })
       .catch((e) => console.log(e));
 
-    // await db.node.bulkAdd(Object.values(id2node)).catch((e) => console.log(e));
+    await db.node.bulkAdd(Object.values(id2node)).catch((e) => console.log(e));
     // await db.node
     //   .bulkAdd(
     //     Object.keys(id2edge).map((key) => ({
