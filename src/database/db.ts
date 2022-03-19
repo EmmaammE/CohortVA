@@ -41,6 +41,7 @@ export interface ISentence {
   id: string;
   words: string[];
   edges: string[];
+  category: string;
 }
 
 export interface IFeature {
@@ -71,7 +72,7 @@ export class MySubClassedDexie extends Dexie {
       node: 'id,label,name,en_name',
       cohorts: '[id+index],value',
       group: 'id,cf2cf_pmi,descriptions,sentences',
-      sentence: 'id,words,edges',
+      sentence: 'id,words,edges,category',
       features: 'id,model_descriptors,proportion,type,weight',
     });
   }

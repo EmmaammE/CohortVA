@@ -41,8 +41,8 @@ const Line = ({ pids, rowHeight, data, range }: ILine) => {
                 stroke="#ccc"
                 fill="#fff"
                 // fill="#eee"
-                rx="3"
-                ry="3"
+                // rx="3"
+                // ry="3"
               />
             )}
             {!!data[fid]?.c_year && (

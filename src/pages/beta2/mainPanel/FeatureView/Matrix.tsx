@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 
 interface IMatrix {
   data: {
@@ -19,7 +19,9 @@ interface IMatrix {
   }[];
   source: number | undefined;
   target: number | undefined;
-  handleHover: any;
+  handleClick: any;
+  handleMouseOver: any;
+  handleMouseOut: any;
 }
 
 const diamondPath = (x: number, y: number, width: number, height: number) =>
@@ -49,7 +51,9 @@ const Matrix = ({
   linesData,
   source,
   target,
-  handleHover,
+  handleClick,
+  handleMouseOut,
+  handleMouseOver,
 }: IMatrix) => (
   <svg height="610px" width="100%">
     <defs>
@@ -63,10 +67,10 @@ const Matrix = ({
     </defs>
     <g transform={`translate(3,${boxSize / 2})`}>
       {/* <path
-        fill="#acc"
-        d={`M ${trianglePath(rangeX, rangeY, boxSize)}`}
-        opacity={0.3}
-      /> */}
+          fill="#acc"
+          d={`M ${trianglePath(rangeX, rangeY, boxSize)}`}
+          opacity={0.3}
+        /> */}
 
       {linesData.map(({ pos, source: lineSource, target: lineTarget }, i) => (
         <path
@@ -77,7 +81,7 @@ const Matrix = ({
             .join(' ')}`}
           stroke="#d8d8d8"
           fill="none"
-          onClick={() => handleHover(null)}
+          onClick={(e) => handleClick(e, null, null)}
         />
       ))}
 
@@ -88,7 +92,9 @@ const Matrix = ({
             d={diamondPath(d.x * boxSize, d.y * boxSize, boxSize, boxSize)}
             fill={d.color}
             cursor="pointer"
-            onClick={() => handleHover([d.source, d.target])}
+            onClick={(e) => handleClick(e, d.source, d.target)}
+            onMouseOver={(e) => handleMouseOver(e, d.source, d.target)}
+            onMouseOut={handleMouseOut}
           />
         ))}
       </g>

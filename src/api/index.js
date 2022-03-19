@@ -19,3 +19,14 @@ export const getFeatureByName = (params) => {
     data: params,
   })
 }
+
+export const getEventsByPeople = (params) => {
+  const url = Apis.getPersonEvents;
+
+  return post({
+    url,
+    data: {
+      pids: params
+    },
+  })
+}

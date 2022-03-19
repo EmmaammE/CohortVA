@@ -66,27 +66,27 @@ const handleResData = async (res: any) => {
       })
       .catch((e) => console.log(e));
 
-    await db.node.bulkAdd(Object.values(id2node)).catch((e) => console.log(e));
-    await db.node
-      .bulkAdd(
-        Object.keys(id2edge).map((key) => ({
-          id: +key,
-          label: id2edge[key].label,
-        }))
-      )
-      .catch((e) => console.log(e));
+    // await db.node.bulkAdd(Object.values(id2node)).catch((e) => console.log(e));
+    // await db.node
+    //   .bulkAdd(
+    //     Object.keys(id2edge).map((key) => ({
+    //       id: +key,
+    //       label: id2edge[key].label,
+    //     }))
+    //   )
+    //   .catch((e) => console.log(e));
     await db.cohorts
       .bulkAdd(processData(res.data))
       .catch((e) => console.log(e));
 
-    await db.sentence
-      .bulkAdd(
-        Object.keys(id2sentence).map((key) => ({
-          id: key,
-          ...id2sentence[key],
-        }))
-      )
-      .catch((e) => console.log(e));
+    // await db.sentence
+    //   .bulkAdd(
+    //     Object.keys(id2sentence).map((key) => ({
+    //       id: key,
+    //       ...id2sentence[key],
+    //     }))
+    //   )
+    //   .catch((e) => console.log(e));
 
     await db.features
       .bulkAdd(

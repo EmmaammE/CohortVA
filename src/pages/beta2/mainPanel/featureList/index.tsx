@@ -9,6 +9,7 @@ import useStack from '../FeatureView/useStack';
 import { mainColors, mainColors2 } from '../../../../utils/atomTopic';
 
 interface FeatureListProps {
+  loading: boolean;
   data: any;
   xScale: Function;
   yScale: Function;
@@ -30,6 +31,7 @@ const margin = {
 };
 
 const FeatureList = ({
+  loading,
   data,
   xScale,
   yScale,
@@ -71,6 +73,19 @@ const FeatureList = ({
   );
 
   const { $brush } = useBrush(width, height, onBrushEnd);
+
+  useEffect(() => {
+    // disable brush when loading
+    if (loading) {
+      d3.select($brush.current)
+        .selectAll('rect')
+        .style('pointer-events', 'none');
+    } else {
+      d3.select($brush.current)
+        .selectAll('rect')
+        .style('pointer-events', 'all');
+    }
+  }, [$brush, loading]);
 
   // console.log(keys, stack.length, stack[0].length);
   return (

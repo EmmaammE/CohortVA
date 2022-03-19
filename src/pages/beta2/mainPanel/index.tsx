@@ -18,7 +18,7 @@ import { db } from '../../../database/db';
 import { setCfids, setFigureStatus } from '../../../reducer/statusSlice';
 import Gradients from './Gradients';
 import { getDisplayedFeatureText, padding } from './utils';
-import useSentence from './useSentence';
+import useSentence from './useSentence2';
 import { BASE_CODE, mainColors, mainColors2 } from '../../../utils/atomTopic';
 import { getFeatureText } from '../../../utils/feature';
 
@@ -155,10 +155,7 @@ const MainPanel = () => {
     return features.map((d: any) => d.id);
   }, [featureToSort?.id, features]);
 
-  const { loading, posToS, yearToS, personToPerson } = useSentence(
-    features,
-    pids
-  );
+  const { loading, posToS, yearToS, personToPerson } = useSentence();
 
   const featuresParam = useMemo(async () => {
     const results = await db.features
@@ -188,7 +185,9 @@ const MainPanel = () => {
               <span>{String.fromCharCode(i + BASE_CODE)}</span>
               <span className="rect" style={{ background: mainColors2[i] }} />
               <span>
-                {f.descriptorsArr.map((d: any) => `${d.type}`).join('&')}
+                {f.descriptorsArr
+                  .map((d: any) => `${d.text.slice(1, d.text.length - 1)}`)
+                  .join('&')}
               </span>
             </div>
           ))}
@@ -219,6 +218,7 @@ const MainPanel = () => {
           </Select>
 
           <FeatureList
+            loading={loading}
             data={fid2weight}
             yScale={yScale}
             xScale={xScale}

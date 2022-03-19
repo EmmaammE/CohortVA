@@ -6,6 +6,7 @@ const Apis = {
   get_cohort_by_name: '/search_relation_person_by_name/',
   get_cohort_by_figure_names:'/search_cohort_by_people_name/',
   findPersonInfo: 'find_person_info/',
+  getPersonEvents: 'getEventsByPeople/'
 }
   
 export default Apis;

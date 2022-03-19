@@ -1,7 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import * as d3 from 'd3';
-import { useAppDispatch } from '../../../../store/hooks';
-import { setFigureIdArr } from '../../../../reducer/statusSlice';
 
 const useBrush = (width: number, height: number, handle: any) => {
   const $brush = useRef<any>(null);
