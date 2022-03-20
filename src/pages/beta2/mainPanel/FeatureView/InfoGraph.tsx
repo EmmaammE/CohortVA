@@ -5,7 +5,7 @@ const margin = {
   left: 10,
   right: 10,
   top: 10,
-  bottom: 10,
+  bottom: 15,
 };
 
 interface IInfoGraph {
@@ -38,6 +38,7 @@ const InfoGraph = ({
   );
 
   // console.log(colorScale?.domain());
+  const showText = useMemo(() => data.length < 10, [data.length]);
   return (
     <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`}>
       <path
@@ -54,16 +55,16 @@ const InfoGraph = ({
             <rect
               key={k.key}
               x={xScale(k.key)}
-              y={height - 15 - yScale(k.value)}
+              y={height - margin.bottom - 5 - yScale(k.value)}
               width={xScale.bandwidth()}
               height={yScale(k.value)}
-              fill={colorScale(k.key)}
+              fill={colorScale ? colorScale(k.key) : '#ccc'}
             />
-            {k.value && (
+            {k.value && showText && (
               <text
                 x={(xScale(k.key) || 0) + xScale.bandwidth() / 2}
-                y={height - 16 - yScale(k.value)}
-                fontSize="10"
+                y={height - margin.bottom - 5 - yScale(k.value)}
+                fontSize="6"
                 textAnchor="middle"
               >
                 {k.value}

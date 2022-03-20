@@ -74,6 +74,10 @@
         grid-column: 1 / 3;
         grid-row: 1;
         border-bottom: 1px dashed #ccc;
+
+        .active-events::before {
+          background: var(--color);
+        }
       }
 
       .map-view {

@@ -58,7 +58,7 @@ const Matrix = ({
   handleMouseOut,
   handleMouseOver,
 }: IMatrix) => (
-  <svg height={`${matrixHeight}px`} width={`2+${matrixHeight / 2}px`}>
+  <svg height={`${matrixHeight}px`} width={`${2 + matrixHeight / 2}px`}>
     <defs>
       <clipPath id="triangle">
         <path

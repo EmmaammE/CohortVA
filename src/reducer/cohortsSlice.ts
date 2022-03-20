@@ -61,6 +61,7 @@ const handleResData = async (res: any) => {
       id2sentence,
       id2composite_features,
       id2model_descriptor,
+      main_data: { classifiers },
     } = res.data;
 
     await db.group
@@ -94,6 +95,13 @@ const handleResData = async (res: any) => {
     //   )
     //   .catch((e) => console.log(e));
 
+    const cf2weight: { [key: string]: number } = {};
+    classifiers.forEach((item: any) => {
+      Object.keys(item.cf2weight).forEach((key) => {
+        cf2weight[key] = item.cf2weight[key];
+      });
+    });
+
     await db.features
       .bulkAdd(
         Object.keys(id2composite_features).map((key) => {
@@ -106,6 +114,7 @@ const handleResData = async (res: any) => {
           );
           return {
             id: key,
+            weight: cf2weight[key] || 0,
             ...id2composite_features[key],
           };
         })
@@ -177,7 +186,7 @@ export const fetchCohortByRegexAsync = createAsyncThunk<
   {
     use_weight: boolean;
     features: any;
-    search_group: string[];
+    search_group?: string[];
   }
 >('cohorts/fetchCohortByRegex', async (payload) => {
   const res = await post({

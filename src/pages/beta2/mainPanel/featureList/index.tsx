@@ -3,7 +3,7 @@ import * as d3 from 'd3';
 import style from './index.module.scss';
 import useBrush from './useBursh';
 import { invert } from '../../../../utils/scale';
-import { useAppDispatch } from '../../../../store/hooks';
+import { useAppDispatch, useAppSelector } from '../../../../store/hooks';
 import { setFigureIdArr } from '../../../../reducer/statusSlice';
 import useStack from '../FeatureView/useStack';
 import { mainColors, mainColors2 } from '../../../../utils/atomTopic';
@@ -14,13 +14,13 @@ interface FeatureListProps {
   xScale: Function;
   yScale: Function;
   groups: string[];
-  endPoints: number[];
+  figureStatus: { [key: string]: number };
 }
 
 export const width = 220;
 export const height = 920;
 
-const colors = ['var(--excluded)', 'var(--uncertain)', 'var(--included)'];
+const colors = ['var(--included)', 'var(--excluded)', 'var(--uncertain)'];
 const strokes = ['#b1b1b1', '#c4c4c4', '#818181'];
 
 const margin = {
@@ -36,7 +36,7 @@ const FeatureList = ({
   xScale,
   yScale,
   groups,
-  endPoints,
+  figureStatus,
 }: FeatureListProps) => {
   const keys = useMemo(() => Object.keys(data).map((d) => +d), [data]);
   const stack = useStack(data, groups, keys);
@@ -46,6 +46,10 @@ const FeatureList = ({
       dispatch(setFigureIdArr(figureIdArr));
     },
     [dispatch]
+  );
+
+  const figureExplored = useAppSelector(
+    (state) => new Set(state.status.figureExplored)
   );
 
   const onBrushEnd = useCallback(
@@ -91,15 +95,16 @@ const FeatureList = ({
   return (
     <div className={style.wrapper}>
       <svg width="8" height={height} id="people-bar">
-        {endPoints.map((ep, i) => (
+        {Object.keys(figureStatus || {}).map((fid) => (
           <rect
-            // eslint-disable-next-line react/no-array-index-key
-            key={`${ep}-${i}`}
-            x="0"
-            y="0"
+            key={fid}
+            x={0}
+            y={yScale(fid) - 0.5}
             width="8"
-            height={ep}
-            fill={colors[i]}
+            height={(yScale as any).bandwidth() + 1}
+            fill={colors[figureStatus[fid]]}
+            // stroke={figureExplored.has(fid) ? '#fff' : 'none'}
+            opacity={figureExplored.has(fid) ? 1 : 0.5}
           />
         ))}
       </svg>

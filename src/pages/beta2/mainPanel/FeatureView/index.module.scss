@@ -39,17 +39,20 @@
     color: #696969;
     font-weight: 400;
     word-break: break-all;
-  }
+    cursor: pointer;
 
-  span::before {
-    position: absolute;
-    width: 10px;
-    height: 10px;
-    display: inline-block;
-    content: '';
-    top: 4px;
-    left: -14px;
-    background: var(--color);
+    &::before {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      display: inline-block;
+      content: '';
+      top: 4px;
+      left: -14px;
+      border: 2px solid var(--color);
+      background: #fff;
+      transition: background 300ms ease-in-out;
+    }
   }
 }
 .content {
@@ -122,6 +125,8 @@
   p {
     margin: 0;
     line-height: 21px;
+    width: 28px;
+    margin: 0 4px 0 0;
   }
 }
 
@@ -135,7 +140,7 @@
     width: 15px;
     height: 15px;
     border-radius: 50%;
-    margin: 0 5px;
+    margin: 0 2px;
   }
 }
 

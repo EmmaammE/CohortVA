@@ -16,12 +16,15 @@ import {
   updateGroup,
 } from '../../../reducer/cohortsSlice';
 import { db } from '../../../database/db';
-import { setCfids, setFigureStatus } from '../../../reducer/statusSlice';
-import Gradients from './Gradients';
+import {
+  setCfids,
+  setFigureIdArr,
+  setFigureStatus,
+} from '../../../reducer/statusSlice';
 import { getDisplayedFeatureText, padding } from './utils';
 import useSentence from './useSentence2';
 import { BASE_CODE, mainColors, mainColors2 } from '../../../utils/atomTopic';
-import { getFeatureText } from '../../../utils/feature';
+import Timeline from './timeline';
 
 const { Option } = Select;
 
@@ -58,8 +61,9 @@ const MainPanel = () => {
       } else {
         setfeatureToSort(features[index]);
       }
+      dispatch(setFigureIdArr([]));
     },
-    [features]
+    [dispatch, features]
   );
 
   useEffect(() => {
@@ -157,7 +161,13 @@ const MainPanel = () => {
     return features.map((d: any) => d.id);
   }, [featureToSort?.id, features]);
 
-  const { loading, posToS, yearToS, personToPerson } = useSentence();
+  const {
+    loading,
+    posToS,
+    yearToS,
+    personToPerson,
+    personInfo,
+  } = useSentence();
 
   // const featuresParam = useMemo(async () => {
   //   const results = await db.features
@@ -253,7 +263,7 @@ const MainPanel = () => {
             yScale={yScale}
             xScale={xScale}
             groups={sortedFeatures}
-            endPoints={endPoints}
+            figureStatus={figureStatus}
           />
         </div>
         <div className="feature-content-right">
@@ -263,6 +273,7 @@ const MainPanel = () => {
               data={fid2weight}
               features={features}
               relationData={personToPerson}
+              personInfo={personInfo}
             />
           </div>
           <div className="map-view">
@@ -273,7 +284,7 @@ const MainPanel = () => {
           <div className="timeline-view">
             <h3 className="g-title">Cohort Timeline</h3>
             {loading && <div className="loading-border" />}
-            <FigureTimeline yearToS={yearToS} width={800} height={280} />
+            <Timeline yearToS={yearToS} width={770} height={280} />
           </div>
         </div>
       </div>

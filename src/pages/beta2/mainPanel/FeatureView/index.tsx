@@ -13,22 +13,22 @@ import { getDisplayedFeatureText, histogramHeight } from '../utils';
 import useStack from './useStack';
 import { useAppDispatch, useAppSelector } from '../../../../store/hooks';
 import useNamesMap from './useNodeNamesMap';
-import drawCurve from '../../../../utils/curve';
 import {
   setFigureId,
   setFigureName,
+  updateFigureExplored,
   updateFigureStatusById,
 } from '../../../../reducer/statusSlice';
 import useVisibleIndex from './useVisibleIndex';
 import { mainColors, mainColors2 } from '../../../../utils/atomTopic';
 import Line from './Line';
 import InfoGraph from './InfoGraph';
-import useYearData from './useYearData';
 import eventMap from '../../../../utils/eventMap';
 import template from '../../../../utils/tempelate';
 import { db } from '../../../../database/db';
 import Tooltip from '../../../../components/tooltip/Tip';
 import useRelationData from './useRelationData';
+import { IInfoData } from '../useSentence2';
 
 interface IFeatureView {
   data: {
@@ -42,14 +42,15 @@ interface IFeatureView {
       [key: string]: any;
     };
   };
+  personInfo: {
+    [key: string]: IInfoData;
+  };
 }
 
 const { Option } = Select;
 
 const height = 21;
 const width = 220;
-
-const visibleCnt = 25;
 
 const defaultLabelColorScale = d3
   .scaleOrdinal()
@@ -61,10 +62,17 @@ const defaultEventColorScale = d3
   .range(Object.keys(eventMap).map((d) => (eventMap as any)[d].color))
   .domain(Object.keys(eventMap));
 
-const FeatureView = ({ data, features, relationData }: IFeatureView) => {
+const FeatureView = ({
+  data,
+  features,
+  relationData,
+  personInfo,
+}: IFeatureView) => {
   const [featureToSort, setfeatureToSort] = useState<any>(null);
   const figureStatus = useAppSelector((state) => state.status.figureStatus);
   const dispatch = useAppDispatch();
+
+  const [selectedType, setSelectedType] = useState<string>('');
 
   const onChange = useCallback(
     (index) => {
@@ -219,6 +227,7 @@ const FeatureView = ({ data, features, relationData }: IFeatureView) => {
             status: e.target.value,
           })
         );
+        dispatch(updateFigureExplored(String(pid)));
       }
     },
     [dispatch]
@@ -267,7 +276,62 @@ const FeatureView = ({ data, features, relationData }: IFeatureView) => {
     return info;
   }, [figureIdArr, figureStatus]);
 
-  const { data: yearData, range: yearRange } = useYearData(figureIdArr);
+  const eventColorScale = useCallback(
+    () => (eventMap as any)[selectedType]?.color || '#ccc',
+    [selectedType]
+  );
+  const { eventsInfo, eventsScale } = useMemo(() => {
+    const year2event: { [k: string]: number } = {};
+    let maxV = 0;
+
+    Object.keys(personInfo).forEach((pid) => {
+      const curData = personInfo[pid];
+      curData.sentence?.forEach((sentence) => {
+        if (selectedType === '' || sentence.type === selectedType) {
+          year2event[sentence.year] = (year2event[sentence.year] || 0) + 1;
+          maxV = Math.max(maxV, year2event[sentence.year]);
+        }
+      });
+    });
+
+    return {
+      eventsInfo: Object.keys(year2event).map((year) => ({
+        key: year,
+        value: year2event[year],
+      })),
+      eventsScale: d3
+        .scaleLinear()
+        .domain([0, maxV])
+        .range([0, histogramHeight - 25]),
+    };
+  }, [personInfo, selectedType]);
+
+  const yearRange = useMemo(() => {
+    let minYear = 999999;
+    let maxYear = 0;
+
+    Object.values(personInfo).forEach((item) => {
+      if (item?.birth_year && minYear > item.birth_year) {
+        minYear = item.birth_year;
+      }
+
+      if (item?.death_year && maxYear < item.death_year) {
+        maxYear = item.death_year;
+      }
+
+      if (item?.c_year) {
+        if (item.c_year < minYear) {
+          minYear = item.c_year;
+        } else if (item.c_year > maxYear) {
+          maxYear = item.c_year;
+        }
+      }
+    });
+
+    if (minYear === 999999 && maxYear === 0) return null;
+
+    return [minYear, maxYear];
+  }, [personInfo]);
 
   const infoYScale = useMemo(
     () =>
@@ -315,7 +379,11 @@ const FeatureView = ({ data, features, relationData }: IFeatureView) => {
 
         <div className={style['events-header']}>
           {Object.keys(eventMap).map((e) => (
-            <span style={{ '--color': (eventMap as any)[e].color } as any}>
+            <span
+              className={e === selectedType ? 'active-events' : ''}
+              style={{ '--color': (eventMap as any)[e].color } as any}
+              onClick={() => setSelectedType(e)}
+            >
               {e}
             </span>
           ))}
@@ -361,11 +429,22 @@ const FeatureView = ({ data, features, relationData }: IFeatureView) => {
             <InfoGraph
               width={200}
               height={histogramHeight - 5}
-              data={[]}
-              yScale={infoYScale}
-              colorScale={defaultLabelColorScale}
+              data={eventsInfo}
+              yScale={eventsScale}
+              colorScale={eventColorScale}
             >
-              {yearRange?.[0]}
+              <text fontSize={10} fill="#777" x="0" y="82%" textAnchor="middle">
+                {yearRange?.[0]}
+              </text>
+              <text
+                fontSize={10}
+                fill="#777"
+                x="90%"
+                y="82%"
+                textAnchor="middle"
+              >
+                {yearRange?.[1]}
+              </text>
             </InfoGraph>
           </div>
 
@@ -448,17 +527,26 @@ const FeatureView = ({ data, features, relationData }: IFeatureView) => {
             <Line
               pids={sortedFigureIds}
               rowHeight={height}
-              data={yearData}
-              range={yearRange as any}
+              data={personInfo}
+              range={yearRange || ([0] as any)}
+              type={selectedType}
             />
 
             <div className={style.theme}>
-              <div className={style['theme-item']}>
-                <p>100</p>
-                <span />
-                <span />
-                <span />
-              </div>
+              {sortedFigureIds.map((id) => (
+                <div className={style['theme-item']}>
+                  <p>{personInfo[id]?.sentenceInfo?.cnt}</p>
+
+                  {personInfo[id]?.sentenceInfo?.type.map((type) => (
+                    <span
+                      key={type}
+                      style={{
+                        background: (eventMap as any)[type]?.color || '#ccc',
+                      }}
+                    />
+                  ))}
+                </div>
+              ))}
             </div>
           </div>
         </div>

@@ -1,3 +1,4 @@
+/* eslint-disable react/require-default-props */
 import React, { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 import tickStyle from './ticks.module.css';
@@ -7,8 +8,8 @@ type TScale = 'bottom' | 'left' | 'top' | 'right';
 interface IAxes {
   scale: any;
   scaleType: TScale;
-  transform: string;
-  format: any;
+  transform?: string;
+  format?: any;
 }
 
 const scaleHash = {

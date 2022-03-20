@@ -68,7 +68,9 @@ const CohortFeature = ({ j, features, size }: ICohortFeature) => {
               <FeatureNode data={f.descriptorsArr} id={f.id} />
             </svg>
             <span>
-              {f.descriptorsArr.map((des) => `(${des.text})`).join('&')}
+              {f.descriptorsArr
+                .map((des) => `${des.type.slice(0, 1)}(${des.text})`)
+                .join(' & ')}
             </span>
           </div>
 

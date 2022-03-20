@@ -1,20 +1,23 @@
 import React, { useMemo } from 'react';
 import * as d3 from 'd3';
 import { IData } from './useYearData';
+import { IInfoData } from '../useSentence2';
+import eventMap from '../../../../utils/eventMap';
 
 interface ILine {
   // 排好序的personId
   pids: string[];
   rowHeight: number;
-  data: { [k: string]: IData };
+  data: { [k: string]: IInfoData };
   range: [number, number];
+  type: string;
 }
 
 const width = 160;
 const padding = 10;
 const heightPadding = 14;
 
-const Line = ({ pids, rowHeight, data, range }: ILine) => {
+const Line = ({ pids, rowHeight, data, range, type }: ILine) => {
   const xScale = useMemo(
     () => d3.scaleLinear().domain(range).range([0, width]).nice(),
     [range]
@@ -53,6 +56,19 @@ const Line = ({ pids, rowHeight, data, range }: ILine) => {
                 y2={i * rowHeight + rowHeight - heightPadding / 2}
                 stroke="#B16653"
               />
+            )}
+            {(data[fid]?.sentence || []).map(
+              (d) =>
+                (type === '' || type === d.type) && (
+                  <line
+                    x1={xScale(+d.year)}
+                    x2={xScale(+d.year)}
+                    y1={i * rowHeight}
+                    y2={i * rowHeight + rowHeight - heightPadding / 2}
+                    stroke={(eventMap as any)[d.type]?.color || '#ccc'}
+                    opacity={0.2}
+                  />
+                )
             )}
           </g>
         ))}

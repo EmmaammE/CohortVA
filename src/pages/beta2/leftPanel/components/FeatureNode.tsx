@@ -23,6 +23,7 @@ interface IFeatureNodeProps {
   size?: number;
   // 额外的样式
   style?: Object;
+  onClick?: any;
 }
 
 interface NodeProps {
@@ -111,6 +112,7 @@ const FeatureNode = ({
   y,
   size,
   style,
+  onClick,
 }: IFeatureNodeProps) => {
   const dispatch = useDispatch();
   const onMouseOver = useCallback(
@@ -154,6 +156,7 @@ const FeatureNode = ({
       }
       className="node"
       {...style}
+      onClick={onClick || null}
     >
       {data.length === 1 && (
         <Triangle des={data} style={{ strokeWidth: size }} />
@@ -170,5 +173,6 @@ FeatureNode.defaultProps = {
   size: 0,
   showTip: false,
   style: {},
+  onClick: null,
 };
 export default FeatureNode;

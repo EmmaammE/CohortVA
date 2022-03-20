@@ -1,8 +1,11 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import * as d3 from 'd3';
 import { db, IData } from '../../../../database/db';
-import { getGroupId } from '../../../../reducer/cohortsSlice';
-import { useAppSelector } from '../../../../store/hooks';
+import {
+  fetchCohortByRegexAsync,
+  getGroupId,
+} from '../../../../reducer/cohortsSlice';
+import { useAppDispatch, useAppSelector } from '../../../../store/hooks';
 import useForceGraph, { HEIGHT, WIDTH } from './useForceGraph';
 import style from './index.module.scss';
 import FeatureNode from '../components/FeatureNode';
@@ -15,7 +18,7 @@ const Overview = ({ show }: IOverview) => {
   const cfids = useAppSelector((state) => new Set(state.status.cfids));
   const linkSetArr = useAppSelector((state) => state.feature.links);
   const featureId = useAppSelector((state) => state.feature.featureId);
-
+  const dispatch = useAppDispatch();
   const [data, setData] = useState<IData | null>(null);
 
   const { nodes, links, scale } = useForceGraph(data?.cf2cf_pmi || null);
@@ -79,9 +82,70 @@ const Overview = ({ show }: IOverview) => {
     return null;
   }, [data?.descriptions]);
 
+  // 点击两个特征，替换下来
+  const [clickedFeature, setClickedFeature] = useState<string[]>([]);
+  const handleClick = useCallback(
+    (id) => {
+      clickedFeature.push(id);
+      clickedFeature.slice(-2);
+      setClickedFeature([...clickedFeature]);
+    },
+    [clickedFeature]
+  );
+
+  const replaceF1WithF2 = useCallback(
+    (f1, f2) => {
+      const cfidsArr: string[] = [];
+      cfids.forEach((cfid) => {
+        if (cfid !== f1) {
+          cfidsArr.push(cfid);
+        } else {
+          cfidsArr.push(f2);
+        }
+      });
+
+      console.log(cfidsArr);
+
+      // 调用接口
+      db.features
+        .bulkGet(cfidsArr)
+        .then((featuresParam) => {
+          const param = {
+            use_weight: false,
+            features: featuresParam.reduce(
+              (acc, cur) => ({
+                ...acc,
+                // [cur?.id || '']: { ...cur, id: +(cur as any).id },
+                [cur?.id || '']: { ...cur },
+              }),
+              {}
+            ),
+          };
+
+          dispatch(fetchCohortByRegexAsync(param));
+        })
+        .catch((e) => console.log(e));
+    },
+    [cfids, dispatch]
+  );
+  const handleReplace = useCallback(() => {
+    if (clickedFeature.length === 2) {
+      console.log(clickedFeature);
+      const [f1, f2] = clickedFeature;
+      if (cfids.has(f1)) {
+        // 替换掉f1
+        replaceF1WithF2(f1, f2);
+      } else {
+        replaceF1WithF2(f2, f1);
+      }
+    }
+  }, [cfids, clickedFeature, replaceF1WithF2]);
   return (
     <div className={style.container}>
       <div className={style['svg-wrapper']}>
+        <div className={style['replace-btn']} onClick={handleReplace}>
+          replace
+        </div>
         <svg
           viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
           style={show ? { width: '50%' } : {}}
@@ -146,6 +210,7 @@ const Overview = ({ show }: IOverview) => {
                             }
                           : {}
                       }
+                      onClick={() => handleClick(node.id)}
                     />
                   )
               )}

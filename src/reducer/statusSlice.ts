@@ -12,6 +12,7 @@ interface IStatus {
   figureStatus: {
     [key: string]: number;
   };
+  figureExplored: string[];
 }
 
 const initialState: IStatus = {
@@ -20,6 +21,7 @@ const initialState: IStatus = {
   cfids: [],
   figureIdArr: [],
   figureStatus: {},
+  figureExplored: [],
 };
 
 export const statusSlice = createSlice({
@@ -48,6 +50,9 @@ export const statusSlice = createSlice({
       const { id, status } = action.payload;
       state.figureStatus[id] = status;
     },
+    updateFigureExplored: (state, action: PayloadAction<string>) => {
+      state.figureExplored.push(action.payload);
+    },
   },
 });
 
@@ -58,5 +63,6 @@ export const {
   setFigureIdArr,
   setFigureStatus,
   updateFigureStatusById,
+  updateFigureExplored,
 } = statusSlice.actions;
 export default statusSlice.reducer;

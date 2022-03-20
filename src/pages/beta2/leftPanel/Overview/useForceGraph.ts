@@ -24,11 +24,13 @@ const useForceGraph = (data: GraphData | null) => {
     Object.keys(data).forEach((node) => {
       const nodeData = data[node];
       Object.keys(nodeData).forEach((node2) => {
+        if (node2 === node) return;
+
         curLinks.push({
           source: node,
           target: node2,
-          value: nodeData[node2] <= 0 ? 0.000001 : 1 / nodeData[node2],
-          // 1 / Math.exp(nodeData[node2]),
+          // value: nodeData[node2] <= 0 ? 0.000001 : 1 / nodeData[node2],
+          value: 1 / Math.exp(nodeData[node2]),
         });
 
         minV = Math.min(minV, 1 / Math.exp(nodeData[node2]));
@@ -36,7 +38,7 @@ const useForceGraph = (data: GraphData | null) => {
       });
     });
 
-    const scale = d3.scaleLinear().domain(extent.current).range([0, 1]);
+    // const scale = d3.scaleLinear().domain([minV, maxV]).range([0, 1]);
 
     try {
       d3.forceSimulation(curNodes)
@@ -47,8 +49,8 @@ const useForceGraph = (data: GraphData | null) => {
             .id((d: any) => d.id)
             // .distance((d: any) => d.value * 10 + 1)
             // .strength((d: any) => scale(d.value) + 1)
-            .distance((d: any) => d.value * 10)
-            .strength((d: any) => scale(d.value))
+            .distance((d: any) => d.value * 20)
+            .strength((d: any) => d.value)
         )
         .force('charge', d3.forceManyBody().strength(-0.1))
         .force('center', d3.forceCenter(WIDTH / 2, HEIGHT / 2))
