@@ -87,7 +87,7 @@ const Overview = ({ show }: IOverview) => {
   const handleClick = useCallback(
     (id) => {
       clickedFeature.push(id);
-      clickedFeature.slice(-2);
+      clickedFeature.slice(-2, 0);
       setClickedFeature([...clickedFeature]);
     },
     [clickedFeature]
@@ -111,7 +111,7 @@ const Overview = ({ show }: IOverview) => {
         .bulkGet(cfidsArr)
         .then((featuresParam) => {
           const param = {
-            use_weight: false,
+            use_weight: true,
             features: featuresParam.reduce(
               (acc, cur) => ({
                 ...acc,
@@ -178,8 +178,8 @@ const Overview = ({ show }: IOverview) => {
               strokeDasharray="2 2"
               opacity={
                 featureId === '' ||
-                featureId === link.source.id ||
-                featureId === link.source.id
+                  featureId === link.source.id ||
+                  featureId === link.source.id
                   ? 1
                   : 0.2
               }
@@ -206,8 +206,8 @@ const Overview = ({ show }: IOverview) => {
                       style={
                         cfids.has(node.id)
                           ? {
-                              filter: 'url(#color-shadow)',
-                            }
+                            filter: 'url(#color-shadow)',
+                          }
                           : {}
                       }
                       onClick={() => handleClick(node.id)}
