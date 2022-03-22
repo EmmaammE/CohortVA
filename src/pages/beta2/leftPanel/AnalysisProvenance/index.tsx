@@ -11,8 +11,6 @@ import CohortFeature from './CohortFeature';
 import Header from './Header';
 import './index.scss';
 
-interface IAnalysisProvenanceProps {}
-
 const AnalysisPanel = () => {
   const dispatch = useAppDispatch();
   const groups = useAppSelector(getGroups);
@@ -117,7 +115,12 @@ const AnalysisPanel = () => {
             {groupsMap[groupId]?.classifiers.map(
               ({ features, pids }: any, j: number) =>
                 isExpandedFeatureGroup(i, j) ? (
-                  <CohortFeature j={j} features={features} size={pids} />
+                  <CohortFeature
+                    key={j}
+                    j={j}
+                    features={features}
+                    size={pids}
+                  />
                 ) : (
                   isExplored(i, j) && (
                     <div
@@ -128,7 +131,12 @@ const AnalysisPanel = () => {
                       <span className="menu">{j + 1}</span>
                       <span className="svg-wrapper">
                         {features.map((feature: any) => (
-                          <svg width="33px" height="22px" viewBox="0 0 21 14">
+                          <svg
+                            key={feature.id}
+                            width="33px"
+                            height="22px"
+                            viewBox="0 0 21 14"
+                          >
                             <ProportionBar proportion={feature.proportion} />
                             <FeatureNode
                               x={6}
