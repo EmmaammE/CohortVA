@@ -174,6 +174,8 @@ const Timeline = ({ yearToS, width, height }: ITimeline) => {
           <g ref={$area}>
             {stackedData.map((d: any, i) => (
               <path
+                // eslint-disable-next-line react/no-array-index-key
+                key={i}
                 d={area(d) as string}
                 fill={color[i]}
                 // onMouseMove={onMouseOn}

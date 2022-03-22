@@ -16,6 +16,11 @@ export interface IInfoData {
   c_year?: number;
   c_entry_type_desc?: string;
   birthplace?: string;
+  office?: {
+    c_firstyear: 0;
+    c_office_chn: string;
+    isUpgrade: boolean;
+  }[];
   sentenceInfo?: {
     type: string[];
     cnt: number;
@@ -146,7 +151,7 @@ const useSentence = () => {
       setPersonToPerson(main_data.relationBtweenPeople);
       setYearToS(main_data.eventHasTime);
       setPersonInfo(people_info);
-      // setPosToS(main_data.eventHasAddr);
+      setPosToS(main_data.eventHasAddr);
     });
   }, [pids]);
 

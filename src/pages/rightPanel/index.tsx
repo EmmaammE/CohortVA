@@ -1,5 +1,5 @@
 import React from 'react';
-import FeatureList from './PersonalFeature/FeatureList';
+import FeatureList from './PersonalFeature/FeatureList2';
 import FigureInfo from './FigureTable';
 import './index.scss';
 

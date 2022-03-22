@@ -48,7 +48,7 @@ const Line = ({ pids, rowHeight, data, range, type }: ILine) => {
                 // ry="3"
               />
             )}
-            {!!data[fid]?.c_year && (
+            {(type === '' || type === 'politics') && !!data[fid]?.c_year && (
               <line
                 x1={xScale(data[fid]?.c_year || 0)}
                 x2={xScale(data[fid]?.c_year || 0)}
@@ -57,6 +57,17 @@ const Line = ({ pids, rowHeight, data, range, type }: ILine) => {
                 stroke="#B16653"
               />
             )}
+            {(type === '' || type === 'politics') &&
+              data?.[fid]?.office?.map((d: any) => (
+                <line
+                  key={d.c_first_year}
+                  x1={xScale(d.c_first_year || 0)}
+                  x2={xScale(d.c_first_year || 0)}
+                  y1={i * rowHeight}
+                  y2={i * rowHeight + rowHeight - heightPadding / 2}
+                  stroke="#B16653"
+                />
+              ))}
             {(data[fid]?.sentence || []).map(
               (d) =>
                 (type === '' || type === d.type) && (
