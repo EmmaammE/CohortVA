@@ -61,11 +61,10 @@ export interface ITagSlider {
   data: { id: string; weight: number; name: string }[];
   // 总权重
   sum: number;
+  widths: number[];
+  setWidths: any;
 }
-const TagSlider = ({ data, sum }: ITagSlider) => {
-  const [widths, setWidths] = useState<number[]>(
-    data.map((d) => (d.weight / sum) * 100)
-  );
+const TagSlider = ({ data, sum, widths, setWidths }: ITagSlider) => {
   const [tags, setTags] = useState(data);
   const TagSliderRef = useRef<HTMLDivElement>(null);
 

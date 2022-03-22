@@ -1,6 +1,12 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import Button from '../../../../components/button/Button';
 import TagSlider, { ITagSlider } from '../../../../components/slider';
+import { db } from '../../../../database/db';
+import {
+  fetchCohortByRegexAsync,
+  updateCohortByRegexAsync,
+} from '../../../../reducer/cohortsSlice';
+import { useAppDispatch, useAppSelector } from '../../../../store/hooks';
 import FeatureNode from '../components/FeatureNode';
 import ProportionBar from '../components/ProportionBar';
 
@@ -33,6 +39,8 @@ const btnStyle = {
   width: '100px',
 };
 const CohortFeature = ({ j, features, size }: ICohortFeature) => {
+  const dispatch = useAppDispatch();
+  const figureStatus = useAppSelector((state) => state.status.figureStatus);
   const weightData = useMemo(() => {
     const data: ITagSlider['data'] = [];
     let sum = 0;
@@ -52,11 +60,49 @@ const CohortFeature = ({ j, features, size }: ICohortFeature) => {
     };
   }, [features]);
 
+  const [widths, setWidths] = useState<number[]>(
+    weightData.data.map((d) => (d.weight / weightData.sum) * 100)
+  );
+
+  const update = useCallback(() => {
+    db.features
+      .bulkGet(features.map((f) => f.id))
+      .then((featuresParam) => {
+        const newFeatures = featuresParam.map((f, i) => ({
+          ...f,
+          weight: (widths[i] / 100) * weightData.sum,
+        }));
+
+        const param = {
+          use_weight: true,
+          features: newFeatures.reduce(
+            (acc, cur, i) => ({
+              ...acc,
+              [cur?.id || '']: cur,
+            }),
+            {}
+          ),
+          search_group: Object.keys(figureStatus).filter(
+            (d) => figureStatus[d] !== 2
+          ),
+        };
+
+        db.features.bulkPut(newFeatures as any);
+        dispatch(updateCohortByRegexAsync(param));
+      })
+      .catch((e) => console.log(e));
+  }, [dispatch, features, figureStatus, weightData.sum, widths]);
+
   return (
     <div className="cohort-item-row active">
       <div className="active-item">
         <span className="menu">{j + 1}</span>
-        <TagSlider data={weightData.data} sum={weightData.sum} />
+        <TagSlider
+          data={weightData.data}
+          sum={weightData.sum}
+          widths={widths}
+          setWidths={setWidths}
+        />
         <span className="right-menu" />
         <span className="info-size">{size}</span>
       </div>
@@ -82,7 +128,7 @@ const CohortFeature = ({ j, features, size }: ICohortFeature) => {
           </div>
         </div>
       ))}
-      <Button text="update" style={btnStyle} />
+      <Button text="update" style={btnStyle} onClick={update} />
     </div>
   );
 };

@@ -1,9 +1,10 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import * as d3 from 'd3';
-import { db, IData } from '../../../../database/db';
+import { db, IData, IFeature } from '../../../../database/db';
 import {
   fetchCohortByRegexAsync,
   getGroupId,
+  updateCohortByRegexAsync,
 } from '../../../../reducer/cohortsSlice';
 import { useAppDispatch, useAppSelector } from '../../../../store/hooks';
 import useForceGraph, { HEIGHT, WIDTH } from './useForceGraph';
@@ -109,35 +110,32 @@ const Overview = ({ show }: IOverview) => {
 
   const replaceF1WithF2 = useCallback(
     (f1, f2) => {
-      const cfidsArr: string[] = [];
-      cfids.forEach((cfid) => {
-        if (cfid !== f1) {
-          cfidsArr.push(cfid);
-        } else {
-          cfidsArr.push(f2);
-        }
-      });
-
-      console.log(cfidsArr);
+      const cfidsArr: string[] = [f2, ...Array.from(cfids)];
 
       // 调用接口
       db.features
         .bulkGet(cfidsArr)
         .then((featuresParam) => {
+          let weight = 0;
+          const featuresMap: { [key: string]: IFeature } = {};
+          featuresParam.forEach((f) => {
+            if (f1 !== f?.id && f?.id) {
+              featuresMap[f.id] = f;
+            } else if (f?.id === f1) {
+              weight = f?.weight || 0.1;
+            }
+          });
+          featuresMap[f2].weight = weight;
+
           const param = {
             use_weight: true,
-            features: featuresParam.reduce(
-              (acc, cur) => ({
-                ...acc,
-                // [cur?.id || '']: { ...cur, id: +(cur as any).id },
-                [cur?.id || '']: { ...cur },
-              }),
-              {}
+            features: featuresMap,
+            search_group: Object.keys(figureStatus).filter(
+              (d) => figureStatus[d] !== 2
             ),
-            search_group: Object.keys(figureStatus),
           };
 
-          dispatch(fetchCohortByRegexAsync(param));
+          dispatch(updateCohortByRegexAsync(param));
         })
         .catch((e) => console.log(e));
     },
