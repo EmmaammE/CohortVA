@@ -1,6 +1,6 @@
 // 使用新版sentence
 /* eslint-disable no-shadow */
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { getEventsByPeople } from '../../../api';
 import { db, IData } from '../../../database/db';
 import { getGroupId } from '../../../reducer/cohortsSlice';
@@ -65,6 +65,7 @@ interface IResData {
 }
 // 返回当前特征组对应的句子
 const useSentence = () => {
+  const init = useRef(true);
   const pids = useAppSelector((state) => state.status.figureIdArr);
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -74,6 +75,20 @@ const useSentence = () => {
   const [personInfo, setPersonInfo] = useState<{ [k: string]: IInfoData }>({});
 
   useEffect(() => {
+    if (init.current) {
+      init.current = false;
+      return;
+    }
+
+    if (pids.length === 0) {
+      setPersonToPerson({});
+      setYearToS({});
+      setPersonInfo({});
+      setPosToS({});
+
+      return;
+    }
+
     setLoading(true);
 
     getEventsByPeople(pids).then(async (res) => {

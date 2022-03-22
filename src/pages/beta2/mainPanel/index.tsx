@@ -221,7 +221,7 @@ const MainPanel = () => {
       <div className="op-container">
         <div id="feature-container">
           {features.map((f: any, i: number) => (
-            <div className="item">
+            <div className="item" key={f.id}>
               <span>{String.fromCharCode(i + BASE_CODE)}</span>
               <span className="rect" style={{ background: mainColors2[i] }} />
               <span>

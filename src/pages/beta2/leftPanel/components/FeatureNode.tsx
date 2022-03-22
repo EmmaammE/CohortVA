@@ -58,7 +58,11 @@ const Pie = ({ des, style = {} }: NodeProps) => (
       {...style}
     />
     {des.map((d, i) => (
-      <path key={d.id} d={pieArc[i]} fill={featureMap?.[d.type] || '#ccc'} />
+      <path
+        key={d?.id ? d.id : i}
+        d={pieArc[i]}
+        fill={featureMap?.[d.type] || '#ccc'}
+      />
     ))}
   </g>
 );
@@ -76,7 +80,7 @@ const Rect = ({ des, style = {} }: NodeProps) => (
     />
     {des.map((d, i) => (
       <rect
-        key={d.id}
+        key={d?.id ? d.id : i}
         x={-SIZE + i * SIZE}
         y={-SIZE}
         width={SIZE}
