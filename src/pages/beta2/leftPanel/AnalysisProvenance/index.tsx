@@ -4,6 +4,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { db } from '../../../../database/db';
 import { getGroups, setGroupIndex } from '../../../../reducer/cohortsSlice';
 import { setLinks } from '../../../../reducer/featureSlice';
+import { setFigureStatus } from '../../../../reducer/statusSlice';
 import { useAppDispatch, useAppSelector } from '../../../../store/hooks';
 import FeatureNode from '../components/FeatureNode';
 import ProportionBar from '../components/ProportionBar';

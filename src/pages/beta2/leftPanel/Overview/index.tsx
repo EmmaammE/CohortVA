@@ -18,6 +18,7 @@ const Overview = ({ show }: IOverview) => {
   const cfids = useAppSelector((state) => new Set(state.status.cfids));
   const linkSetArr = useAppSelector((state) => state.feature.links);
   const featureId = useAppSelector((state) => state.feature.featureId);
+  const figureStatus = useAppSelector((state) => state.status.figureStatus);
   const dispatch = useAppDispatch();
   const [data, setData] = useState<IData | null>(null);
 
@@ -87,11 +88,24 @@ const Overview = ({ show }: IOverview) => {
   const handleClick = useCallback(
     (id) => {
       clickedFeature.push(id);
-      clickedFeature.slice(-2);
-      setClickedFeature([...clickedFeature]);
+      setClickedFeature(clickedFeature.slice(-2));
     },
     [clickedFeature]
   );
+
+  const canReplace = useMemo(() => {
+    if (Object.keys(figureStatus).length && clickedFeature.length === 2) {
+      const [f1, f2] = clickedFeature;
+      if (
+        (cfids.has(f1) && !cfids.has(f2)) ||
+        (cfids.has(f2) && !cfids.has(f1))
+      ) {
+        return true;
+      }
+    }
+
+    return false;
+  }, [cfids, clickedFeature, figureStatus]);
 
   const replaceF1WithF2 = useCallback(
     (f1, f2) => {
@@ -120,13 +134,14 @@ const Overview = ({ show }: IOverview) => {
               }),
               {}
             ),
+            search_group: Object.keys(figureStatus),
           };
 
           dispatch(fetchCohortByRegexAsync(param));
         })
         .catch((e) => console.log(e));
     },
-    [cfids, dispatch]
+    [cfids, dispatch, figureStatus]
   );
   const handleReplace = useCallback(() => {
     if (clickedFeature.length === 2) {
@@ -140,10 +155,35 @@ const Overview = ({ show }: IOverview) => {
       }
     }
   }, [cfids, clickedFeature, replaceF1WithF2]);
+
+  const featureStyle = useCallback(
+    (id) => {
+      const clickedFeatureSet = new Set(clickedFeature);
+      if (cfids.has(id)) {
+        return {
+          filter: 'url(#color-shadow)',
+        };
+      }
+
+      if (clickedFeatureSet.has(id)) {
+        return {
+          filter: 'url(#select-shadow)',
+        };
+      }
+
+      return {};
+    },
+    [cfids, clickedFeature]
+  );
+
   return (
     <div className={style.container}>
       <div className={style['svg-wrapper']}>
-        <div className={style['replace-btn']} onClick={handleReplace}>
+        <div
+          className={style['replace-btn']}
+          onClick={handleReplace}
+          style={canReplace ? { cursor: 'pointer' } : { cursor: 'not-allowed' }}
+        >
           replace
         </div>
         <svg
@@ -159,6 +199,17 @@ const Overview = ({ show }: IOverview) => {
                 radius="0.1"
               />
               <feFlood floodColor="#ccc" />
+              <feComposite in="SourceGraphic" />
+            </filter>
+
+            <filter id="select-shadow">
+              <feMorphology
+                in="SourceAlpha"
+                result="expanded"
+                operator="dilate"
+                radius="0.1"
+              />
+              <feFlood floodColor="#D4E1E3" />
               <feComposite in="SourceGraphic" />
             </filter>
           </defs>
@@ -203,13 +254,7 @@ const Overview = ({ show }: IOverview) => {
                       id={node.id}
                       data={data.descriptions?.[node.id]?.features || []}
                       showTip
-                      style={
-                        cfids.has(node.id)
-                          ? {
-                              filter: 'url(#color-shadow)',
-                            }
-                          : {}
-                      }
+                      style={featureStyle(node.id)}
                       onClick={() => handleClick(node.id)}
                     />
                   )
