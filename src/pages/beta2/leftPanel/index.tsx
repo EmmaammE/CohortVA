@@ -7,6 +7,7 @@ import { ReactComponent as ToggleICON } from '../../../assets/icons/toggle.svg';
 import useTooltip from '../../../hooks/useTooltip';
 import Button from '../../../components/button/Button';
 import { useAppSelector } from '../../../store/hooks';
+import { db } from '../../../database/db';
 
 const expandStyle = {
   style: {
@@ -14,6 +15,26 @@ const expandStyle = {
     overflow: 'hidden',
   },
 };
+
+function downloadCSV(csv: any, filename: string) {
+  const csvFile = new Blob([csv], { type: 'text/csv' });
+  const downloadLink = document.createElement('a');
+
+  // file name
+  downloadLink.download = filename;
+
+  // create link to file
+  downloadLink.href = window.URL.createObjectURL(csvFile);
+
+  // hide download link
+  downloadLink.style.display = '';
+
+  // add link to DOM
+  document.body.appendChild(downloadLink);
+
+  // click download link
+  downloadLink.click();
+}
 
 const LeftPanel = () => {
   // expand
@@ -33,6 +54,31 @@ const LeftPanel = () => {
       }
     );
   }, [setTipInfo, tipInfo]);
+
+  const figureStatus = useAppSelector((state) => state.status.figureStatus);
+  const features = useAppSelector((state) => state.status.features);
+  const exportData = useCallback(() => {
+    const csv: string[] = [];
+    csv.push(`features${features.join(',')}`);
+    csv.push('');
+
+    csv.push(['ch_name', 'name'].join(','));
+
+    db.node
+      .bulkGet(
+        Object.keys(figureStatus)
+          .filter((fid) => figureStatus[fid] === 0)
+          .map((d) => +d)
+      )
+      .catch((e) => console.log(e))
+      .then((res) => {
+        res?.forEach((item) => {
+          csv.push([item?.name, item?.en_name].join(','));
+        });
+
+        downloadCSV(csv.join('\r\n'), 'cohort.csv');
+      });
+  }, [features, figureStatus]);
 
   return (
     <div id="left-panel">
@@ -56,7 +102,11 @@ const LeftPanel = () => {
           <div id="analysis">
             <h3 className="g-title">Cohort Analysis Provenance</h3>
             <AnalysisPanel />
-            <Button text="Export" style={{ margin: '10px auto' }} />
+            <Button
+              text="Export"
+              style={{ margin: '10px auto' }}
+              onClick={exportData}
+            />
           </div>
         </div>
       </div>

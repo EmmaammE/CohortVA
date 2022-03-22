@@ -29,6 +29,7 @@ import { db } from '../../../../database/db';
 import Tooltip from '../../../../components/tooltip/Tip';
 import useRelationData from './useRelationData';
 import { IInfoData } from '../useSentence2';
+import useBrush from '../featureList/useBursh';
 
 interface IFeatureView {
   data: {
@@ -190,9 +191,12 @@ const FeatureView = ({
     });
   }, []);
 
+  const [pair, setPair] = useState<number[] | null>(null);
+
   const handleClick = useCallback(
     (e, source, target) => {
-      if (source && target) {
+      if (source !== null && target !== null) {
+        // setPair([source, target, ...(pair || [])]);
         setPair([source, target]);
         handleMouseOver(e, source, target);
       } else {
@@ -202,9 +206,14 @@ const FeatureView = ({
     [handleMouseOver]
   );
 
+  const handleBrush = useCallback((d: null | number[]) => {
+    if (d !== null) {
+      setPair(d);
+    }
+  }, []);
+
   const { initIndex, $container, offset } = useVisibleIndex(21);
   // 矩阵选中的人
-  const [pair, setPair] = useState<[number, number] | null>(null);
   const choseFigure = useCallback(
     (fid: string, name: string, i: number) => {
       if (pair?.[0] === i && pair?.[1] === i) {
@@ -378,6 +387,13 @@ const FeatureView = ({
         <div className={style['figure-header']}>Figure Label</div>
 
         <div className={style['events-header']}>
+          <span
+            className={selectedType === '' ? 'active-events' : ''}
+            style={{ '--color': '#ccc' } as any}
+            onClick={() => setSelectedType('')}
+          >
+            All
+          </span>
           {Object.keys(eventMap).map((e) => (
             <span
               className={e === selectedType ? 'active-events' : ''}
@@ -455,22 +471,17 @@ const FeatureView = ({
           className={[style['content-inner'], 'g-scroll'].join(' ')}
           ref={$container}
         >
-          <div
-            className={style.highlight}
-            style={
-              pair
-                ? { top: pair?.[0] * 21, opacity: 1 }
-                : { opacity: 0, top: 0 }
-            }
-          />
-          <div
-            className={style.highlight}
-            style={
-              pair
-                ? { top: pair?.[1] * 21, opacity: 1 }
-                : { opacity: 0, top: 0 }
-            }
-          />
+          {pair &&
+            pair.map((index) => (
+              <div
+                className={style.highlight}
+                style={
+                  pair
+                    ? { top: index * 21, opacity: 1 }
+                    : { opacity: 0, top: 0 }
+                }
+              />
+            ))}
           <div className={style['scroll-wrapper']}>
             <svg
               width={width}
@@ -568,8 +579,8 @@ const FeatureView = ({
           boxSize={matrixHeight / sortedFigureIds.length / 2}
           rangeX={rangeX}
           rangeY={rangeY}
-          source={pair?.[0]}
-          target={pair?.[1]}
+          pair={pair || []}
+          handleBrush={handleBrush}
           handleClick={handleClick}
           handleMouseOver={handleMouseOver}
           handleMouseOut={handleMouseOut}

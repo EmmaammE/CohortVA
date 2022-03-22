@@ -111,7 +111,7 @@ const Overview = ({ show }: IOverview) => {
         .bulkGet(cfidsArr)
         .then((featuresParam) => {
           const param = {
-            use_weight: false,
+            use_weight: true,
             features: featuresParam.reduce(
               (acc, cur) => ({
                 ...acc,

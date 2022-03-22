@@ -408,6 +408,7 @@ export const processData = (data) => {
       value: {
         features: handleFeatureData(data, chosenClassifier),
         people: getPeople(data, chosenClassifier),
+        pid2allcfvalue: classifiler.pid2allcfvalue,
         ...getFigure2Feature(data, chosenClassifier),
       }
     }

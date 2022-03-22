@@ -34,7 +34,17 @@ export interface IGroup extends IData {
 export interface ICohort {
   id: string;
   index: number;
-  value: any;
+  value: {
+    features: any[];
+    fid2weight: { [key: string]: number };
+    maxFigureWeight: number;
+    people: any;
+    pid2allcfvalue: {
+      [key: string]: {
+        [key: string]: number;
+      };
+    };
+  };
 }
 
 export interface ISentence {

@@ -33,7 +33,7 @@ const Timeline = ({ yearToS, width, height }: ITimeline) => {
     title: '',
   });
 
-  const handleTooltipClick = (e) => {
+  const handleTooltipClick = () => {
     const style = { ...state.style, opacity: 0 };
     setState({ ...state, style });
   };
@@ -102,7 +102,7 @@ const Timeline = ({ yearToS, width, height }: ITimeline) => {
     .y0((d) => yScale(d[0]))
     .y1((d) => yScale(d[1]));
 
-  const onMouseOn = (e) => {
+  const onMouseOn = (e: any) => {
     const x = e.clientX - ($area.current as any).getBoundingClientRect().x;
 
     const year = invert(xScale)(x);
@@ -175,7 +175,9 @@ const Timeline = ({ yearToS, width, height }: ITimeline) => {
           <g ref={$area}>
             {stackedData.map((d: any, i) => (
               <path
-                d={area(d)}
+                // eslint-disable-next-line react/no-array-index-key
+                key={i}
+                d={area(d) as string}
                 fill={color[i]}
                 // onMouseMove={onMouseOn}
                 onClick={onMouseOn}

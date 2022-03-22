@@ -20,6 +20,7 @@ import {
   setCfids,
   setFigureIdArr,
   setFigureStatus,
+  setMainFeatures,
 } from '../../../reducer/statusSlice';
 import { getDisplayedFeatureText, padding } from './utils';
 import useSentence from './useSentence2';
@@ -52,8 +53,6 @@ const MainPanel = () => {
 
   const pids = useMemo(() => Object.keys(fid2weight), [fid2weight]);
 
-  const [endPoints, setEndPoints] = useState<number[]>([]);
-
   const onChange = useCallback(
     (index) => {
       if (index === '') {
@@ -73,14 +72,14 @@ const MainPanel = () => {
         index: classifierIndex,
       });
 
+      if (!item?.value) return;
+
       const {
         features = [],
         people = {},
         maxFigureWeight = 0,
         fid2weight = {},
-      } = item?.value || {};
-
-      console.log(groupId, item?.value);
+      } = item.value;
 
       setFeatures(features);
       setPeople(people);
@@ -90,6 +89,13 @@ const MainPanel = () => {
 
       // TODO 会存在cfids被替换的情况
       dispatch(setCfids(features.map((f: any) => f.id)));
+      dispatch(
+        setMainFeatures(
+          features.map((f: any) =>
+            f.descriptorsArr.map((d: any) => `${d.type}(${d.text})`).join(' & ')
+          )
+        )
+      );
     }
 
     load();
@@ -129,11 +135,9 @@ const MainPanel = () => {
   }, [featureToSort, fid2weight, people]);
 
   useEffect(() => {
-    // 根据people设置默认的人的状态, 获得bar的数据
+    // 根据people设置默认的人的状态
     const peopleKeys = ['normalPeople', 'refusedPeople', 'recommendPeople'];
 
-    let sum = 0;
-    const curEndPoints: number[] = [];
     const pid2status: { [k: string]: number } = {};
 
     peopleKeys.forEach((key, i) => {
@@ -142,13 +146,9 @@ const MainPanel = () => {
         peopleList.forEach((p: any) => {
           pid2status[p.id] = i;
         });
-        sum += peopleList.length;
-        curEndPoints.unshift(sum);
       }
     });
 
-    const scale = d3.scaleLinear().domain([1, sum]).range([0, 920]);
-    setEndPoints(curEndPoints.map(scale));
     setFigureStatusCb(pid2status);
   }, [people, setFigureStatusCb]);
 
@@ -226,8 +226,8 @@ const MainPanel = () => {
               <span className="rect" style={{ background: mainColors2[i] }} />
               <span>
                 {f.descriptorsArr
-                  .map((d: any) => `${d.text.slice(1, d.text.length - 1)}`)
-                  .join('&')}
+                  .map((d: any) => `${d.type.slice(0, 1)}(${d.text})`)
+                  .join(' & ')}
               </span>
             </div>
           ))}
