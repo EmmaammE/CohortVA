@@ -13,7 +13,26 @@ import {
   processData,
 } from '../pages/mainPanel/FeaturePanel/features';
 import type { RootState } from '../store';
-import { getAtomFeature, preprocessData } from '../utils/feature';
+import {
+  getAtomFeature,
+  handleFeatureData,
+  preprocessData,
+} from '../utils/feature';
+
+interface IUpdateData {
+  id2node: { [key: string]: any };
+  id2edge: { [key: string]: any };
+  id2sentence: { [key: string]: any };
+  id2composite_features: {};
+  id2model_descriptor: any;
+  main_data: {
+    cf2weight: { [key: string]: number };
+    fid2weight: {};
+    normal_pids: string[];
+    recommend_pids: string[];
+    refused_pids: string[];
+  };
+}
 
 type TPerson = {
   // eslint-disable-next-line camelcase
@@ -74,14 +93,14 @@ const handleResData = async (res: any) => {
       .catch((e) => console.log(e));
 
     await db.node.bulkAdd(Object.values(id2node)).catch((e) => console.log(e));
-    // await db.node
-    //   .bulkAdd(
-    //     Object.keys(id2edge).map((key) => ({
-    //       id: +key,
-    //       label: id2edge[key].label,
-    //     }))
-    //   )
-    //   .catch((e) => console.log(e));
+    await db.node
+      .bulkAdd(
+        Object.keys(id2edge).map((key) => ({
+          id: +key,
+          label: id2edge[key].label,
+        }))
+      )
+      .catch((e) => console.log(e));
     await db.cohorts
       .bulkAdd(processData(res.data))
       .catch((e) => console.log(e));
@@ -108,6 +127,7 @@ const handleResData = async (res: any) => {
           const feature = id2composite_features[key];
           feature.model_descriptors = feature.model_descriptors.map(
             (d: string) => ({
+              id: d,
               type: id2model_descriptor[d].type,
               parms: id2model_descriptor[d].parms,
             })
@@ -118,6 +138,23 @@ const handleResData = async (res: any) => {
             ...id2composite_features[key],
           };
         })
+      )
+      .catch((e) => console.log(e));
+  } catch (e) {
+    console.error((e as any).message);
+  }
+};
+
+const handleUpdateData = async (res: IUpdateData) => {
+  try {
+    const { id2node, id2edge } = res;
+    await db.node.bulkAdd(Object.values(id2node)).catch((e) => console.log(e));
+    await db.node
+      .bulkAdd(
+        Object.keys(id2edge).map((key) => ({
+          id: +key,
+          label: id2edge[key].label,
+        }))
       )
       .catch((e) => console.log(e));
   } catch (e) {
@@ -193,7 +230,7 @@ export const updateCohortByRegexAsync = createAsyncThunk<
     url: Apis.get_cohort_by_regex,
     data: payload,
   });
-  await handleResData(res);
+  await handleUpdateData(res.data);
 
   return res.data;
 });
@@ -244,10 +281,47 @@ export const cohortsSlice = createSlice({
       .addCase(updateGroup.fulfilled, handleFetchCohortAction)
       .addCase(
         updateCohortByRegexAsync.fulfilled,
-        (state: ICohorts, action) => {
-          // 更新这个group的数据
+        (state: ICohorts, action: PayloadAction<IUpdateData>) => {
+          const cohortIndex = state.classifierIndex;
+          const groupId = state.groups[state.groupIndex];
 
-          console.log(action.payload);
+          db.cohorts.get([groupId, cohortIndex]).then((cohort) => {
+            if (cohort) {
+              // cohort.value.features =
+
+              // update features
+              // console.log(cohort.value.features);
+
+              db.group.get(groupId).then((group) => {
+                if (group) {
+                  db.features.toArray().then((featuresTable) => {
+                    if (featuresTable) {
+                      const cfDict = featuresTable.reduce(
+                        (acc, cur) => ({ ...acc, [cur.id]: cur }),
+                        {}
+                      );
+
+                      const cf2cf_pmi = group?.cf2cf_pmi;
+                      const features = handleFeatureData(
+                        action.payload,
+                        cf2cf_pmi,
+                        cfDict
+                      );
+                      const { main_data } = action.payload;
+                      cohort.value.features = features;
+                      cohort.value.fid2weight = main_data.fid2weight;
+                      cohort.value.people = {
+                        normalPeople: main_data.normal_pids,
+                        recommendPeople: main_data.recommend_pids,
+                        refusedPeople: main_data.refused_pids,
+                      };
+                      db.cohorts.put(cohort);
+                    }
+                  });
+                }
+              });
+            }
+          });
         }
       );
   },

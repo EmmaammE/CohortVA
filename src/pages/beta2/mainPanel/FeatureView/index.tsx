@@ -559,7 +559,7 @@ const FeatureView = ({
 
             <div className={style.theme}>
               {sortedFigureIds.map((id) => (
-                <div className={style['theme-item']}>
+                <div className={style['theme-item']} key={id}>
                   <p>{personInfo[id]?.sentenceInfo?.cnt}</p>
 
                   {personInfo[id]?.sentenceInfo?.type.map((type) => (

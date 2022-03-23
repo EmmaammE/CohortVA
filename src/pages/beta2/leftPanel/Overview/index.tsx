@@ -136,6 +136,7 @@ const Overview = ({ show }: IOverview) => {
           };
 
           dispatch(updateCohortByRegexAsync(param));
+          setClickedFeature([]);
         })
         .catch((e) => console.log(e));
     },
@@ -143,7 +144,6 @@ const Overview = ({ show }: IOverview) => {
   );
   const handleReplace = useCallback(() => {
     if (clickedFeature.length === 2) {
-      console.log(clickedFeature);
       const [f1, f2] = clickedFeature;
       if (cfids.has(f1)) {
         // 替换掉f1
@@ -157,15 +157,15 @@ const Overview = ({ show }: IOverview) => {
   const featureStyle = useCallback(
     (id) => {
       const clickedFeatureSet = new Set(clickedFeature);
-      if (cfids.has(id)) {
-        return {
-          filter: 'url(#color-shadow)',
-        };
-      }
-
       if (clickedFeatureSet.has(id)) {
         return {
           filter: 'url(#select-shadow)',
+        };
+      }
+
+      if (cfids.has(id)) {
+        return {
+          filter: 'url(#color-shadow)',
         };
       }
 

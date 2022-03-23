@@ -36,7 +36,7 @@ const FigureTraces = ({ posToS }) => {
 
   const drawCircle = useCallback(
     (data, addr_dict) => {
-      const radiusScale = d3.scaleLinear().domain([0, maxVal]).range([0, 20]);
+      const radiusScale = d3.scaleLinear().domain([0, maxVal]).range([0, 15]);
       d3.select($map.current)
         .selectAll('circle')
         .data(Object.keys(data))
@@ -55,7 +55,7 @@ const FigureTraces = ({ posToS }) => {
         })
         .attr('r', (d) => {
           if (addr_dict[d]) return radiusScale(data[d].length);
-          return 4;
+          return 2;
         })
         .on('mouseenter',(e) => {
           //
@@ -65,6 +65,7 @@ const FigureTraces = ({ posToS }) => {
           let targetData = addr_dict[e.target.__data__].count;
           if (targetData.length > 50) targetData = targetData.slice(0, 20);
           if (targetData.length > 0) {
+            console.log(targetData)
   
             Promise.all(targetData.map(async (sentence) => {
               const sentenceData = await db.sentence.get(sentence.sentence);
