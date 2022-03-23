@@ -45,7 +45,7 @@ export default () => {
           Object.keys(figureDataObject).forEach((featureId) => {
             if (figureDataObject[featureId]) {
               curFigureData.push({
-                des: data?.[featureId].features
+                des: data?.[featureId]?.features
                   .map((d: any) => `${d.type}(${d.text})`)
                   .join('&'),
                 value: figureDataObject[featureId],

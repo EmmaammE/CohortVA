@@ -65,7 +65,6 @@ const FigureTraces = ({ posToS }) => {
           let targetData = addr_dict[e.target.__data__].count;
           if (targetData.length > 50) targetData = targetData.slice(0, 20);
           if (targetData.length > 0) {
-            console.log(targetData)
   
             Promise.all(targetData.map(async (sentence) => {
               const sentenceData = await db.sentence.get(sentence.sentence);
@@ -119,7 +118,7 @@ const FigureTraces = ({ posToS }) => {
   }, [drawCircle, posToS])
  
   const handleTooltipClick = (e) => {
-    const style = { ...state.style, opacity: 0 };
+    const style = { ...state.style, opacity: 0,top:0 };
     setState({ ...state, style });
   };
 
