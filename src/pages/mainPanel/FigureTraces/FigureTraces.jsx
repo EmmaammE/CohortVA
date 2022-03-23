@@ -6,21 +6,22 @@ import './FigureTraces.scss';
 import template from '../../../utils/tempelate';
 import Tooltip from '../../../components/tooltip/Tip';
 import { post } from '../../../api/tools';
+import { db } from '../../../database/db';
 
-const BOX_WIDTH = 260;
-const BOX_HEIGHT = 208;
+const BOX_WIDTH = 220;
+const BOX_HEIGHT = 130;
 let maxVal = 0;
 const path2 = d3
   .geoPath()
   .projection(
-    d3.geoMercator().center([110, 11]).scale(250).translate([465, 365])
+    d3.geoMercator().center([110, 11]).scale(300).translate([BOX_WIDTH*1.55, BOX_HEIGHT*2])
   );
 
 const FigureTraces = ({ posToS }) => {
   const projection = d3
     .geoMercator()
-    .center([110, 31])
-    .scale(800)
+    .center([108, 31])
+    .scale(500)
     .translate([BOX_WIDTH, BOX_HEIGHT]);
   const path = d3.geoPath().projection(projection);
   const [state, setState] = useState({
@@ -66,13 +67,13 @@ const FigureTraces = ({ posToS }) => {
           if (targetData.length > 0) {
   
             Promise.all(targetData.map(async (sentence) => {
-              console.log(`sentence_category${sentence.category}`);
+              const sentenceData = await db.sentence.get(sentence.sentence);
               const vKey = [];
-              sentence.words.forEach((word, idx) => {
+              sentenceData.words.forEach((word, idx) => {
                 vKey.push(word);
-                vKey.push(sentence.edges[idx]);
+                vKey.push(sentenceData.edges[idx]);
               });
-              const v = await template(sentence.category, vKey, 'name');
+              const v = await template(sentenceData.category, vKey, 'name');
               // console.log(v)
               return v
             })).then(resultData => {
@@ -133,23 +134,27 @@ const FigureTraces = ({ posToS }) => {
        
         <div className="mapContainer">
           <svg
+            width={2*BOX_WIDTH}
+            height={2*BOX_HEIGHT}
             viewBox={`0 0 ${2 * BOX_WIDTH} ${2 * BOX_HEIGHT}`}
             xmlns="http://www.w3.org/2000/svg"
             style={{ position: 'relative' }}
             id="mapWithCircles"
           >
+
+              
             <clipPath id="myClip">
               <rect
-                x="450"
-                y="300"
-                width="70"
-                height="110"
+                x={BOX_WIDTH*1.7}
+                y={BOX_HEIGHT*1.2}
+                width="65"
+                height="100"
                 stroke="black"
                 fill="transparent"
               />
             </clipPath>
 
-            <g ref={$map}>
+          <g ref={$map}>
               <g>
                 {china.features.map((d, i) => (
                   <path
@@ -162,15 +167,8 @@ const FigureTraces = ({ posToS }) => {
                 ))}
               </g>
               <g ref={$container} />
-            </g>
-            <rect
-              x="450"
-              y="300"
-              width="70"
-              height="110"
-              stroke="black"
-              fill="transparent"
-            />
+            </g> 
+           
             <g clipPath="url(#myClip)">
               {china.features.map((d, i) => (
                 <path
@@ -182,6 +180,14 @@ const FigureTraces = ({ posToS }) => {
                 />
               ))}
             </g>
+            <rect
+              x={BOX_WIDTH*1.7}
+              y={BOX_HEIGHT*1.2}
+              width="65"
+              height="100"
+              stroke="black"
+              fill="transparent"
+            />
           </svg>
         </div>
 

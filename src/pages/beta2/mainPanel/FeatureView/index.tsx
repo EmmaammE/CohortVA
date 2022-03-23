@@ -51,7 +51,7 @@ interface IFeatureView {
 const { Option } = Select;
 
 const height = 21;
-const width = 220;
+const width = 210;
 
 const defaultLabelColorScale = d3
   .scaleOrdinal()
@@ -367,46 +367,57 @@ const FeatureView = ({
   return (
     <div className={style.container}>
       <div className={style.header}>
-        <Select
-          style={{ width: 150 }}
-          placeholder="Feature number"
-          optionFilterProp="children"
-          size="small"
-          value={getDisplayedFeatureText(featureToSort)}
-          onChange={onChange}
-        >
-          <Option value="">Feature Number</Option>
+        <div className={style['feature-header']}>
+          <h3>Figure Feature</h3>
+          <Select
+            style={{ width: 120 }}
+            placeholder="Feature number"
+            optionFilterProp="children"
+            size="small"
+            value={getDisplayedFeatureText(featureToSort)}
+            onChange={onChange}
+          >
+            <Option value="">Number</Option>
 
-          {features.map((feature: any, index: number) => (
-            <Option key={feature.id} value={index}>
-              {feature.descriptorsArr.map((d: any) => `(${d.text})`).join('&')}
-            </Option>
-          ))}
-        </Select>
+            {features.map((feature: any, index: number) => (
+              <Option key={feature.id} value={index}>
+                {feature.descriptorsArr
+                  .map((d: any) => `(${d.text})`)
+                  .join('&')}
+              </Option>
+            ))}
+          </Select>
+        </div>
 
-        <div className={style['figure-header']}>Figure Label</div>
+        <div className={style['figure-header']}>
+          <h3>Figure Label</h3>
+        </div>
 
         <div className={style['events-header']}>
-          <span
-            className={selectedType === '' ? 'active-events' : ''}
-            style={{ '--color': '#ccc' } as any}
-            onClick={() => setSelectedType('')}
-          >
-            All
-          </span>
-          {Object.keys(eventMap).map((e) => (
+          <h3>Figure Event</h3>
+
+          <div>
             <span
-              className={e === selectedType ? 'active-events' : ''}
-              style={{ '--color': (eventMap as any)[e].color } as any}
-              onClick={() => setSelectedType(e)}
+              className={selectedType === '' ? 'active-events' : ''}
+              style={{ '--color': '#ccc' } as any}
+              onClick={() => setSelectedType('')}
             >
-              {e}
+              All
             </span>
-          ))}
+            {Object.keys(eventMap).map((e) => (
+              <span
+                className={e === selectedType ? 'active-events' : ''}
+                style={{ '--color': (eventMap as any)[e].color } as any}
+                onClick={() => setSelectedType(e)}
+              >
+                {e}
+              </span>
+            ))}
+          </div>
         </div>
 
         <Select
-          style={{ width: 150 }}
+          style={{ width: 120 }}
           placeholder="All"
           optionFilterProp="children"
           size="small"
@@ -421,10 +432,13 @@ const FeatureView = ({
         </Select>
       </div>
       <div className={style.content}>
+        <div className={style['content-divider']} style={{ left: '458px' }} />
+        <div className={style['content-divider']} style={{ left: '225px' }} />
+
         <div className={style['content-histogram']}>
           <div>
             <InfoGraph
-              width={220}
+              width={210}
               height={histogramHeight - 5}
               data={stackedInfo}
               yScale={infoYScale}
@@ -433,7 +447,7 @@ const FeatureView = ({
           </div>
           <div>
             <InfoGraph
-              width={120}
+              width={108}
               height={histogramHeight - 5}
               data={labelInfo}
               yScale={infoYScale}
@@ -443,7 +457,7 @@ const FeatureView = ({
 
           <div className={style.year}>
             <InfoGraph
-              width={200}
+              width={180}
               height={histogramHeight - 5}
               data={eventsInfo}
               yScale={eventsScale}

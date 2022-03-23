@@ -239,7 +239,7 @@ const MainPanel = () => {
         <div className="feature-content-left">
           <h3 className="g-title">Figure Overview</h3>
           <Select
-            style={{ width: 220 }}
+            style={{ width: 220, marginLeft: '15px' }}
             placeholder="Feature number"
             optionFilterProp="children"
             size="small"
@@ -284,7 +284,7 @@ const MainPanel = () => {
           <div className="timeline-view">
             <h3 className="g-title">Cohort Timeline</h3>
             {loading && <div className="loading-border" />}
-            <Timeline yearToS={yearToS} width={770} height={280} />
+            <Timeline yearToS={yearToS} width={620} height={268} />
           </div>
         </div>
       </div>

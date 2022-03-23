@@ -27,7 +27,7 @@ const FigureInfo = () => {
   return <div>
     {
       chosenFigure && (
-        <div id="figureStatus">
+        <div id="figureStatus" className='g-divider'>
           <span>{chosenFigure}</span>
           <Radio.Group
             value={figureStatus[figureId]}

@@ -6,4 +6,5 @@
 .my-legends text {
   text-align: center;
   dominant-baseline: middle;
+  user-select: none;
 }

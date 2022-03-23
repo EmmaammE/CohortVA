@@ -181,6 +181,23 @@ export const updateGroup = createAsyncThunk<
   return res.data;
 });
 
+export const updateCohortByRegexAsync = createAsyncThunk<
+  any,
+  {
+    use_weight: boolean;
+    features: any;
+    search_group?: string[];
+  }
+>('cohorts/updateCohortByRegex', async (payload) => {
+  const res = await post({
+    url: Apis.get_cohort_by_regex,
+    data: payload,
+  });
+  await handleResData(res);
+
+  return res.data;
+});
+
 export const fetchCohortByRegexAsync = createAsyncThunk<
   any,
   {
@@ -224,7 +241,15 @@ export const cohortsSlice = createSlice({
       .addCase(fetchCohortByNameAsync.fulfilled, handleFetchCohortAction)
       .addCase(fetchCohortByNamesAsync.fulfilled, handleFetchCohortAction)
       .addCase(fetchCohortByRegexAsync.fulfilled, handleFetchCohortAction)
-      .addCase(updateGroup.fulfilled, handleFetchCohortAction);
+      .addCase(updateGroup.fulfilled, handleFetchCohortAction)
+      .addCase(
+        updateCohortByRegexAsync.fulfilled,
+        (state: ICohorts, action) => {
+          // 更新这个group的数据
+
+          console.log(action.payload);
+        }
+      );
   },
 });
 
