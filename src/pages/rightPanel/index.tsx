@@ -6,7 +6,7 @@ import './index.scss';
 const RightPanel = () => (
   <div id="right-panel">
     <h2 className="g-title">Figure View</h2>
-    <div className="person-view g-divider">
+    <div className="person-view">
       <h3 className="g-title">Personal Info</h3>
       <FigureInfo />
     </div>

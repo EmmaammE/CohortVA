@@ -128,7 +128,7 @@ const Overview = ({ show }: IOverview) => {
           featuresMap[f2].weight = weight;
 
           const param = {
-            use_weight: true,
+            use_weight: false,
             features: featuresMap,
             search_group: Object.keys(figureStatus).filter(
               (d) => figureStatus[d] !== 2

@@ -13,7 +13,7 @@ interface ILine {
   type: string;
 }
 
-const width = 160;
+const width = 185;
 const padding = 10;
 const heightPadding = 14;
 
