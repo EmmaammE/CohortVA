@@ -17,6 +17,7 @@ import {
   setFigureId,
   setFigureName,
   updateFigureExplored,
+  updateFigureStatus,
   updateFigureStatusById,
 } from '../../../../reducer/statusSlice';
 import useVisibleIndex from './useVisibleIndex';
@@ -227,6 +228,20 @@ const FeatureView = ({
     [dispatch, pair]
   );
 
+  const onChangeAllRadio = useCallback(
+    (e: any) => {
+      if (e.target.value !== undefined) {
+        dispatch(
+          updateFigureStatus(
+            Object.fromEntries(figureIdArr.map((fid) => [fid, e.target.value]))
+          )
+        );
+
+        dispatch(updateFigureExplored(figureIdArr));
+      }
+    },
+    [dispatch, figureIdArr]
+  );
   const onChangeRadio = useCallback(
     (pid: string, e: any) => {
       if (e.target.value !== undefined) {
@@ -236,7 +251,7 @@ const FeatureView = ({
             status: e.target.value,
           })
         );
-        dispatch(updateFigureExplored(String(pid)));
+        dispatch(updateFigureExplored([String(pid)]));
       }
     },
     [dispatch]
@@ -360,6 +375,16 @@ const FeatureView = ({
     [relationInfo]
   );
 
+  const allStatus = useMemo(() => {
+    for (let i = 0; i < labelInfo.length; i += 1) {
+      if (labelInfo[i].value === figureIdArr.length) {
+        return i;
+      }
+    }
+
+    return -1;
+  }, [figureIdArr.length, labelInfo]);
+
   if (figureIdArr.length === 0) {
     return <div />;
   }
@@ -436,6 +461,14 @@ const FeatureView = ({
         <div className={style['content-divider']} style={{ left: '458px' }} />
         <div className={style['content-divider']} style={{ left: '225px' }} />
 
+        <div className={style.checkall}>
+          <Radio.Group value={allStatus} onChange={onChangeAllRadio}>
+            <Radio value={0} />
+            <Radio value={1} />
+            <Radio value={2} />
+          </Radio.Group>
+        </div>
+
         <div className={style['content-histogram']}>
           <div>
             <InfoGraph
@@ -497,15 +530,16 @@ const FeatureView = ({
                 }
               />
             ))}
+
           <div className={style['scroll-wrapper']}>
             <svg
               width={width}
               height={svgHeight}
               viewBox={`0 0 ${width} ${svgHeight}`}
             >
-              {stack.map((dArr: any[], i: number) => (
-                <g key={groups[i]}>
-                  {dArr.map((d, j) => (
+              {stack.map((dArr: any, i: number) => (
+                <g key={dArr.key}>
+                  {dArr.map((d: any, j: number) => (
                     <rect
                       key={figureIdArr[j]}
                       id={`${figureIdArr[j]}`}
@@ -514,7 +548,7 @@ const FeatureView = ({
                       width={Math.abs(xScale(d[1]) - xScale(d[0]))}
                       height={height - 4}
                       // fill={`url(#Gradient${groups[i]})`}
-                      fill={stackedColorScale(groups[i]) as string}
+                      fill={stackedColorScale(dArr.key) as string}
                       stroke="#fff"
                       strokeWidth={2}
                     />
