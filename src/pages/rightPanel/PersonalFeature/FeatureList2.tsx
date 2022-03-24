@@ -44,12 +44,17 @@ export default () => {
 
           Object.keys(figureDataObject).forEach((featureId) => {
             if (figureDataObject[featureId]) {
-              curFigureData.push({
-                des: data?.[featureId]?.features
-                  .map((d: any) => `${d.type}(${d.text})`)
-                  .join('&'),
-                value: figureDataObject[featureId],
-              });
+              if (data?.[featureId]) {
+                curFigureData.push({
+                  des: data[featureId]?.features
+                    .map((d: any) => `${d.type}(${d.text})`)
+                    .join('&'),
+                  value: figureDataObject[featureId],
+                });
+              }
+              // else {
+              //   console.log(featureId);
+              // }
             }
           });
           curFigureData.sort((a, b) => b.value - a.value);

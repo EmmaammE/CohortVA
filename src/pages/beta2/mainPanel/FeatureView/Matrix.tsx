@@ -89,6 +89,8 @@ const Matrix = ({
         handleBrush(Array.from(selectedPair));
       });
 
+    d3.select($container.current).select('g.lasso').remove();
+
     d3.select($container.current).call(lasso);
   }, [data, handleBrush]);
 

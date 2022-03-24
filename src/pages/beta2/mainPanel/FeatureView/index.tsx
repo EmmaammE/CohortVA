@@ -30,7 +30,7 @@ import { db } from '../../../../database/db';
 import Tooltip from '../../../../components/tooltip/Tip';
 import useRelationData from './useRelationData';
 import { IInfoData } from '../useSentence2';
-import useBrush from '../featureList/useBursh';
+import { ReactComponent as SortICON } from '../../../../assets/icons/sort2.svg';
 
 interface IFeatureView {
   data: {
@@ -47,6 +47,7 @@ interface IFeatureView {
   personInfo: {
     [key: string]: IInfoData;
   };
+  nodeGroups: string[];
 }
 
 const { Option } = Select;
@@ -69,6 +70,7 @@ const FeatureView = ({
   features,
   relationData,
   personInfo,
+  nodeGroups,
 }: IFeatureView) => {
   const [featureToSort, setfeatureToSort] = useState<any>(null);
   const figureStatus = useAppSelector((state) => state.status.figureStatus);
@@ -104,10 +106,28 @@ const FeatureView = ({
     figureIdArr.length,
   ]);
 
+  const [useNodeGroups, setUseNodeGroups] = useState<boolean>(false);
+  const clickSort = useCallback(() => {
+    setUseNodeGroups(!useNodeGroups);
+  }, [useNodeGroups]);
+
+  const [useEventNumber, setUseEventNumber] = useState<boolean>(false);
+  const handleEventSort = useCallback(() => {
+    setUseEventNumber(!useEventNumber);
+  }, [useEventNumber]);
+
   const sortedFigureIds = useMemo(() => {
+    if (useNodeGroups) return [...nodeGroups];
     const featureIdToSort = featureToSort?.id || '';
     const figures = [...figureIdArr];
-    if (featureIdToSort !== '') {
+
+    if (useEventNumber) {
+      figures.sort(
+        (p1, p2) =>
+          (personInfo?.[p2]?.sentenceInfo?.cnt || 0) -
+          (personInfo?.[p1]?.sentenceInfo?.cnt || 0)
+      );
+    } else if (featureIdToSort !== '') {
       figures.sort(
         (p1, p2) =>
           data?.[p2]?.[featureIdToSort] - data?.[p1]?.[featureIdToSort]
@@ -117,7 +137,15 @@ const FeatureView = ({
     }
 
     return figures;
-  }, [data, featureToSort?.id, figureIdArr]);
+  }, [
+    data,
+    featureToSort?.id,
+    figureIdArr,
+    nodeGroups,
+    personInfo,
+    useEventNumber,
+    useNodeGroups,
+  ]);
 
   const yScale = useMemo(
     () => d3.scaleBand().domain(sortedFigureIds).range([0, svgHeight]),
@@ -385,6 +413,13 @@ const FeatureView = ({
     return -1;
   }, [figureIdArr.length, labelInfo]);
 
+  useEffect(() => {
+    // figureIdArr变化后，恢复状态
+    setPair(null);
+    setUseNodeGroups(false);
+    setUseEventNumber(false);
+  }, [figureIdArr]);
+
   if (figureIdArr.length === 0) {
     return <div />;
   }
@@ -461,7 +496,11 @@ const FeatureView = ({
         <div className={style['content-divider']} style={{ left: '458px' }} />
         <div className={style['content-divider']} style={{ left: '225px' }} />
 
-        <div className={style.checkall}>
+        <div
+          className={style.checkall}
+          // 有滚动条的时候调整位置
+          style={figureIdArr.length > 25 ? { marginRight: '-3px' } : {}}
+        >
           <Radio.Group value={allStatus} onChange={onChangeAllRadio}>
             <Radio value={0} />
             <Radio value={1} />
@@ -491,7 +530,7 @@ const FeatureView = ({
 
           <div className={style.year}>
             <InfoGraph
-              width={180}
+              width={205}
               height={histogramHeight - 5}
               data={eventsInfo}
               yScale={eventsScale}
@@ -503,7 +542,7 @@ const FeatureView = ({
               <text
                 fontSize={10}
                 fill="#777"
-                x="90%"
+                x="88%"
                 y="82%"
                 textAnchor="middle"
               >
@@ -512,7 +551,13 @@ const FeatureView = ({
             </InfoGraph>
           </div>
 
-          <p>Event number</p>
+          <p>
+            <SortICON
+              onClick={handleEventSort}
+              style={{ margin: '0 4px 0 -10px' }}
+            />
+            Event number
+          </p>
         </div>
 
         <div
@@ -620,6 +665,10 @@ const FeatureView = ({
             yScale={relationYScale}
             colorScale={defaultEventColorScale}
           />
+        </div>
+
+        <div className={style['matrix-sort']} onClick={clickSort}>
+          <SortICON />
         </div>
 
         <Matrix

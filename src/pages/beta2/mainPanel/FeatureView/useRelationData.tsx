@@ -74,7 +74,7 @@ const useRelationData = (
 
     console.log(maxCnt);
 
-    const opacityScale = d3.scaleLinear().domain([0, maxCnt]).range([0.5, 1]);
+    const opacityScale = d3.scaleLog().domain([1, maxCnt]).range([0.1, 1]);
 
     matrix.forEach((item) => {
       item.opacity = opacityScale(item.opacity);

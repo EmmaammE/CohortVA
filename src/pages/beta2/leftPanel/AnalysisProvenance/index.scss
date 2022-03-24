@@ -1,5 +1,5 @@
 #analysis-panel {
-  height: calc(100% - 60px);
+  height: 350px;
   overflow: auto;
   .cohort-item {
     display: flex;
@@ -91,6 +91,8 @@
           top: -12px;
           right: -2px;
           font-size: 10px;
+          width: 18px;
+          text-align: center;
         }
 
         span.right-menu {

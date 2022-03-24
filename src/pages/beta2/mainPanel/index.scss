@@ -18,9 +18,8 @@
     right: 0;
     display: flex;
     justify-content: flex-end;
-    padding: 20px 10px;
-    left: 330px;
-
+    padding: 5px;
+    left: 260px;
     #feature-container {
       display: flex;
 
@@ -38,6 +37,7 @@
         width: 14px;
         height: 14px;
         margin: 0 4px;
+        min-width: 14px;
       }
     }
   }

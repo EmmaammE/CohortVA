@@ -61,6 +61,7 @@ interface IResData {
     pid2allSentence: {
       [key: string]: TSentence;
     };
+    nodeGroups: string[];
   };
 }
 // 返回当前特征组对应的句子
@@ -73,6 +74,7 @@ const useSentence = () => {
   const [yearToS, setYearToS] = useState<any>({});
   const [personToPerson, setPersonToPerson] = useState<any>({});
   const [personInfo, setPersonInfo] = useState<{ [k: string]: IInfoData }>({});
+  const [nodeGroups, setNodeGroups] = useState<string[]>([]);
 
   useEffect(() => {
     if (init.current) {
@@ -167,6 +169,7 @@ const useSentence = () => {
       setYearToS(main_data.eventHasTime);
       setPersonInfo(people_info);
       setPosToS(main_data.eventHasAddr);
+      setNodeGroups(main_data.nodeGroups);
     });
   }, [pids]);
 
@@ -176,6 +179,7 @@ const useSentence = () => {
     yearToS,
     personToPerson,
     personInfo,
+    nodeGroups,
   };
 };
 

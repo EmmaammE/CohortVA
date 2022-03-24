@@ -2,7 +2,6 @@ import React, { useCallback } from 'react';
 import * as d3 from 'd3';
 import { useDispatch } from 'react-redux';
 import { featureMap } from '../../../../utils/atomTopic';
-import { IAtomFeature } from '../../../mainPanel/types';
 import { setTipInfoAndFeatureId } from '../../../../reducer/featureSlice';
 import { useAppSelector } from '../../../../store/hooks';
 
@@ -105,7 +104,7 @@ const Triangle = ({ des, style = {} }: NodeProps) => (
   />
 );
 
-const initOpacity = 1;
+const initOpacity = 0.8;
 const afterOpacity = 0.4;
 
 const FeatureNode = ({

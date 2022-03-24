@@ -19,17 +19,17 @@ class Tip extends React.Component{
     let style = this.props.style
     let dWidth = document.body.clientWidth
     let dHeight = document.body.clientHeight
-    // 以下进行弹窗的溢出的修正
-    if(style.left){
-      if(style.left+160>dWidth){
-        style.left-=160
-      }else{
-        style = {...style,left:style.left+10}
-      }
-      if(style.top+150>dHeight){
-        style.top-=150
-      }
-    }
+    // // 以下进行弹窗的溢出的修正
+    // if(style.left){
+    //   if(style.left+160>dWidth){
+    //     style.left-=160
+    //   }else{
+    //     style = {...style,left:style.left+10}
+    //   }
+    //   if(style.top+150>dHeight){
+    //     style.top-=150
+    //   }
+    // }
     let tipHasX = true
     let handleClickX = this.props.handleClickX
     return(

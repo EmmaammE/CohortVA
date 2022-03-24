@@ -187,6 +187,7 @@ const MainPanel = () => {
     yearToS,
     personToPerson,
     personInfo,
+    nodeGroups,
   } = useSentence();
 
   // const featuresParam = useMemo(async () => {
@@ -295,6 +296,7 @@ const MainPanel = () => {
               features={features}
               relationData={personToPerson}
               personInfo={personInfo}
+              nodeGroups={nodeGroups}
             />
           </div>
           <div className="map-view">

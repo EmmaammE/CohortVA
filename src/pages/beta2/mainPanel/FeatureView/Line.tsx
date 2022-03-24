@@ -3,6 +3,8 @@ import * as d3 from 'd3';
 import { IData } from './useYearData';
 import { IInfoData } from '../useSentence2';
 import eventMap from '../../../../utils/eventMap';
+import { db } from '../../../../database/db';
+import template from '../../../../utils/tempelate';
 
 interface ILine {
   // 排好序的personId
@@ -22,6 +24,27 @@ const Line = ({ pids, rowHeight, data, range, type }: ILine) => {
     () => d3.scaleLinear().domain(range).range([0, width]).nice(),
     [range]
   );
+
+  const handleClick = (id: string, d: any) => {
+    console.log(d);
+    db.sentence.get(id).then((sentenceData) => {
+      const vKey: any = [];
+      sentenceData?.words.forEach((word, idx) => {
+        vKey.push(word);
+        vKey.push(sentenceData.edges[idx]);
+      });
+      template(sentenceData?.category, vKey, 'name').then((res) => {
+        console.log(res);
+      });
+    });
+
+    // const newState = {
+    //   data: resultData,
+    //   title: `count: ${targetData.length}`,
+    //   style: { opacity: 1, left: e.clientX, top: e.clientY },
+    // };
+    // setState(newState);
+  };
 
   return (
     <svg
@@ -78,6 +101,7 @@ const Line = ({ pids, rowHeight, data, range, type }: ILine) => {
                     y2={i * rowHeight + rowHeight - heightPadding / 2}
                     stroke={(eventMap as any)[d.type]?.color || '#ccc'}
                     opacity={0.2}
+                    onClick={() => handleClick(d.sentence, data[fid])}
                   />
                 )
             )}

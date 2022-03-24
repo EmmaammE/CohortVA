@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import * as d3 from 'd3';
 import { db, IData, IFeature } from '../../../../database/db';
 import {
-  fetchCohortByRegexAsync,
   getGroupId,
   updateCohortByRegexAsync,
 } from '../../../../reducer/cohortsSlice';
