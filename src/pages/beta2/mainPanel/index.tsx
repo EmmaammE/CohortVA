@@ -145,6 +145,15 @@ const MainPanel = () => {
     return d3.scaleBand().domain(list).range([0, height]);
   }, [featureToSort, fid2weight, people]);
 
+  const stackedColorScale = useMemo(
+    () =>
+      d3
+        .scaleOrdinal()
+        .domain(features.map((d: any) => d.id))
+        .range(mainColors2),
+    [features]
+  );
+
   useEffect(() => {
     // 根据people设置默认的人的状态
     const peopleKeys = ['normalPeople', 'refusedPeople', 'recommendPeople'];
@@ -273,6 +282,7 @@ const MainPanel = () => {
             data={fid2weight}
             yScale={yScale}
             xScale={xScale}
+            colorScale={stackedColorScale}
             groups={sortedFeatures}
             figureStatus={figureStatus}
           />

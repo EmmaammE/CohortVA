@@ -6,13 +6,13 @@ import { invert } from '../../../../utils/scale';
 import { useAppDispatch, useAppSelector } from '../../../../store/hooks';
 import { setFigureIdArr } from '../../../../reducer/statusSlice';
 import useStack from '../FeatureView/useStack';
-import { mainColors, mainColors2 } from '../../../../utils/atomTopic';
 
 interface FeatureListProps {
   loading: boolean;
   data: any;
   xScale: Function;
   yScale: Function;
+  colorScale: Function;
   groups: string[];
   figureStatus: { [key: string]: number };
 }
@@ -35,6 +35,7 @@ const FeatureList = ({
   data,
   xScale,
   yScale,
+  colorScale,
   groups,
   figureStatus,
 }: FeatureListProps) => {
@@ -109,9 +110,9 @@ const FeatureList = ({
         ))}
       </svg>
       <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`}>
-        {stack.map((dArr: any[], i: number) => (
+        {stack.map((dArr: any, i: number) => (
           <g key={groups[i]}>
-            {dArr.map((d, j) => (
+            {dArr.map((d: any, j: number) => (
               <rect
                 key={keys[j]}
                 id={`${keys[j]}`}
@@ -122,7 +123,7 @@ const FeatureList = ({
                 stroke="#fff"
                 strokeWidth={0.5}
                 // fill={`url(#Gradient${groups[i]})`}
-                fill={mainColors2[i]}
+                fill={colorScale(dArr.key)}
               />
             ))}
           </g>

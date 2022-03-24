@@ -537,9 +537,9 @@ const FeatureView = ({
               height={svgHeight}
               viewBox={`0 0 ${width} ${svgHeight}`}
             >
-              {stack.map((dArr: any[], i: number) => (
-                <g key={groups[i]}>
-                  {dArr.map((d, j) => (
+              {stack.map((dArr: any, i: number) => (
+                <g key={dArr.key}>
+                  {dArr.map((d: any, j: number) => (
                     <rect
                       key={figureIdArr[j]}
                       id={`${figureIdArr[j]}`}
@@ -548,7 +548,7 @@ const FeatureView = ({
                       width={Math.abs(xScale(d[1]) - xScale(d[0]))}
                       height={height - 4}
                       // fill={`url(#Gradient${groups[i]})`}
-                      fill={stackedColorScale(groups[i]) as string}
+                      fill={stackedColorScale(dArr.key) as string}
                       stroke="#fff"
                       strokeWidth={2}
                     />
