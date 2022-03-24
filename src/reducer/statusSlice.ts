@@ -56,8 +56,14 @@ export const statusSlice = createSlice({
       const { id, status } = action.payload;
       state.figureStatus[id] = status;
     },
-    updateFigureExplored: (state, action: PayloadAction<string>) => {
-      state.figureExplored.push(action.payload);
+    updateFigureStatus: (state, action) => {
+      state.figureStatus = {
+        ...state.figureStatus,
+        ...action.payload,
+      };
+    },
+    updateFigureExplored: (state, action: PayloadAction<string[]>) => {
+      state.figureExplored.push(...action.payload);
     },
   },
 });
@@ -70,6 +76,7 @@ export const {
   setFigureIdArr,
   setFigureStatus,
   updateFigureStatusById,
+  updateFigureStatus,
   updateFigureExplored,
 } = statusSlice.actions;
 export default statusSlice.reducer;
