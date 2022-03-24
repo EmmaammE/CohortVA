@@ -96,13 +96,13 @@ class CohortSearcherPanel extends React.PureComponent {
         const param = {};
         const value2 = document.getElementById('figure-name-list-input').value;
         if (value2 !== '' && value2)
-          if (value2.indexOf(';') > 0) param.pnames = value2.split(';');
-          else param.pnames = value2.split('；');
+          if (value2.indexOf(';') > 0) param.name = value2.split(';');
+          else param.name = value2.split('；');
         if (JSON.stringify(param) === '{}') {
           alert('Please input first!');
         } else {
           console.log('Search by figure collection names', param);
-          onSubmitFigureNames(param);
+          onSubmitName(param);
         }
         break;
       case 'condition':
@@ -252,11 +252,11 @@ class CohortSearcherPanel extends React.PureComponent {
             )}
             <div id="placer" />
           </div>
-         
+
         </div>
         <div id="submit-button" onClick={this.submit}>
-            Search
-          </div>
+          Search
+        </div>
       </div>
     );
   }

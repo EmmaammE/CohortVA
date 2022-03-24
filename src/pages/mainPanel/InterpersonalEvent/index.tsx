@@ -14,7 +14,7 @@ export default () => {
         id: groupId,
       });
       if (groupData) {
-        setData((groupData.sentences as any)?.personToPerson);
+        // setData((groupData.sentences as any)?.personToPerson);
       }
     }
 
