@@ -44,6 +44,8 @@ const AnalysisPanel = ({ setPath }: IAnalysisProvenanceProps) => {
     (state) => state.cohorts.classifierIndex
   );
 
+  useEffect(() => {}, [groupsTable]);
+
   // 展开第几组群体
   const [activeIndex, setActiveIndex] = useState<number>(groupIndex);
   // 每组群体中在不展开时留下的群体

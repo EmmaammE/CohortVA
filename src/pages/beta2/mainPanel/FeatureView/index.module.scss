@@ -113,12 +113,6 @@
   grid-template-columns: 2fr 1fr 1fr 2fr 1fr;
   grid-column-gap: 10px;
   position: relative;
-
-  & > div:nth-child(3),
-  & > svg:nth-child(1) {
-    padding-right: 10px;
-    // border-right: 1px dashed #ccc;
-  }
 }
 
 .names {

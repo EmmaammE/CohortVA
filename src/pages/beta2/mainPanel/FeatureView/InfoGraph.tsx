@@ -62,6 +62,7 @@ const InfoGraph = ({
             />
             {k.value && showText && (
               <text
+                key={`${k.key}t`}
                 x={(xScale(k.key) || 0) + xScale.bandwidth() / 2}
                 y={height - margin.bottom - 5 - yScale(k.value)}
                 fontSize="6"

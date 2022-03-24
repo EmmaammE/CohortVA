@@ -39,6 +39,7 @@ const Template = (sentenceLabel,vKey, KEY,nodeEdgeDict) => {
             case "关系":
                 senDiscription = relationTemplate(vKey,nodeEdgeDict )
                 break;
+            case "籍贯":
             case "地点事件":
                 senDiscription = locationTemplate(vKey,nodeEdgeDict )
                 break;
@@ -46,6 +47,7 @@ const Template = (sentenceLabel,vKey, KEY,nodeEdgeDict) => {
                 senDiscription = beOfficeTemplate(vKey,nodeEdgeDict )
                 break;
             default:
+                // console.log('noTemplate', sentenceLabel)
                 senDiscription = vKey.join('-')
                 break;
         }
@@ -67,6 +69,7 @@ const Template = (sentenceLabel,vKey, KEY,nodeEdgeDict) => {
             case "关系":
                 senDiscription = relationTemplateEn(vKey,nodeEdgeDict )
                 break;
+            case "籍贯":
             case "地点事件":
                 senDiscription = locationTemplateEn(vKey,nodeEdgeDict )
                 break;

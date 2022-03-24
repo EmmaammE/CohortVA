@@ -406,6 +406,7 @@ const FeatureView = ({
             </span>
             {Object.keys(eventMap).map((e) => (
               <span
+                key={e}
                 className={e === selectedType ? 'active-events' : ''}
                 style={{ '--color': (eventMap as any)[e].color } as any}
                 onClick={() => setSelectedType(e)}
@@ -559,7 +560,7 @@ const FeatureView = ({
 
             <div className={style.theme}>
               {sortedFigureIds.map((id) => (
-                <div className={style['theme-item']}>
+                <div className={style['theme-item']} key={id}>
                   <p>{personInfo[id]?.sentenceInfo?.cnt}</p>
 
                   {personInfo[id]?.sentenceInfo?.type.map((type) => (

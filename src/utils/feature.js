@@ -100,3 +100,99 @@ export const preprocessData = (data) => {
 };
 
 export const getFeatureText = (descriptorsArr) => descriptorsArr.map(d => `${d.type}(${d.text})`).join(' ')
+
+// 偷懒了，直接复制了之前的代码，这里只用来更新
+export const handleFeatureData = (data, cf2cf_pmi, cfDict) => {
+  const {id2composite_features, id2model_descriptor,id2node,main_data} = data;
+  const {cf2weight} = main_data;
+  const features = Object.keys(id2composite_features);
+  return Object.keys(id2composite_features).map((cfid) => {
+    const { proportion, model_descriptors } = id2composite_features[cfid];
+
+    const descriptorsArr = [];
+    model_descriptors.forEach((descriptorId) => {
+      const model_descriptor = id2model_descriptor[descriptorId];
+      const { parms, type } = model_descriptor;
+      let descript = '';
+
+      Object.keys(parms).forEach(key => {
+        if (Array.isArray(parms[key])) {
+          parms[key].forEach((d, i) => {
+            if (i === 0) {
+              descript += id2node[d].en_name;
+            } else {
+              descript += `, ${id2node[d].en_name}`;
+            }
+          });
+        } else {
+          descript += id2node[parms[key]].en_name;
+        }
+      })
+     
+      descriptorsArr.push({
+        id: descriptorId,
+        text: `"${descript}"`,
+        type: modelName2Topic[type],
+      });
+    });
+
+    const distanceArray = Object.keys(cf2cf_pmi[cfid])
+      .filter((targetId) => features.indexOf(targetId) === -1)
+      .map((d) => ({ id: d, dis: cf2cf_pmi[cfid][d] }));
+    distanceArray.sort((a, b) => b.dis - a.dis);
+
+    // 处理redundancy feature的model descriptors
+    const redundancyFeatures = distanceArray.slice(0, 2).map((disObject) => {
+
+      // 这里用的是之前已经存在数据库里的信息
+
+      // eslint-disable-next-line no-shadow 
+      const { proportion, model_descriptors } = cfDict[
+        disObject.id
+      ];
+      const redundancyDescriptorArr = [];
+      model_descriptors.forEach((model_descriptor, i) => {
+        const { parms, type } = model_descriptor;
+        let descript = '';
+        Object.keys(parms).forEach(key => {
+          if (Array.isArray(parms[key])) {
+            // eslint-disable-next-line no-shadow
+            parms[key].forEach((d, i) => {
+              if (i === 0) {
+                descript += id2node[d].en_name;
+              } else {
+                descript += `, ${id2node[d].en_name}`;
+              }
+            });
+          } else {
+            descript += id2node[parms[key]]?.en_name;
+          }
+        })
+       
+        let text = `("${descript}")&`;
+        if (i === model_descriptors.length - 1) {
+          text = text.slice(0, -1);
+        }
+        redundancyDescriptorArr.push({
+          text,
+          id: model_descriptor.id,
+          type: modelName2Topic[type],
+        });
+      });
+      return {
+        id: disObject.id,
+        descriptorsArr: redundancyDescriptorArr,
+        proportion,
+      };
+    });
+
+    return {
+      id: cfid,
+      proportion,
+      descriptorsArr, // 原子特征
+      subFeatures: [], // 子特征最多展示两个
+      redundancyFeatures,
+      weight: cf2weight[cfid],
+    };
+  });
+}

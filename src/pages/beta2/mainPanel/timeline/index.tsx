@@ -96,7 +96,7 @@ const Timeline = ({ yearToS, width, height }: ITimeline) => {
 
   const area = d3
     .area()
-    .curve(d3.curveLinear)
+    .curve(d3.curveCatmullRom)
     .x((d: any, i) => xScale(d.data.year) as any)
     .y0((d) => yScale(d[0]))
     .y1((d) => yScale(d[1]));

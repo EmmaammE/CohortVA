@@ -4,7 +4,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { db } from '../../../../database/db';
 import { getGroups, setGroupIndex } from '../../../../reducer/cohortsSlice';
 import { setLinks } from '../../../../reducer/featureSlice';
-import { setFigureStatus } from '../../../../reducer/statusSlice';
+import { setCfids, setFigureStatus } from '../../../../reducer/statusSlice';
 import { useAppDispatch, useAppSelector } from '../../../../store/hooks';
 import FeatureNode from '../components/FeatureNode';
 import ProportionBar from '../components/ProportionBar';
@@ -63,18 +63,18 @@ const AnalysisPanel = () => {
       // setActiveCohortIndex([j]);
       dispatch(setGroupIndex([i, j]));
 
-      const linkSet = new Set<string>();
-      groupsMap[groups[i]]?.classifiers[j].features.forEach(
-        ({ id, redundancyFeatures }: any) => {
-          redundancyFeatures.forEach((rf: any) => {
-            linkSet.add(`${id}_${rf.id}`);
-          });
-        }
-      );
+      // const linkSet = new Set<string>();
+      // groupsMap[groups[i]]?.classifiers[j].features.forEach(
+      //   ({ id, redundancyFeatures }: any) => {
+      //     redundancyFeatures.forEach((rf: any) => {
+      //       linkSet.add(`${id}_${rf.id}`);
+      //     });
+      //   }
+      // );
 
-      dispatch(setLinks(Array.from(linkSet)));
+      // dispatch(setLinks(Array.from(linkSet)));
     },
-    [dispatch, groups, groupsMap]
+    [dispatch]
   );
 
   const expandItem = useCallback(

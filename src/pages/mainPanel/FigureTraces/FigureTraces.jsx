@@ -36,7 +36,7 @@ const FigureTraces = ({ posToS }) => {
 
   const drawCircle = useCallback(
     (data, addr_dict) => {
-      const radiusScale = d3.scaleLinear().domain([0, maxVal]).range([0, 20]);
+      const radiusScale = d3.scaleLinear().domain([0, maxVal]).range([0, 15]);
       d3.select($map.current)
         .selectAll('circle')
         .data(Object.keys(data))
@@ -55,7 +55,7 @@ const FigureTraces = ({ posToS }) => {
         })
         .attr('r', (d) => {
           if (addr_dict[d]) return radiusScale(data[d].length);
-          return 4;
+          return 2;
         })
         .on('mouseenter',(e) => {
           //
@@ -118,7 +118,7 @@ const FigureTraces = ({ posToS }) => {
   }, [drawCircle, posToS])
  
   const handleTooltipClick = (e) => {
-    const style = { ...state.style, opacity: 0 };
+    const style = { ...state.style, opacity: 0,top:0 };
     setState({ ...state, style });
   };
 

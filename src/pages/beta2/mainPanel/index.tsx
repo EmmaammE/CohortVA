@@ -2,6 +2,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Select } from 'antd';
 import * as d3 from 'd3';
+import { useLiveQuery } from 'dexie-react-hooks';
 import Button from '../../../components/button/Button';
 import useTooltip from '../../../hooks/useTooltip';
 import FigureTraces from '../../mainPanel/FigureTraces/FigureTraces';
@@ -26,6 +27,7 @@ import { getDisplayedFeatureText, padding } from './utils';
 import useSentence from './useSentence2';
 import { BASE_CODE, mainColors, mainColors2 } from '../../../utils/atomTopic';
 import Timeline from './timeline';
+import { setLinks } from '../../../reducer/featureSlice';
 
 const { Option } = Select;
 
@@ -65,41 +67,50 @@ const MainPanel = () => {
     [dispatch, features]
   );
 
-  useEffect(() => {
-    async function load() {
-      const item = await db.cohorts.get({
+  const cohortData = useLiveQuery(
+    () =>
+      db.cohorts.get({
         id: groupId,
         index: classifierIndex,
-      });
+      }),
+    [groupId, classifierIndex]
+  );
+  useEffect(() => {
+    if (!cohortData?.value) return;
 
-      if (!item?.value) return;
+    const {
+      features = [],
+      people = {},
+      maxFigureWeight = 0,
+      fid2weight = {},
+    } = cohortData.value;
 
-      const {
-        features = [],
-        people = {},
-        maxFigureWeight = 0,
-        fid2weight = {},
-      } = item.value;
+    setFeatures(features);
+    setPeople(people);
+    setMaxFigureWeight(maxFigureWeight);
+    setFid2Weight(fid2weight);
+    setfeatureToSort(features?.[0]?.id || '');
 
-      setFeatures(features);
-      setPeople(people);
-      setMaxFigureWeight(maxFigureWeight);
-      setFid2Weight(fid2weight);
-      setfeatureToSort(features?.[0]?.id || '');
-
-      // TODO 会存在cfids被替换的情况
-      dispatch(setCfids(features.map((f: any) => f.id)));
-      dispatch(
-        setMainFeatures(
-          features.map((f: any) =>
-            f.descriptorsArr.map((d: any) => `${d.type}(${d.text})`).join(' & ')
-          )
+    dispatch(
+      setMainFeatures(
+        features.map((f: any) =>
+          f.descriptorsArr.map((d: any) => `${d.type}(${d.text})`).join(' & ')
         )
-      );
-    }
+      )
+    );
 
-    load();
-  }, [classifierIndex, dispatch, groupId]);
+    const linkSet = new Set<string>();
+    const curCfids = features.map((f: any) => f.id);
+
+    dispatch(setCfids(curCfids));
+    features.forEach(({ id, redundancyFeatures }: any) => {
+      redundancyFeatures.forEach((rf: any) => {
+        linkSet.add(`${id}_${rf.id}`);
+      });
+    });
+
+    dispatch(setLinks(Array.from(linkSet)));
+  }, [cohortData, dispatch]);
 
   const xScale = useMemo(
     () =>
