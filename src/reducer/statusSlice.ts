@@ -65,6 +65,9 @@ export const statusSlice = createSlice({
     updateFigureExplored: (state, action: PayloadAction<string[]>) => {
       state.figureExplored.push(...action.payload);
     },
+    clearFigureExplored: (state, acrion) => {
+      state.figureExplored = [];
+    },
   },
 });
 
@@ -78,5 +81,6 @@ export const {
   updateFigureStatusById,
   updateFigureStatus,
   updateFigureExplored,
+  clearFigureExplored,
 } = statusSlice.actions;
 export default statusSlice.reducer;

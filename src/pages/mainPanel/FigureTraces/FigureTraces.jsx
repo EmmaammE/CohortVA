@@ -20,8 +20,8 @@ const path2 = d3
 const FigureTraces = ({ posToS }) => {
   const projection = d3
     .geoMercator()
-    .center([108, 31])
-    .scale(500)
+    .center([105, 31])
+    .scale(570)
     .translate([BOX_WIDTH, BOX_HEIGHT]);
   const path = d3.geoPath().projection(projection);
   const [state, setState] = useState({
@@ -36,7 +36,7 @@ const FigureTraces = ({ posToS }) => {
 
   const drawCircle = useCallback(
     (data, addr_dict) => {
-      const radiusScale = d3.scaleLinear().domain([0, maxVal]).range([0, 15]);
+      const radiusScale = d3.scaleLinear().domain([0, maxVal]).range([2, Math.log(maxVal)*4]);
       d3.select($map.current)
         .selectAll('circle')
         .data(Object.keys(data))
@@ -169,7 +169,7 @@ const FigureTraces = ({ posToS }) => {
               <g ref={$container} />
             </g> 
            
-            <g clipPath="url(#myClip)">
+            {/* <g clipPath="url(#myClip)">
               {china.features.map((d, i) => (
                 <path
                   stroke="#999"
@@ -187,7 +187,7 @@ const FigureTraces = ({ posToS }) => {
               height="100"
               stroke="black"
               fill="transparent"
-            />
+            /> */}
           </svg>
         </div>
 

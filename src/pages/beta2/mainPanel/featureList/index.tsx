@@ -4,7 +4,10 @@ import style from './index.module.scss';
 import useBrush from './useBursh';
 import { invert } from '../../../../utils/scale';
 import { useAppDispatch, useAppSelector } from '../../../../store/hooks';
-import { setFigureIdArr } from '../../../../reducer/statusSlice';
+import {
+  clearFigureExplored,
+  setFigureIdArr,
+} from '../../../../reducer/statusSlice';
 import useStack from '../FeatureView/useStack';
 
 interface FeatureListProps {
@@ -78,6 +81,12 @@ const FeatureList = ({
   );
 
   const { $brush } = useBrush(width, height, onBrushEnd);
+
+  useEffect(() => {
+    dispatch(setFigureIdArr([]));
+    dispatch(clearFigureExplored([]));
+    d3.select($brush.current).select('rect.selection').style('display', 'none');
+  }, [$brush, data, dispatch]);
 
   useEffect(() => {
     // disable brush when loading

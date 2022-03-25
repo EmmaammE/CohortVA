@@ -4,8 +4,8 @@ import { IData } from '../../../../database/db';
 
 type GraphData = IData['cf2cf_pmi'];
 
-export const WIDTH = 250;
-export const HEIGHT = 250;
+export const WIDTH = 300;
+export const HEIGHT = 300;
 const useForceGraph = (data: GraphData | null) => {
   const [nodes, setNodes] = useState<any[]>([]);
   const [links, setLinks] = useState<any[]>([]);
@@ -39,7 +39,6 @@ const useForceGraph = (data: GraphData | null) => {
     });
 
     // const scale = d3.scaleLinear().domain([minV, maxV]).range([0, 1]);
-
     try {
       d3.forceSimulation(curNodes)
         .force(
@@ -49,10 +48,13 @@ const useForceGraph = (data: GraphData | null) => {
             .id((d: any) => d.id)
             // .distance((d: any) => d.value * 10 + 1)
             // .strength((d: any) => scale(d.value) + 1)
-            .distance((d: any) => d.value * 20)
+            .distance((d: any) => d.value * 30)
             .strength((d: any) => d.value)
         )
-        .force('charge', d3.forceManyBody().strength(-0.1))
+        .force(
+          'charge',
+          d3.forceManyBody().strength(-Math.log(curNodes.length) / 10)
+        )
         .force('center', d3.forceCenter(WIDTH / 2, HEIGHT / 2))
         // .force('collide', d3.forceCollide().radius(1))
         .force('collide', d3.forceCollide().radius(0.5))

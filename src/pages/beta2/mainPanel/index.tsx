@@ -53,8 +53,6 @@ const MainPanel = () => {
   const [fid2weight, setFid2Weight] = useState<any>({});
   const [featureToSort, setfeatureToSort] = useState<any>(null);
 
-  const pids = useMemo(() => Object.keys(fid2weight), [fid2weight]);
-
   const onChange = useCallback(
     (index) => {
       if (index === '') {
@@ -189,41 +187,6 @@ const MainPanel = () => {
     personInfo,
     nodeGroups,
   } = useSentence();
-
-  // const featuresParam = useMemo(async () => {
-  //   const results = await db.features
-  //     .bulkGet(features.map((f: any) => f.id))
-  //     .catch((e) => console.log(e));
-
-  //   return results;
-  // }, [features]);
-
-  // console.log(featuresParam);
-
-  // const handleUpdate = useCallback(() => {
-  //   db.features
-  //     .bulkGet(features.map((f: any) => f.id))
-  //     .then((featuresParam) => {
-  //       const param = {
-  //         use_weight: false,
-  //         search_group: Object.keys(figureStatus).filter(
-  //           (id) => figureStatus[id] === 0
-  //         ),
-  //         // .map((d) => +d),
-  //         features: featuresParam.reduce(
-  //           (acc, cur) => ({
-  //             ...acc,
-  //             // [cur?.id || '']: { ...cur, id: +(cur as any).id },
-  //             [cur?.id || '']: { ...cur },
-  //           }),
-  //           {}
-  //         ),
-  //       };
-
-  //       dispatch(fetchCohortByRegexAsync(param));
-  //     })
-  //     .catch((e) => console.log(e));
-  // }, [dispatch, features, figureStatus]);
 
   const handleUpdate = useCallback(() => {
     dispatch(
