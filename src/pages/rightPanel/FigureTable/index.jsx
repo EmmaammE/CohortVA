@@ -1,14 +1,17 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {Radio } from 'antd';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import FigureTable from './FigureTable';
 import { updateFigureStatusById } from '../../../reducer/statusSlice';
+import { getPersonId } from '../../../api';
 
 const FigureInfo = () => {
-  const chosenFigure = useAppSelector((state) => state.status.figureName);
+  const figureName = useAppSelector((state) => state.status.figureName);
   const figureStatus = useAppSelector((state) => state.status.figureStatus);
   const figureId = useAppSelector((state) => state.status.figureId);
   const dispatch = useAppDispatch();
+  // 选中的人在cbdb中的id
+  const [chosenFigure, setChoseFigure] = useState('')
 
   const onChangeRadio = useCallback(
     ( e) => {
@@ -24,11 +27,19 @@ const FigureInfo = () => {
     [dispatch, figureId]
   );
 
+  useEffect(() => {
+    if(figureId !== '') {
+      getPersonId(figureId).then(res => {
+        setChoseFigure(res.data.people_info)
+      })
+    }
+  },[figureId])
+
   return <div>
     {
       chosenFigure && (
         <div id="figureStatus" className='g-divider'>
-          <span>{chosenFigure}</span>
+          <span>{figureName}</span>
           <Radio.Group
             value={figureStatus[figureId]}
             onChange={ onChangeRadio}

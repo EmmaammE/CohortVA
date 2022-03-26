@@ -22,7 +22,10 @@ const Overview = ({ show }: IOverview) => {
   const dispatch = useAppDispatch();
   const [data, setData] = useState<IData | null>(null);
 
-  const { nodes, links, scale } = useForceGraph(data?.cf2cf_pmi || null);
+  const { nodes, links, scale } = useForceGraph(
+    data?.cf2cf_pmi || null,
+    data?.descriptions
+  );
 
   const featureLink = useMemo(() => {
     const linkSet = new Set(linkSetArr);

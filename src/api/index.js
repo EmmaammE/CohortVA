@@ -30,3 +30,14 @@ export const getEventsByPeople = (params) => {
     },
   })
 }
+
+export const getPersonId = (id) => {
+  const url = Apis.getPersonId;
+
+  return post({
+    url,
+    data: {
+      'person_id': id
+    }
+  })
+}

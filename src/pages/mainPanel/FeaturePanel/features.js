@@ -239,9 +239,31 @@ export const descriptions = (data) => {
     id2node
   } = data;
   const { cf2pmi } = main_data;
+
+  let slicedPmi = {};
+  if(Object.keys(cf2pmi).length > 40) {
+    const cfkeys = Object.keys(cf2pmi).sort((f1, f2) => cf2pmi[f2]-cf2pmi[f1]).slice(0,40);
+    cfkeys.forEach(key => {
+      slicedPmi[key] = cf2pmi[key];
+    })
+
+    const {classifiers} = main_data;
+    classifiers.forEach(classifier => {
+      const cf2weight = classifier.cf2weight;
+      Object.keys(cf2weight).forEach(f => {
+        if(!slicedPmi[f]) {
+          slicedPmi[f] = cf2pmi[f];
+        }
+      })
+    })
+
+  }else {
+    slicedPmi = cf2pmi;
+  }
+
   const res = {};
 
-  Object.keys(cf2pmi).forEach((cfid) => {
+  Object.keys(slicedPmi).forEach((cfid) => {
     const { model_descriptors, proportion } = id2composite_features[cfid];
     
     res[cfid] = {
@@ -269,7 +291,7 @@ export const descriptions = (data) => {
     }
   });
 
-  return res;
+  return res
 }
 
 export const processData = (data) => {

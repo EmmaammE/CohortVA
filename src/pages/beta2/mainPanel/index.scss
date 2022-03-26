@@ -24,12 +24,12 @@
       display: flex;
 
       .item {
-        margin: 0 12px 0 0;
+        margin: 0 6px 0 0;
         display: flex;
         align-items: center;
         line-height: 16px;
         word-break: break-word;
-        min-width: 90px;
+        min-width: 120px;
       }
 
       .rect {
@@ -71,7 +71,7 @@
     &-right {
       display: grid;
       grid-template-columns: 460px 1fr;
-      grid-template-rows: 1fr 300px;
+      grid-template-rows: 1fr 285px;
       padding-left: 10px;
       flex: 1;
 
@@ -123,5 +123,43 @@
 
   .matrix-selected {
     stroke: #333;
+  }
+
+  .ant-slider {
+    margin: 7px 4px 0;
+    flex: 1;
+    padding: 0;
+
+    .ant-slider-handle {
+      width: 9px;
+      height: 9px;
+      border: 2px solid #ddd;
+      background-color: #ddd;
+      border-radius: 50%;
+      margin-top: -2px;
+
+      &.ant-tooltip-open {
+        border: 2px solid #ddd;
+      }
+      &:focus {
+        border-color: #ddd;
+        outline: none;
+        box-shadow: 0 0 0 2px #ddd1;
+      }
+
+      &:not(.ant-tooltip-open) {
+        border-color: #ddd !important;
+      }
+    }
+
+    .ant-slider-track {
+      background-color: #ccc !important;
+      height: 6px;
+    }
+
+    .ant-slider-rail {
+      background-color: #efefef;
+      height: 6px;
+    }
   }
 }

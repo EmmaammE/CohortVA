@@ -6,7 +6,7 @@ type GraphData = IData['cf2cf_pmi'];
 
 export const WIDTH = 300;
 export const HEIGHT = 300;
-const useForceGraph = (data: GraphData | null) => {
+const useForceGraph = (data: GraphData | null, descriptions: any) => {
   const [nodes, setNodes] = useState<any[]>([]);
   const [links, setLinks] = useState<any[]>([]);
 
@@ -15,22 +15,30 @@ const useForceGraph = (data: GraphData | null) => {
   useEffect(() => {
     if (!data) return;
 
-    const curNodes: any = Object.keys(data).map((key) => ({ id: key }));
+    // const curNodes: any = Object.keys(data)
+    //   .map((key) => ({ id: key }))
+
+    const ids = Object.keys(descriptions || []);
+    const curNodes: any = ids.map((key) => ({ id: key }));
+    console.log(curNodes);
+    const idsSet = new Set(ids);
 
     const curLinks: any = [];
 
     let minV = 99999;
     let maxV = 0;
-    Object.keys(data).forEach((node) => {
+    ids.forEach((node) => {
       const nodeData = data[node];
       Object.keys(nodeData).forEach((node2) => {
         if (node2 === node) return;
 
+        if (!idsSet.has(node2)) return;
         curLinks.push({
           source: node,
           target: node2,
           // value: nodeData[node2] <= 0 ? 0.000001 : 1 / nodeData[node2],
-          value: 1 / Math.exp(nodeData[node2]),
+          value:
+            nodeData[node2] <= 0 ? 0.000001 : 1 / Math.exp(nodeData[node2]),
         });
 
         minV = Math.min(minV, 1 / Math.exp(nodeData[node2]));
@@ -61,7 +69,7 @@ const useForceGraph = (data: GraphData | null) => {
         .force('x', d3.forceX())
         .force('y', d3.forceY())
         .stop()
-        .tick(10000);
+        .tick(1000);
     } catch (e) {
       console.log(e);
     }
@@ -73,7 +81,7 @@ const useForceGraph = (data: GraphData | null) => {
 
     setNodes(curNodes);
     setLinks(curLinks);
-  }, [data]);
+  }, [data, descriptions]);
 
   return {
     nodes,

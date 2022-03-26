@@ -9,7 +9,7 @@ import { post } from '../../../api/tools';
 import { db } from '../../../database/db';
 
 const BOX_WIDTH = 220;
-const BOX_HEIGHT = 130;
+const BOX_HEIGHT = 120;
 let maxVal = 0;
 const path2 = d3
   .geoPath()
@@ -21,8 +21,8 @@ const FigureTraces = ({ posToS }) => {
   const projection = d3
     .geoMercator()
     .center([105, 31])
-    .scale(570)
-    .translate([BOX_WIDTH, BOX_HEIGHT]);
+    .scale(600)
+    .translate([BOX_WIDTH, BOX_HEIGHT*1.28]);
   const path = d3.geoPath().projection(projection);
   const [state, setState] = useState({
     style: { opacity: 0 },

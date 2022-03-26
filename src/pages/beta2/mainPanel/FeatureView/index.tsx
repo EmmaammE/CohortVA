@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/mouse-events-have-key-events */
 import React, {
   useCallback,
   useEffect,
@@ -5,7 +6,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { Select, Radio } from 'antd';
+import { Select, Radio, Slider } from 'antd';
 import * as d3 from 'd3';
 import Matrix, { matrixHeight } from './Matrix';
 import style from './index.module.scss';
@@ -48,6 +49,13 @@ interface IFeatureView {
     [key: string]: IInfoData;
   };
   nodeGroups: string[];
+}
+
+// eslint-disable-next-line no-shadow
+enum EOrderOption {
+  Default = 0,
+  MatrixOrder = 1,
+  Event = 2,
 }
 
 const { Option } = Select;
@@ -106,22 +114,25 @@ const FeatureView = ({
     figureIdArr.length,
   ]);
 
-  const [useNodeGroups, setUseNodeGroups] = useState<boolean>(false);
-  const clickSort = useCallback(() => {
-    setUseNodeGroups(!useNodeGroups);
-  }, [useNodeGroups]);
-
-  const [useEventNumber, setUseEventNumber] = useState<boolean>(false);
-  const handleEventSort = useCallback(() => {
-    setUseEventNumber(!useEventNumber);
-  }, [useEventNumber]);
+  // 选择的人物按照什么类型排序， 0： 不起作用， 1：按照矩阵优化方法重排， 2：按照事件数量排
+  const [orderOption, setOrderOption] = useState<number>(EOrderOption.Default);
+  const clickSort = useCallback(
+    (value) => {
+      if (orderOption !== EOrderOption.Default) {
+        setOrderOption(EOrderOption.Default);
+      } else {
+        setOrderOption(value);
+      }
+    },
+    [orderOption]
+  );
 
   const sortedFigureIds = useMemo(() => {
-    if (useNodeGroups) return [...nodeGroups];
+    if (orderOption === EOrderOption.MatrixOrder) return [...nodeGroups];
     const featureIdToSort = featureToSort?.id || '';
     const figures = [...figureIdArr];
 
-    if (useEventNumber) {
+    if (orderOption === EOrderOption.Event) {
       figures.sort(
         (p1, p2) =>
           (personInfo?.[p2]?.sentenceInfo?.cnt || 0) -
@@ -142,13 +153,16 @@ const FeatureView = ({
     featureToSort?.id,
     figureIdArr,
     nodeGroups,
+    orderOption,
     personInfo,
-    useEventNumber,
-    useNodeGroups,
   ]);
 
   const yScale = useMemo(
-    () => d3.scaleBand().domain(sortedFigureIds).range([0, svgHeight]),
+    () =>
+      d3
+        .scaleBand()
+        .domain(sortedFigureIds as any)
+        .range([0, svgHeight]),
     [sortedFigureIds, svgHeight]
   );
 
@@ -163,6 +177,21 @@ const FeatureView = ({
 
   const { nodesMap } = useNamesMap(figureIdArr);
 
+  // matrix people range
+  const [range, setRange] = useState<[number, number]>([1, 1]);
+  const $slider = useRef(null);
+  const handleSliderChangeEnd = useCallback((value: any) => {
+    setRange(value.map((d: number) => d - 1));
+  }, []);
+
+  const [rangeProps, setRangeProps] = useState({});
+  useEffect(() => {
+    setRangeProps({ value: [...range] });
+    window.requestAnimationFrame(() => {
+      setRangeProps({});
+    });
+  }, [range]);
+
   // matrix data
   const {
     matrixData,
@@ -170,7 +199,7 @@ const FeatureView = ({
     rangeX,
     rangeY,
     relationInfo,
-  } = useRelationData(sortedFigureIds, relationData);
+  } = useRelationData(sortedFigureIds, relationData, range);
 
   // matrix tooltip
   const [tooltip, setTooltip] = useState({
@@ -279,12 +308,26 @@ const FeatureView = ({
             status: e.target.value,
           })
         );
-        dispatch(updateFigureExplored([String(pid)]));
+        dispatch(updateFigureExplored([pid]));
       }
     },
     [dispatch]
   );
+  const [startQuickSelect, setStartQuickSelect] = useState<boolean>(false);
+  const onMouseMoveRadio = useCallback(
+    (pid: string, value: number) => {
+      if (!startQuickSelect) return;
 
+      dispatch(
+        updateFigureStatusById({
+          id: pid,
+          status: value,
+        })
+      );
+      dispatch(updateFigureExplored([pid]));
+    },
+    [dispatch, startQuickSelect]
+  );
   // 统计选中的人中每个特征有多少人
   const stackedInfo = useMemo(() => {
     const info = features.map((d: any, i: number) => ({
@@ -353,7 +396,8 @@ const FeatureView = ({
       })),
       eventsScale: d3
         .scaleLinear()
-        .domain([0, maxV])
+        // 给了一个全局的最大值
+        .domain([0, 1200])
         .range([0, histogramHeight - 25]),
     };
   }, [personInfo, selectedType]);
@@ -415,9 +459,9 @@ const FeatureView = ({
 
   useEffect(() => {
     // figureIdArr变化后，恢复状态
+    setRange([1, 26]);
     setPair(null);
-    setUseNodeGroups(false);
-    setUseEventNumber(false);
+    setOrderOption(EOrderOption.Default);
   }, [figureIdArr]);
 
   if (figureIdArr.length === 0) {
@@ -553,7 +597,7 @@ const FeatureView = ({
 
           <p>
             <SortICON
-              onClick={handleEventSort}
+              onClick={() => clickSort(EOrderOption.Event)}
               style={{ margin: '0 4px 0 -10px' }}
             />
             Event number
@@ -601,7 +645,6 @@ const FeatureView = ({
                 </g>
               ))}
             </svg>
-
             <div className={style.names}>
               {sortedFigureIds.map((name, i) => (
                 // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
@@ -614,21 +657,31 @@ const FeatureView = ({
                 </p>
               ))}
             </div>
-
-            <div className={style.radios}>
+            <div
+              className={style.radios}
+              onMouseDown={() => setStartQuickSelect(!startQuickSelect)}
+            >
               {sortedFigureIds.map((name, i) => (
                 <Radio.Group
                   key={name}
                   value={figureStatus[name]}
                   onChange={(e) => onChangeRadio(name, e)}
                 >
-                  <Radio value={0} />
-                  <Radio value={1} />
-                  <Radio value={2} />
+                  <Radio
+                    value={0}
+                    onMouseEnter={() => onMouseMoveRadio(name, 0)}
+                  />
+                  <Radio
+                    value={1}
+                    onMouseEnter={() => onMouseMoveRadio(name, 1)}
+                  />
+                  <Radio
+                    value={2}
+                    onMouseEnter={() => onMouseMoveRadio(name, 2)}
+                  />
                 </Radio.Group>
               ))}
             </div>
-
             <Line
               pids={sortedFigureIds}
               rowHeight={height}
@@ -636,7 +689,6 @@ const FeatureView = ({
               range={yearRange || ([0] as any)}
               type={selectedType}
             />
-
             <div className={style.theme}>
               {sortedFigureIds.map((id) => (
                 <div className={style['theme-item']} key={id}>
@@ -667,14 +719,32 @@ const FeatureView = ({
           />
         </div>
 
-        <div className={style['matrix-sort']} onClick={clickSort}>
-          <SortICON />
+        <div className={style['matrix-sort']}>
+          <div className={style['matrix-slider']}>
+            <span>Figure {Math.min(1, figureIdArr.length)}</span>
+            <Slider
+              ref={$slider}
+              min={1}
+              max={figureIdArr.length}
+              range
+              step={1}
+              onAfterChange={handleSliderChangeEnd}
+              {...rangeProps}
+            />
+            <span>{figureIdArr.length}</span>
+          </div>
+
+          <SortICON onClick={() => clickSort(EOrderOption.MatrixOrder)} />
         </div>
 
         <Matrix
           data={matrixData as any}
           linesData={linesData}
-          boxSize={matrixHeight / sortedFigureIds.length / 2}
+          boxSize={
+            range
+              ? matrixHeight / (range[1] - range[0] + 1) / 2
+              : matrixHeight / sortedFigureIds.length / 2
+          }
           rangeX={rangeX}
           rangeY={rangeY}
           pair={pair || []}

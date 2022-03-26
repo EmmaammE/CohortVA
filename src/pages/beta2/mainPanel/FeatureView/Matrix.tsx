@@ -49,7 +49,7 @@ const trianglePath = (rangeX: number[], rangeY: number[], boxSize: number) => {
     .join(' ');
 };
 
-export const matrixHeight = 550;
+export const matrixHeight = 548;
 
 const Matrix = ({
   data,
@@ -96,8 +96,15 @@ const Matrix = ({
 
   return (
     <svg
-      height={`${matrixHeight}px`}
-      width={`${2 + matrixHeight / 2}px`}
+      style={{
+        width: `${matrixHeight / 2}px`,
+        height: `${matrixHeight}px`,
+        position: 'relative',
+        top: '-3px',
+      }}
+      width={`${matrixHeight / 2}`}
+      height={`${matrixHeight}`}
+      viewBox={`0 0 ${matrixHeight / 2} ${matrixHeight}`}
       ref={$container}
     >
       <defs>

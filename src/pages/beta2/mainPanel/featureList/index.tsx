@@ -52,7 +52,7 @@ const FeatureList = ({
     [dispatch]
   );
 
-  const figureExplored = useAppSelector(
+  const figureExplored: Set<number | string> = useAppSelector(
     (state) => new Set(state.status.figureExplored)
   );
 
@@ -102,6 +102,8 @@ const FeatureList = ({
   }, [$brush, loading]);
 
   // console.log(keys, stack.length, stack[0].length);
+
+  const fix = useMemo(() => (yScale as any).bandwidth() < 1, [yScale]);
   return (
     <div className={style.wrapper}>
       <svg width="8" height={height} id="people-bar">
@@ -114,7 +116,7 @@ const FeatureList = ({
             height={(yScale as any).bandwidth() + 1}
             fill={colors[figureStatus[fid]]}
             // stroke={figureExplored.has(fid) ? '#fff' : 'none'}
-            opacity={figureExplored.has(fid) ? 1 : 0.5}
+            opacity={figureExplored.has(+fid) ? 1 : 0.5}
           />
         ))}
       </svg>
@@ -128,7 +130,11 @@ const FeatureList = ({
                 y={yScale(keys[j]) - 0.5}
                 x={xScale(d[0])}
                 width={xScale(d[1]) - xScale(d[0])}
-                height={(yScale as any).bandwidth() + 1}
+                height={
+                  fix
+                    ? (yScale as any).bandwidth() + 1
+                    : (yScale as any).bandwidth()
+                }
                 stroke="#fff"
                 strokeWidth={0.5}
                 // fill={`url(#Gradient${groups[i]})`}

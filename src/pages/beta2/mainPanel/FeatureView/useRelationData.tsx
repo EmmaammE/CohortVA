@@ -19,7 +19,8 @@ type TMatrixData = {
 
 const useRelationData = (
   sortedFigureIds: string[],
-  relationData: TRelationData
+  relationData: TRelationData,
+  range: [number, number] | null
 ) => {
   const [matrixData, setMatrixData] = useState<TMatrixData>([]);
   const [relationInfo, setRelationInfo] = useState<
@@ -30,13 +31,16 @@ const useRelationData = (
     const matrix = [];
     const n = sortedFigureIds.length;
 
+    const [r1, r2] = range || [0, n - 1];
+
     // 每种事件类型的总数
     const type2sum: { [key in TEventType]?: number } = {};
     let maxCnt = 0;
-    for (let i = 0; i < n; i += 1) {
-      for (let j = i; j < n; j += 1) {
+    for (let i = 0; i <= r2 - r1; i += 1) {
+      for (let j = i; j <= r2 - r1; j += 1) {
         const data =
-          relationData?.[sortedFigureIds[i]]?.[sortedFigureIds[j]] || [];
+          relationData?.[sortedFigureIds[i + r1]]?.[sortedFigureIds[j + r1]] ||
+          [];
         const cnt = data.length;
 
         // 统计两个人之间数量最多的事件类型
@@ -56,8 +60,8 @@ const useRelationData = (
 
         if (cnt > 0) {
           matrix.push({
-            source: i,
-            target: j,
+            source: i + r1,
+            target: j + r1,
             x: j - i,
             y: i + 1 / 2 + j,
             color: eventMap?.[gridMaxType as TEventType]?.color || '#000',
@@ -87,11 +91,11 @@ const useRelationData = (
         value: type2sum[d as TEventType] || 0,
       }))
     );
-  }, [relationData, sortedFigureIds]);
+  }, [relationData, sortedFigureIds, range]);
 
   const linesData = useMemo(() => {
     const matrix = [];
-    const n = sortedFigureIds.length;
+    const n = range ? range[1] - range[0] + 1 : sortedFigureIds.length;
 
     for (let i = 0; i < n + 1; i += 1) {
       matrix.push({
@@ -99,7 +103,7 @@ const useRelationData = (
           [0, 2 * n - (i + i) - 1 / 2],
           [n - i, 2 * n - (i + n) - 1 / 2],
         ],
-        target: n - i,
+        target: n - i + (range?.[0] || 0),
       });
 
       matrix.push({
@@ -107,11 +111,11 @@ const useRelationData = (
           [0, i + i - 1 / 2],
           [n - i, i + n - 1 / 2],
         ],
-        source: i,
+        source: i + (range?.[0] || 0),
       });
     }
     return matrix;
-  }, [sortedFigureIds.length]);
+  }, [sortedFigureIds.length, range]);
 
   const { rangeX, rangeY } = useMemo(
     () => ({

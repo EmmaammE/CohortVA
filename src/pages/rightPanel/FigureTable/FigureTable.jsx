@@ -27,14 +27,10 @@ const FigureTable = ({ chosenFigure }) => {
     String.prototype.replace.call(data, 'Y', replaceName);
   useEffect(() => {
     if (chosenFigure && chosenFigure!=='') {
-      const queryString = 
-        // chosenFigure
-        chosenFigure.indexOf('(') === -1
-          ? chosenFigure
-          : chosenFigure.substring(0, chosenFigure.indexOf('('));
+      const queryString =  chosenFigure;
       const settings = {
-        url: `https://cbdb.fas.harvard.edu/cbdbapi/person.php?o=json&name=${queryString}`,
-        // url: `https://cbdb.fas.harvard.edu/cbdbapi/person.php?o=json&id=${queryString}`, 
+        // url: `https://cbdb.fas.harvard.edu/cbdbapi/person.php?o=json&name=${queryString}`,
+        url: `https://cbdb.fas.harvard.edu/cbdbapi/person.php?o=json&id=${queryString}`, 
       };
       setLoading(true);
       get(settings).then((res) => {

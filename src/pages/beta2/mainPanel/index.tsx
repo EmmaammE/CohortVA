@@ -6,16 +6,11 @@ import { useLiveQuery } from 'dexie-react-hooks';
 import Button from '../../../components/button/Button';
 import useTooltip from '../../../hooks/useTooltip';
 import FigureTraces from '../../mainPanel/FigureTraces/FigureTraces';
-import FigureTimeline from '../../mainPanel/FigureTimeline/FigureTimeline';
 import './index.scss';
 import FeatureView from './FeatureView';
 import FeatureList, { width, height } from './featureList';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
-import {
-  fetchCohortByRegexAsync,
-  getGroupId,
-  updateGroup,
-} from '../../../reducer/cohortsSlice';
+import { getGroupId, updateGroup } from '../../../reducer/cohortsSlice';
 import { db } from '../../../database/db';
 import {
   setCfids,
@@ -139,6 +134,13 @@ const MainPanel = () => {
         return peopleList.map((d: any) => d.id);
       })
       .reduce((acc, cur) => acc.concat(cur), []);
+
+    if (list.length < 50) {
+      return d3
+        .scaleBand()
+        .domain(list)
+        .range([0, 15 * list.length]);
+    }
 
     return d3.scaleBand().domain(list).range([0, height]);
   }, [featureToSort, fid2weight, people]);
@@ -270,7 +272,7 @@ const MainPanel = () => {
           <div className="timeline-view">
             <h3 className="g-title">Cohort Timeline</h3>
             {loading && <div className="loading-border" />}
-            <Timeline yearToS={yearToS} width={620} height={268} />
+            <Timeline yearToS={yearToS} width={620} height={248} />
           </div>
         </div>
       </div>
