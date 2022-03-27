@@ -18,21 +18,13 @@ const App = () => (
     <div className="header">
       <div className="title">
         <img src={title} alt="title" />
-        <h1>Cohort Visual Analysis in Historical Figures</h1>
+        <h1>Cohort VA</h1>
       </div>
 
-      <div className="symbols">
-        {topics.map((topic) => (
-          <div key={topic.text} className="symbol">
-            <span
-              style={{
-                background: topic.color,
-              }}
-            />
-            <p>{topic.text}</p>
-          </div>
-        ))}
-      </div>
+      <h1>
+        A Visual Analytics System for Iterative Exploration of Historical
+        Cohorts
+      </h1>
     </div>
 
     <div className="main">

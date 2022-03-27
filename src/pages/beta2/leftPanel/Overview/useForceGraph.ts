@@ -69,7 +69,7 @@ const useForceGraph = (data: GraphData | null, descriptions: any) => {
         .force('x', d3.forceX())
         .force('y', d3.forceY())
         .stop()
-        .tick(1000);
+        .tick(10000);
     } catch (e) {
       console.log(e);
     }
