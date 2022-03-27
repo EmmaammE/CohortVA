@@ -23,6 +23,8 @@ import useSentence from './useSentence2';
 import { BASE_CODE, mainColors, mainColors2 } from '../../../utils/atomTopic';
 import Timeline from './timeline';
 import { setLinks } from '../../../reducer/featureSlice';
+import legend from '../../../assets/legends/3.svg';
+import eventMap from '../../../utils/eventMap';
 
 const { Option } = Select;
 
@@ -265,14 +267,35 @@ const MainPanel = () => {
             />
           </div>
           <div className="map-view">
-            <h3 className="g-title">Cohort Map</h3>
+            <h3 className="g-title">Map</h3>
+            <div className="map-view-legend">
+              <img src={legend} alt="legend" />
+            </div>
             {loading && <div className="loading-border" />}
             <FigureTraces posToS={posToS} />
           </div>
           <div className="timeline-view">
-            <h3 className="g-title">Cohort Timeline</h3>
+            <h3 className="g-title">Timeline</h3>
             {loading && <div className="loading-border" />}
-            <Timeline yearToS={yearToS} width={620} height={248} />
+            <div className="timeline-view-select">
+              <Select
+                style={{ width: 120 }}
+                placeholder="All"
+                optionFilterProp="children"
+                size="small"
+              >
+                <Option value="">All</Option>
+
+                {Object.keys(eventMap).map((key: string) => (
+                  <Option key={key} value={key}>
+                    {key?.[0].toUpperCase() + key.slice(1)}
+                  </Option>
+                ))}
+              </Select>
+            </div>
+            {!!Object.keys(yearToS).length && (
+              <Timeline yearToS={yearToS} width={610} height={248} />
+            )}
           </div>
         </div>
       </div>

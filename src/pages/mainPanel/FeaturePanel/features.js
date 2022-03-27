@@ -256,8 +256,7 @@ export const descriptions = (data) => {
         }
       })
     })
-
-  }else {
+  } else {
     slicedPmi = cf2pmi;
   }
 

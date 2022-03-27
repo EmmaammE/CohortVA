@@ -8,6 +8,8 @@ import useTooltip from '../../../hooks/useTooltip';
 import Button from '../../../components/button/Button';
 import { useAppSelector } from '../../../store/hooks';
 import { db } from '../../../database/db';
+import legend1 from '../../../assets/legends/legend1.svg';
+import legend2 from '../../../assets/legends/2.svg';
 
 const expandStyle = {
   style: {
@@ -96,11 +98,17 @@ const LeftPanel = () => {
         <h2 className="g-title">Cohort Identification View</h2>
         <div className="iv--content">
           <div id="overview" className="g-divider">
+            <div>
+              <img src={legend1} alt="legend" />
+            </div>
             <h3 className="g-title">Cohort Feature Overview</h3>
             <Overview show={show} />
           </div>
           <div id="analysis">
             <h3 className="g-title">Cohort Analysis Provenance</h3>
+            <div>
+              <img src={legend2} alt="legend" />
+            </div>
             <AnalysisPanel />
             <Button
               text="Export"

@@ -44,6 +44,9 @@
     h2.g-title {
       margin: 10px 0;
     }
+    h3.g-title {
+      margin: 5px 0;
+    }
 
     .iv--content {
       flex: 1;
@@ -60,6 +63,10 @@
         display: flex;
         flex-direction: column;
         transition: height 300ms ease-out;
+
+        img {
+          margin-bottom: 10px;
+        }
       }
 
       .node {

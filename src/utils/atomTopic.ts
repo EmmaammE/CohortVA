@@ -1,9 +1,9 @@
 export const modelName2Topic = {
-  Frqnode_model: 'Frequent',
+  Frqnode_model: 'Entity',
   place_model: 'Location',
-  group_model: 'Group',
-  popular_model: 'Popular',
-  office_model: 'Office',
+  group_model: 'Relationship',
+  popular_model: 'Celebrity',
+  office_model: 'Affiliation',
   time_model: 'TimeRange',
   gender_model: 'Gender',
 };
@@ -11,7 +11,7 @@ export const modelName2Topic = {
 const atomTopic = [
   {
     color: '#8AA79B',
-    text: 'Group',
+    text: 'Relationship',
   },
   {
     color: '#7891AA',
@@ -19,15 +19,11 @@ const atomTopic = [
   },
   {
     color: '#AD7982',
-    text: 'Office',
-  },
-  {
-    color: '#B3948D',
-    text: 'Event',
+    text: 'Affiliation',
   },
   {
     color: '#CA9087',
-    text: 'Popular',
+    text: 'Celebrity',
   },
   {
     color: '#AAB0BE',
@@ -35,7 +31,7 @@ const atomTopic = [
   },
   {
     color: '#DDB997',
-    text: 'Frequent',
+    text: 'Entity',
   },
 ];
 

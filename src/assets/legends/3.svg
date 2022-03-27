@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="136px" height="32px" viewBox="0 0 136 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>编组 99</title>
+    <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="teaser" transform="translate(-876.000000, -779.000000)">
+            <g id="编组-99" transform="translate(876.299765, 779.670690)">
+                <g id="Group-67">
+                    <ellipse id="Oval-4" stroke="#808080" stroke-width="0.6" fill-opacity="0.6" fill="#9A9A9A" cx="7.03681642" cy="22.6077418" rx="3.28952538" ry="3.36134454"></ellipse>
+                    <ellipse id="Oval-4" stroke="#808080" stroke-width="0.6" fill-opacity="0.6" fill="#9A9A9A" cx="37.4620351" cy="19.1077419" rx="6.71474364" ry="6.8613445"></ellipse>
+                    <line x1="0.457765661" y1="26.5293104" x2="41.5768329" y2="26.5293104" id="Path-22" stroke="#979797" stroke-width="0.5" stroke-dasharray="2"></line>
+                    <line x1="0.143599678" y1="9.55521227" x2="41.4866568" y2="21.2074496" id="Path-22" stroke="#979797" stroke-width="0.5" stroke-dasharray="2" transform="translate(20.815128, 15.381331) rotate(-30.000000) translate(-20.815128, -15.381331) "></line>
+                </g>
+                <text id="Event-number" font-family="ArialMT, Arial" font-size="12" font-weight="normal" line-spacing="8" fill="#706E6E">
+                    <tspan x="48.7002354" y="27.7410751">Event number</tspan>
+                </text>
+            </g>
+        </g>
+    </g>
+</svg>

@@ -36,6 +36,9 @@
   text-align: right;
   text-align: center;
   margin-left: 0px;
+  display: flex;
+  margin-left: 45px;
+  justify-content: space-around;
 }
 .events-header {
   display: flex;
@@ -261,6 +264,6 @@
 
 .checkall {
   position: absolute;
-  right: 361px;
+  right: 356px;
   bottom: 0;
 }

@@ -29,9 +29,13 @@ const FigureInfo = () => {
 
   useEffect(() => {
     if(figureId !== '') {
+     try {
       getPersonId(figureId).then(res => {
         setChoseFigure(res.data.people_info)
       })
+     } catch(e) {
+       console.log(e)
+     }
     }
   },[figureId])
 

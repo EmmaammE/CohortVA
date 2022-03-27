@@ -7,6 +7,12 @@
   display: flex;
   justify-content: center;
   align-items: center;
+
+  svg {
+    width: 250px;
+    height: 250px;
+    margin: 0 auto;
+  }
 }
 
 .replace-btn {
@@ -27,7 +33,7 @@
   padding: 0 10px;
   margin: 8px 5px;
   min-height: 50px;
-  max-height: 150px;
+  max-height: 100px;
 }
 
 .item {

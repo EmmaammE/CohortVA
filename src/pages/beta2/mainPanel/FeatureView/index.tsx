@@ -57,6 +57,13 @@ enum EOrderOption {
   MatrixOrder = 1,
   Event = 2,
 }
+// eslint-disable-next-line no-shadow
+enum ELabelOption {
+  All = 3,
+  Included = 0,
+  Excluded = 1,
+  Uncertain = 2,
+}
 
 const { Option } = Select;
 
@@ -105,8 +112,19 @@ const FeatureView = ({
     }
     return features.map((d: any) => d.id);
   }, [featureToSort?.id, features]);
-  const figureIdArr = useAppSelector((state) => state.status.figureIdArr);
+  const figureIdSelected = useAppSelector((state) => state.status.figureIdArr);
+  // 展示label
+  const [labelOption, setLabelOption] = useState<number>(ELabelOption.All);
+  const onLabelOptionChange = useCallback((e) => {
+    setLabelOption(e);
+  }, []);
 
+  const figureIdArr = useMemo(() => {
+    if (labelOption === ELabelOption.All) {
+      return figureIdSelected;
+    }
+    return figureIdSelected.filter((fid) => figureStatus[fid] === labelOption);
+  }, [figureIdSelected, figureStatus, labelOption]);
   // stack按照原序即可，yScale按照排序后的顺序
   const stack = useStack(data, groups, figureIdArr);
 
@@ -250,6 +268,10 @@ const FeatureView = ({
   }, []);
 
   const [pair, setPair] = useState<number[] | null>(null);
+  useEffect(() => {
+    // label切换会影响index，清除高亮
+    setPair(null);
+  }, [labelOption]);
 
   const handleClick = useCallback(
     (e, source, target) => {
@@ -302,6 +324,11 @@ const FeatureView = ({
   const onChangeRadio = useCallback(
     (pid: string, e: any) => {
       if (e.target.value !== undefined) {
+        // 假如开始选了，就把这个还原，不然会很奇怪
+        if (labelOption !== ELabelOption.All) {
+          setLabelOption(ELabelOption.All);
+        }
+
         dispatch(
           updateFigureStatusById({
             id: pid,
@@ -311,7 +338,7 @@ const FeatureView = ({
         dispatch(updateFigureExplored([pid]));
       }
     },
-    [dispatch]
+    [dispatch, labelOption]
   );
   const [startQuickSelect, setStartQuickSelect] = useState<boolean>(false);
   const onMouseMoveRadio = useCallback(
@@ -462,7 +489,8 @@ const FeatureView = ({
     setRange([1, 26]);
     setPair(null);
     setOrderOption(EOrderOption.Default);
-  }, [figureIdArr]);
+    setLabelOption(ELabelOption.All);
+  }, [figureIdSelected]);
 
   if (figureIdArr.length === 0) {
     return <div />;
@@ -495,6 +523,19 @@ const FeatureView = ({
 
         <div className={style['figure-header']}>
           <h3>Figure Label</h3>
+
+          <Select
+            style={{ width: 95 }}
+            optionFilterProp="children"
+            size="small"
+            value={labelOption}
+            onChange={onLabelOptionChange}
+          >
+            <Option value={ELabelOption.All}>All</Option>
+            <Option value={ELabelOption.Included}>Included</Option>
+            <Option value={ELabelOption.Excluded}>Excluded</Option>
+            <Option value={ELabelOption.Uncertain}>Uncertain</Option>
+          </Select>
         </div>
 
         <div className={style['events-header']}>

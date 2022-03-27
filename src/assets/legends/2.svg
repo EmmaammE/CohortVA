@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="284px" height="19px" viewBox="0 0 284 19" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>编组 98</title>
+    <defs>
+        <rect id="path-1" x="0" y="0" width="3" height="16"></rect>
+        <mask id="mask-2" maskContentUnits="userSpaceOnUse" maskUnits="objectBoundingBox" x="0" y="0" width="3" height="16" fill="white">
+            <use xlink:href="#path-1"></use>
+        </mask>
+    </defs>
+    <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="teaser" transform="translate(-15.000000, -648.000000)">
+            <g id="编组-98" transform="translate(15.000000, 648.000000)">
+                <g id="编组-9" transform="translate(96.500000, 2.000000)">
+                    <text id="Feature-Filter" font-family="ArialMT, Arial" font-size="10" font-weight="normal" line-spacing="15.6" fill="#696969">
+                        <tspan x="0.268554688" y="9">Feature Filter</tspan>
+                    </text>
+                    <g id="编组-32" transform="translate(63.000000, 1.000000)">
+                        <text id="1" font-family="ArialMT, Arial" font-size="10" font-weight="normal" line-spacing="15.6" letter-spacing="0.457142813" fill="#696969">
+                            <tspan x="0.490666875" y="9">1</tspan>
+                        </text>
+                        <text id="10" font-family="ArialMT, Arial" font-size="10" font-weight="normal" line-spacing="15.6" letter-spacing="0.457142813" fill="#696969">
+                            <tspan x="111.981334" y="9">10</tspan>
+                        </text>
+                        <g id="编组-21" transform="translate(12.000000, 4.000000)">
+                            <rect id="矩形" fill="#DDDDDD" x="40" y="1.6" width="55" height="4.8" rx="2.4"></rect>
+                            <rect id="矩形" fill="#B3B3B3" x="0" y="1.6" width="61" height="4.8" rx="2.4"></rect>
+                            <rect id="矩形" fill="#CCCCCC" x="57.2" y="0" width="8" height="8" rx="4"></rect>
+                        </g>
+                    </g>
+                </g>
+                <g id="编组-4">
+                    <text id="Figure-Count" font-family="Helvetica" font-size="10" font-weight="normal" fill="#706E6E">
+                        <tspan x="5" y="14">Figure Count</tspan>
+                    </text>
+                    <g id="编组-23">
+                        <use id="矩形" stroke="#9B8267" mask="url(#mask-2)" stroke-dasharray="1" xlink:href="#path-1"></use>
+                        <rect id="矩形" fill="#9B8267" x="0" y="5" width="3" height="11"></rect>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

@@ -51,7 +51,7 @@ const Pie = ({ des, style = {} }: NodeProps) => (
       r={SIZE}
       cx={0}
       cy={0}
-      stroke="#6e6e6e"
+      stroke="#232323"
       paintOrder="stroke"
       fill="transparent"
       {...style}
@@ -73,7 +73,7 @@ const Rect = ({ des, style = {} }: NodeProps) => (
       y={-SIZE}
       width={SIZE * 2}
       height={SIZE * 2}
-      stroke="#6e6e6e"
+      stroke="#232323"
       paintOrder="stroke"
       {...style}
     />
@@ -98,13 +98,13 @@ const Triangle = ({ des, style = {} }: NodeProps) => (
       ${SIZE} ${(1.732 / 2) * SIZE} 
       ${-SIZE} ${(1.732 / 2) * SIZE}Z`}
     fill={featureMap?.[des[0].type] || '#ccc'}
-    stroke="#6e6e6e"
+    stroke="#232323"
     paintOrder="stroke"
     {...style}
   />
 );
 
-const initOpacity = 0.8;
+const initOpacity = 1;
 const afterOpacity = 0.4;
 
 const FeatureNode = ({

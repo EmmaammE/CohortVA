@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="279px" height="55px" viewBox="0 0 279 55" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>编组 97</title>
+    <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="teaser" transform="translate(-13.000000, -143.000000)">
+            <g id="编组-97" transform="translate(13.987488, 143.000000)">
+                <g id="编组-54" transform="translate(81.012512, 0.000000)">
+                    <text id="Location" font-family="Helvetica" font-size="10.95791" font-weight="normal" fill="#706E6E">
+                        <tspan x="12.1186441" y="10">Location</tspan>
+                    </text>
+                    <ellipse id="Oval" fill="#7891AA" cx="4.66101695" cy="6.39211419" rx="4.66101695" ry="4.4464866"></ellipse>
+                </g>
+                <g id="编组-55" transform="translate(81.012512, 20.000000)">
+                    <text id="Affiliation" font-family="Helvetica" font-size="10.95791" font-weight="normal" fill="#706E6E">
+                        <tspan x="12.1333333" y="10">Affiliation</tspan>
+                    </text>
+                    <ellipse id="Oval" fill="#AD7982" cx="4.66666667" cy="6.39211419" rx="4.66666667" ry="4.4464866"></ellipse>
+                </g>
+                <g id="编组-57" transform="translate(146.012512, 0.000000)">
+                    <text id="Celebrity" font-family="Helvetica" font-size="10.95791" font-weight="normal" fill="#706E6E">
+                        <tspan x="12.176604" y="10">Celebrity</tspan>
+                    </text>
+                    <ellipse id="Oval" fill="#CA9087" cx="4.68330923" cy="6.39211419" rx="4.68330923" ry="4.4464866"></ellipse>
+                </g>
+                <g id="编组-58" transform="translate(0.012512, 0.000000)">
+                    <text id="TimeRange" font-family="Helvetica" font-size="10.95791" font-weight="normal" fill="#706E6E">
+                        <tspan x="11.9736842" y="10">TimeRange</tspan>
+                    </text>
+                    <ellipse id="Oval" fill="#AAB0BE" cx="4.60526316" cy="6.39211419" rx="4.60526316" ry="4.56505957"></ellipse>
+                </g>
+                <g id="编组-59" transform="translate(213.012512, 0.000000)">
+                    <text id="Entity" font-family="Helvetica" font-size="10.95791" font-weight="normal" fill="#706E6E">
+                        <tspan x="11.8730182" y="10">Entity</tspan>
+                    </text>
+                    <ellipse id="Oval" fill="#DDB997" cx="4.56654545" cy="6.39211419" rx="4.56654545" ry="4.56505957"></ellipse>
+                </g>
+                <g id="编组-50" transform="translate(0.012512, 19.000000)">
+                    <text id="Relationship" font-family="Helvetica" font-size="10.95791" font-weight="normal" fill="#706E6E">
+                        <tspan x="11.7696633" y="10">Relationship</tspan>
+                    </text>
+                    <ellipse id="Oval" fill="#8AA79B" cx="4.52679359" cy="7.2253335" rx="4.52679359" ry="4.492125"></ellipse>
+                </g>
+                <g id="编组-88" transform="translate(0.000000, 39.027242)">
+                    <text id="Composite-Feature" font-family="Helvetica" font-size="10" font-weight="normal" fill="#706E6E">
+                        <tspan x="38.0125125" y="12.9727582">Composite Feature</tspan>
+                    </text>
+                    <text id="Atomic-Feature" font-family="Helvetica" font-size="10" font-weight="normal" fill="#706E6E">
+                        <tspan x="152.012512" y="12.9727582">Atomic Feature</tspan>
+                    </text>
+                    <path d="M1.27024654,10.150576 C1.26447823,10.1956224 1.26422735,10.2292296 1.26949392,10.2513976 C1.70201893,12.0719765 3.85939424,14.9727582 7.47172135,14.9727582 C8.82674551,14.9727582 10.0855558,14.5583759 11.1296004,13.8486983 L7.47172135,8.39432796 L1.27024654,10.150576 Z" id="路径" stroke="#A8A8A8" stroke-width="0.7" fill-rule="nonzero"></path>
+                    <path d="M-0.288329179,2.59436569 C-0.288958885,2.63890738 -0.289273739,2.6723431 -0.289273739,2.69467286 C-0.295662457,6.30934938 2.62726543,9.23957366 6.25817643,9.23318518 C7.62017161,9.2307744 8.85418287,8.68542168 9.90484857,7.9775248 L6.2956869,2.57367218 L-0.288329179,2.59436569 Z" id="路径" stroke="#A8A8A8" stroke-width="0.7" fill-rule="nonzero" transform="translate(4.807787, 5.903429) rotate(109.000000) translate(-4.807787, -5.903429) "></path>
+                    <path d="M9.39055405,2.10367802 L7.47172135,8.39432796 L9.39055405,2.10367802 Z" id="路径" stroke="#A8A8A8" stroke-width="0.7" fill="#FFFFFF" fill-rule="nonzero"></path>
+                    <path d="M14.0125125,8.39432796 C14.2112311,3.84015966 9.64055116,2.20992548 9.46982272,2.1315572 C9.35600377,2.07931168 8.68996998,4.16690194 7.47172135,8.39432796 L11.1296004,13.8486983 C12.869042,12.666343 13.9140104,10.6517672 14.0125125,8.39432796 Z" id="路径" stroke="#A8A8A8" stroke-width="0.7" fill="#FFFFFF" fill-rule="nonzero"></path>
+                    <g id="编组-30" transform="translate(20.012512, 1.972758)" stroke="#A8A8A8" stroke-width="0.7">
+                        <rect id="矩形" x="0.35" y="0.35" width="6.3" height="12.3"></rect>
+                        <g id="编组-26" transform="translate(6.000000, 0.000000)">
+                            <rect id="矩形" x="0.35" y="0.35" width="6.3" height="12.3"></rect>
+                        </g>
+                    </g>
+                    <g id="编组-27" transform="translate(137.012512, 1.972758)" stroke="#A8A8A8" stroke-width="0.9">
+                        <g id="编组-3">
+                            <path d="M6.61452809,1.00625899 L12.2779866,12.55 L0.734245561,12.55 L6.61452809,1.00625899 Z" id="矩形"></path>
+                        </g>
+                    </g>
+                </g>
+                <text id="Feature-Weight" font-family="Helvetica" font-size="10" font-weight="normal" fill="#706E6E">
+                    <tspan x="197.012512" y="30">Feature Weight</tspan>
+                </text>
+                <g id="编组-39" transform="translate(146.012512, 22.000000)" stroke="#979797">
+                    <line x1="7.5" y1="0.5" x2="37.5" y2="0.5" id="路径-6" stroke-width="0.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="2"></line>
+                    <line x1="7.31034483" y1="8.5" x2="37.5" y2="8.5" id="路径-6" stroke-width="0.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="2"></line>
+                    <rect id="矩形" stroke-width="0.5" fill="#FFFFFF" x="0.25" y="0.25" width="8.5" height="8.5" rx="4.25"></rect>
+                    <rect id="矩形" fill="#FFFFFF" x="34.5" y="0.5" width="8" height="8" rx="4"></rect>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
