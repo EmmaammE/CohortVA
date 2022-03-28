@@ -293,7 +293,9 @@ const Overview = ({ show }: IOverview) => {
                   </svg>
                 </span>
                 <p>
-                  {value.features.map((d) => `${d.type}(${d.text})`).join('&')}
+                  {value.features
+                    .map((d) => `${d.type.slice(0, 1)}(${d.text})`)
+                    .join('&')}
                 </p>
               </div>
             );

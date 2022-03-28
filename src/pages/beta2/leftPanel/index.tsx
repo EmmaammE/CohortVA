@@ -87,7 +87,11 @@ const LeftPanel = () => {
       <div className="figures-view g-divider panel">
         <div className="figures-view--header">
           <h2 className="g-title">Specify Initial Figures</h2>
-          <ToggleICON className="figures-view--icon" onClick={toggleShow} />
+          <ToggleICON
+            className="figures-view--icon"
+            onClick={toggleShow}
+            style={show ? { transform: 'rotate(180deg)' } : {}}
+          />
         </div>
         <div className="figures-view--content" {...(show ? {} : expandStyle)}>
           <CohortSearcherPanel />

@@ -5,10 +5,10 @@ type TFeature = {
   }[];
 };
 
-// eslint-disable-next-line import/prefer-default-export
 export const getDisplayedFeatureText = (feature: TFeature) =>
-  feature?.descriptorsArr?.map((d: any) => `${d.type}(${d.text})`).join('&') ||
-  '';
+  feature?.descriptorsArr
+    ?.map((d: any) => `${d.type.slice(0, 1)}(${d.text})`)
+    .join('&') || '';
 
 export const padding = 0.01;
 

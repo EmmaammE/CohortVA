@@ -22,8 +22,8 @@ const App = () => (
       </div>
 
       <h1>
-        A Visual Analytics System for Iterative Exploration of Historical
-        Cohorts
+        A Visual Analytic System for Iterative Exploration of Cohorts based on
+        Historical Data
       </h1>
     </div>
 

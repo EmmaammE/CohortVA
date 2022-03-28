@@ -28,12 +28,21 @@
   z-index: 5;
   left: 150px;
   border-radius: 0px 3px 3px 0;
-  background-color: #ececec;
+  /* background-color: #ececec; */
   border: 0.84px solid #979797;
   border-left: 0px solid transparent;
   fill: #cecece;
   cursor: pointer;
 }
+
+.figure-table-container .ant-collapse {
+  background: #fff;
+}
+
+.figure-table-container .ant-collapse-content-box {
+  padding: 2px;
+}
+
 .figure-table-container .figure-detail-list {
   margin: 9px 0 0px 0;
 }
@@ -49,12 +58,12 @@
   .site-collapse-custom-panel
   .ant-collapse-header {
   overflow: auto;
-  background: #ececec;
   border: 0px;
   border-radius: 2px;
   cursor: pointer;
   font-weight: bold;
   padding: 5px 0 5px 10px;
+  border-bottom: 1px dashed #c9c9c9;
 }
 .site-collapse-custom-collapse .site-collapse-custom-panel ul {
   padding-left: 5%;
@@ -63,9 +72,9 @@
 
 .site-collapse-custom-collapse .site-collapse-custom-panel ul div.group {
   list-style: none;
-  margin-top: 10px;
-  border: solid 1px #979797;
-  padding: 10px;
+  margin-top: 5px;
+  /* border: solid 1px #979797; */
+  /* padding: 10px; */
 }
 
 .site-collapse-custom-collapse .site-collapse-custom-panel ul div.group li {
@@ -76,6 +85,7 @@
 }
 .site-collapse-custom-collapse .site-collapse-custom-panel li .value {
   font-weight: 200;
+  margin: 0 0 0 5px;
 }
 .basic-info {
   margin: 10px 22px 10px 0;
@@ -84,7 +94,7 @@
   margin: 0;
 }
 .basic-info .title {
-  background-color: #ececec;
+  /* background-color: #ececec; */
   padding: 5px 0 5px 10px;
   font-weight: bold;
   line-height: 22px;
@@ -100,9 +110,9 @@
 }
 .basic-info .basic-info-panel .param {
   font-weight: 550;
-  margin: 0 0 0 20px;
+  margin: 0 0 0 5px;
 }
 .basic-info .basic-info-panel .value {
   font-weight: 200;
-  margin: 0 0 0 10px;
+  margin: 0 0 0 5px;
 }

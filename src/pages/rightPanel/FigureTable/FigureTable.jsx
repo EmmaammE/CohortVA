@@ -5,6 +5,8 @@ import './figureTable.css';
 import { Collapse } from 'antd';
 import { CaretRightOutlined } from '@ant-design/icons';
 import { get } from '../../../api/tools';
+import { ReactComponent as ToggleICON } from '../../../assets/icons/toggle.svg';
+
 const { Panel } = Collapse;
 
 const FigureTable = ({ chosenFigure }) => {
@@ -172,7 +174,6 @@ const FigureTable = ({ chosenFigure }) => {
       <div className="figure-detail-list">
         {figure['Personal Info'] ? (
           <div className="basic-info">
-            <p className="title">Personal Info</p>
             <p className="basic-info-panel">
               {Object.keys(figure['Personal Info']).map((param) => (
                 <li key={param}>
@@ -193,8 +194,8 @@ const FigureTable = ({ chosenFigure }) => {
           bordered={false}
           className="site-collapse-custom-collapse"
           expandIconPosition="right"
-          expandIcon={() => (
-            <CaretRightOutlined rotate={270} style={{ color: '#CECECE' }} />
+          expandIcon={({isActive}) => (
+            <ToggleICON style={{ top:'6px',color: '#CECECE', transform:isActive?'rotate(180deg)':'none' }} />
           )}
         >
           {figure ? (
@@ -226,10 +227,8 @@ const FigureTable = ({ chosenFigure }) => {
                           if (figure[key][param])
                             return (
                               <li>
-                                {' '}
                                 <span className="param">{param}</span>
                                 <span className="value">
-                                  {' '}
                                   {figure[key][param]}{' '}
                                 </span>
                               </li>

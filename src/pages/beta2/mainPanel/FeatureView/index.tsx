@@ -136,7 +136,7 @@ const FeatureView = ({
   const [orderOption, setOrderOption] = useState<number>(EOrderOption.Default);
   const clickSort = useCallback(
     (value) => {
-      if (orderOption !== EOrderOption.Default) {
+      if (orderOption === value) {
         setOrderOption(EOrderOption.Default);
       } else {
         setOrderOption(value);
@@ -486,7 +486,7 @@ const FeatureView = ({
 
   useEffect(() => {
     // figureIdArr变化后，恢复状态
-    setRange([1, 26]);
+    setRange([0, 25]);
     setPair(null);
     setOrderOption(EOrderOption.Default);
     setLabelOption(ELabelOption.All);
@@ -513,9 +513,7 @@ const FeatureView = ({
 
             {features.map((feature: any, index: number) => (
               <Option key={feature.id} value={index}>
-                {feature.descriptorsArr
-                  .map((d: any) => `(${d.text})`)
-                  .join('&')}
+                {getDisplayedFeatureText(feature)}
               </Option>
             ))}
           </Select>
@@ -639,7 +637,13 @@ const FeatureView = ({
           <p>
             <SortICON
               onClick={() => clickSort(EOrderOption.Event)}
-              style={{ margin: '0 4px 0 -10px' }}
+              style={{
+                margin: '0 4px 0 -10px',
+                transform:
+                  orderOption !== EOrderOption.Event
+                    ? 'rotate(180deg)'
+                    : 'inherit',
+              }}
             />
             Event number
           </p>
@@ -687,16 +691,19 @@ const FeatureView = ({
               ))}
             </svg>
             <div className={style.names}>
-              {sortedFigureIds.map((name, i) => (
-                // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
-                <p
-                  // eslint-disable-next-line react/no-array-index-key
-                  key={i}
-                  onClick={() => choseFigure(name, nodesMap[name], i)}
-                >
-                  {nodesMap[name]}
-                </p>
-              ))}
+              {sortedFigureIds.map(
+                (name, i) =>
+                  nodesMap[name] && (
+                    // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
+                    <p
+                      // eslint-disable-next-line react/no-array-index-key
+                      key={i}
+                      onClick={() => choseFigure(name, nodesMap[name], i)}
+                    >
+                      {nodesMap[name]}
+                    </p>
+                  )
+              )}
             </div>
             <div
               className={style.radios}
@@ -775,7 +782,14 @@ const FeatureView = ({
             <span>{figureIdArr.length}</span>
           </div>
 
-          <SortICON onClick={() => clickSort(EOrderOption.MatrixOrder)} />
+          <SortICON
+            onClick={() => clickSort(EOrderOption.MatrixOrder)}
+            style={
+              orderOption !== EOrderOption.MatrixOrder
+                ? { transform: 'rotate(180deg)' }
+                : {}
+            }
+          />
         </div>
 
         <Matrix

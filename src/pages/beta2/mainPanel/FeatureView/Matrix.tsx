@@ -97,14 +97,14 @@ const Matrix = ({
   return (
     <svg
       style={{
-        width: `${matrixHeight / 2}px`,
+        width: `${matrixHeight / 2 + 3}px`,
         height: `${matrixHeight}px`,
         position: 'relative',
         top: '-3px',
       }}
-      width={`${matrixHeight / 2}`}
+      width={`${3 + matrixHeight / 2}`}
       height={`${matrixHeight}`}
-      viewBox={`0 0 ${matrixHeight / 2} ${matrixHeight}`}
+      viewBox={`0 0 ${3 + matrixHeight / 2} ${matrixHeight}`}
       ref={$container}
     >
       <defs>

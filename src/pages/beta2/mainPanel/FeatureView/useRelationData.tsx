@@ -76,7 +76,7 @@ const useRelationData = (
       }
     }
 
-    console.log(maxCnt);
+    // console.log(maxCnt, sortedFigureIds);
 
     const opacityScale = d3.scaleLog().domain([1, maxCnt]).range([0.1, 1]);
 

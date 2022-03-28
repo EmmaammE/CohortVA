@@ -238,9 +238,7 @@ const MainPanel = () => {
 
             {features.map((feature: any, index: number) => (
               <Option key={feature.id} value={index}>
-                {feature.descriptorsArr
-                  .map((d: any) => `(${d.text})`)
-                  .join('&')}
+                {getDisplayedFeatureText(feature)}
               </Option>
             ))}
           </Select>

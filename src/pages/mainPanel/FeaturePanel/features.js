@@ -86,7 +86,7 @@ const handleFeatureData = (data, chosenClassifier) => {
     // subFeatures.sort((a, b) => b.proportion - a.proportion);
 
     const descriptorsArr = [];
-    model_descriptors.forEach((descriptorId, i) => {
+    model_descriptors.slice(-3).forEach((descriptorId, i) => {
       const model_descriptor = id2model_descriptor[descriptorId];
       const { parms, type } = model_descriptor;
       let descript = '';
@@ -105,7 +105,7 @@ const handleFeatureData = (data, chosenClassifier) => {
       }
       descriptorsArr.push({
         id: descriptorId,
-        text: `"${descript}"`,
+        text: descript,
         type: modelName2Topic[type],
       });
     });
@@ -121,7 +121,7 @@ const handleFeatureData = (data, chosenClassifier) => {
         disObject.id
       ];
       const redundancyDescriptorArr = [];
-      model_descriptors.forEach((descriptorId, i) => {
+      model_descriptors.slice(-3).forEach((descriptorId, i) => {
         const model_descriptor = id2model_descriptor[descriptorId];
         const { parms, type } = model_descriptor;
         let descript = '';
@@ -138,10 +138,10 @@ const handleFeatureData = (data, chosenClassifier) => {
             descript = id2node[parms[key]].en_name;
           }
         }
-        let text = `("${descript}")&`;
-        if (i === model_descriptors.length - 1) {
-          text = text.slice(0, -1);
-        }
+        let text = descript;
+        // if (i === model_descriptors.length - 1) {
+        //   text = text.slice(0, -1);
+        // }
         redundancyDescriptorArr.push({
           text,
           id: descriptorId,
@@ -268,7 +268,7 @@ export const descriptions = (data) => {
     res[cfid] = {
       weight: cf2pmi[cfid], 
       proportion,
-      features: model_descriptors.map((descriptorId, i) => {
+      features: model_descriptors.slice(-3).map((descriptorId, i) => {
         const model_descriptor = id2model_descriptor[descriptorId];
         const { type, parms } = model_descriptor;
 

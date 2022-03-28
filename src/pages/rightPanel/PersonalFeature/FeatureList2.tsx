@@ -47,7 +47,7 @@ export default () => {
               if (data?.[featureId]) {
                 curFigureData.push({
                   des: data[featureId]?.features
-                    .map((d: any) => `${d.type}(${d.text})`)
+                    .map((d: any) => `${d.type.slice(0, 1)}(${d.text})`)
                     .join('&'),
                   value: figureDataObject[featureId],
                 });

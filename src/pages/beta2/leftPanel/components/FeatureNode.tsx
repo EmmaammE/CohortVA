@@ -129,7 +129,7 @@ const FeatureNode = ({
                 top: e.clientY - 45,
                 // content: data.map((d) => `${d.type}(${d.text})`).join('&'),
                 content: `${data
-                  .map((d) => `${d.type}(${d.text})`)
+                  .map((d) => `${d.type.slice(0, 1)}(${d.text})`)
                   .join('&')}\n${id}`,
               }
             : null,
