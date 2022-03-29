@@ -101,6 +101,7 @@
 .content-inner {
   padding-left: 5px;
   direction: rtl;
+  min-height: 548px;
   height: 548px;
   overflow: auto;
   grid-row: 2;
@@ -266,4 +267,30 @@
   position: absolute;
   right: 356px;
   bottom: 0;
+}
+
+.life-header,
+.event-header,
+.matrix-header {
+  position: absolute;
+  top: -6px;
+  font-family: Helvetica;
+  font-size: 12px;
+  color: #696969;
+  font-weight: 700;
+  line-height: 16px;
+  letter-spacing: 0px;
+  vertical-align: middle;
+}
+
+.life-header {
+  left: 470px;
+}
+
+.event-header {
+  left: 700px;
+}
+.matrix-header {
+  right: -268px;
+  white-space: nowrap;
 }

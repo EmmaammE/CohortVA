@@ -80,7 +80,7 @@ const FigureTraces = ({ posToS }) => {
               const newState = {
                 data: resultData,
                 title: `count: ${targetData.length}`,
-                style: { opacity: 1, left: e.clientX, top: e.clientY },
+                style: { opacity: 1, left: e.clientX+5, top: e.clientY-150 },
               };
               setState(newState);
             });

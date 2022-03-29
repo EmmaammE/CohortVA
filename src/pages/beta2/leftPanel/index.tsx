@@ -99,7 +99,7 @@ const LeftPanel = () => {
       </div>
 
       <div className="identification-view panel">
-        <h2 className="g-title">Cohort Identification View</h2>
+        <h2 className="g-title">Scope Specification View</h2>
         <div className="iv--content">
           <div id="overview" className="g-divider">
             <div>

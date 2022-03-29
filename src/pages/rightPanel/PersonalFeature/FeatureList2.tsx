@@ -43,7 +43,7 @@ export default () => {
             res?.value.pid2allcfvalue?.[chosenFigure] || {};
 
           Object.keys(figureDataObject).forEach((featureId) => {
-            if (figureDataObject[featureId]) {
+            if (figureDataObject[featureId] > 0) {
               if (data?.[featureId]) {
                 curFigureData.push({
                   des: data[featureId]?.features
