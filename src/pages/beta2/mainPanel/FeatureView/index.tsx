@@ -48,7 +48,7 @@ interface IFeatureView {
   personInfo: {
     [key: string]: IInfoData;
   };
-  nodeGroups: string[];
+  nodeGroups: any;
 }
 
 // eslint-disable-next-line no-shadow
@@ -146,9 +146,31 @@ const FeatureView = ({
   );
 
   const sortedFigureIds = useMemo(() => {
-    if (orderOption === EOrderOption.MatrixOrder) return [...nodeGroups];
-    const featureIdToSort = featureToSort?.id || '';
     const figures = [...figureIdArr];
+
+    if (orderOption === EOrderOption.MatrixOrder) {
+      // const indexMap: { [key: string]: number } = {};
+      // nodeGroups.forEach((id, i) => {
+      //   indexMap[id] = i;
+      // });
+
+      // console.log(indexMap, nodeGroups);
+
+      figures.sort(
+        (p1, p2) => (nodeGroups?.[p1] || 0) - (nodeGroups?.[p2] || 0)
+      );
+    }
+
+    const featureIdToSort = featureToSort?.id || '';
+
+    if (featureIdToSort !== '') {
+      figures.sort(
+        (p1, p2) =>
+          data?.[p2]?.[featureIdToSort] - data?.[p1]?.[featureIdToSort]
+      );
+    } else {
+      figures.sort((p1, p2) => data?.[p2]?.sum - data?.[p1]?.sum);
+    }
 
     if (orderOption === EOrderOption.Event) {
       figures.sort(
@@ -156,13 +178,6 @@ const FeatureView = ({
           (personInfo?.[p2]?.sentenceInfo?.cnt || 0) -
           (personInfo?.[p1]?.sentenceInfo?.cnt || 0)
       );
-    } else if (featureIdToSort !== '') {
-      figures.sort(
-        (p1, p2) =>
-          data?.[p2]?.[featureIdToSort] - data?.[p1]?.[featureIdToSort]
-      );
-    } else {
-      figures.sort((p1, p2) => data?.[p2]?.sum - data?.[p1]?.sum);
     }
 
     return figures;
@@ -199,15 +214,16 @@ const FeatureView = ({
   const [range, setRange] = useState<[number, number]>([1, 1]);
   const $slider = useRef(null);
   const handleSliderChangeEnd = useCallback((value: any) => {
-    setRange(value.map((d: number) => d - 1));
+    // setRange(value.map((d: number) => d - 1));
+    // setRange([value 1, value[0] + 25]);
   }, []);
 
   const [rangeProps, setRangeProps] = useState({});
   useEffect(() => {
     setRangeProps({ value: [...range] });
-    window.requestAnimationFrame(() => {
-      setRangeProps({});
-    });
+    // window.requestAnimationFrame(() => {
+    //   setRangeProps({});
+    // });
   }, [range]);
 
   // matrix data
@@ -293,6 +309,10 @@ const FeatureView = ({
   }, []);
 
   const { initIndex, $container, offset } = useVisibleIndex(21);
+
+  useEffect(() => {
+    setRange([initIndex, initIndex + 25]);
+  }, [initIndex]);
   // 矩阵选中的人
   const choseFigure = useCallback(
     (fid: string, name: string, i: number) => {
@@ -310,16 +330,35 @@ const FeatureView = ({
   const onChangeAllRadio = useCallback(
     (e: any) => {
       if (e.target.value !== undefined) {
-        dispatch(
-          updateFigureStatus(
-            Object.fromEntries(figureIdArr.map((fid) => [fid, e.target.value]))
-          )
-        );
+        if (labelOption !== ELabelOption.All) {
+          setLabelOption(ELabelOption.All);
+        }
 
-        dispatch(updateFigureExplored(figureIdArr));
+        if (pair && pair.length > 2) {
+          const pairSet: any = new Set(pair);
+          console.log(pairSet);
+          const figures = figureIdArr.filter((d, i) => pairSet.has(`${i}`));
+          dispatch(
+            updateFigureStatus(
+              Object.fromEntries(figures.map((fid) => [fid, e.target.value]))
+            )
+          );
+
+          dispatch(updateFigureExplored(figures));
+        } else {
+          dispatch(
+            updateFigureStatus(
+              Object.fromEntries(
+                figureIdArr.map((fid) => [fid, e.target.value])
+              )
+            )
+          );
+
+          dispatch(updateFigureExplored(figureIdArr));
+        }
       }
     },
-    [dispatch, figureIdArr]
+    [dispatch, figureIdArr, labelOption, pair]
   );
   const onChangeRadio = useCallback(
     (pid: string, e: any) => {
@@ -344,7 +383,9 @@ const FeatureView = ({
   const onMouseMoveRadio = useCallback(
     (pid: string, value: number) => {
       if (!startQuickSelect) return;
-
+      if (labelOption !== ELabelOption.All) {
+        setLabelOption(ELabelOption.All);
+      }
       dispatch(
         updateFigureStatusById({
           id: pid,
@@ -353,7 +394,7 @@ const FeatureView = ({
       );
       dispatch(updateFigureExplored([pid]));
     },
-    [dispatch, startQuickSelect]
+    [dispatch, labelOption, startQuickSelect]
   );
   // 统计选中的人中每个特征有多少人
   const stackedInfo = useMemo(() => {
@@ -490,6 +531,8 @@ const FeatureView = ({
     setPair(null);
     setOrderOption(EOrderOption.Default);
     setLabelOption(ELabelOption.All);
+    setfeatureToSort(null);
+    setSelectedType('');
   }, [figureIdSelected]);
 
   if (figureIdArr.length === 0) {
@@ -579,6 +622,10 @@ const FeatureView = ({
         <div className={style['content-divider']} style={{ left: '458px' }} />
         <div className={style['content-divider']} style={{ left: '225px' }} />
 
+        <h3 className={style['life-header']}>Life Vicissitude</h3>
+        <h3 className={style['event-header']}>Event Number</h3>
+        <h3 className={style['matrix-header']}>Relationship Matrix</h3>
+
         <div
           className={style.checkall}
           // 有滚动条的时候调整位置
@@ -638,14 +685,13 @@ const FeatureView = ({
             <SortICON
               onClick={() => clickSort(EOrderOption.Event)}
               style={{
-                margin: '0 4px 0 -10px',
+                margin: '0 0 0 80px',
                 transform:
                   orderOption !== EOrderOption.Event
                     ? 'rotate(180deg)'
                     : 'inherit',
               }}
             />
-            Event number
           </p>
         </div>
 
@@ -691,19 +737,17 @@ const FeatureView = ({
               ))}
             </svg>
             <div className={style.names}>
-              {sortedFigureIds.map(
-                (name, i) =>
-                  nodesMap[name] && (
-                    // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
-                    <p
-                      // eslint-disable-next-line react/no-array-index-key
-                      key={i}
-                      onClick={() => choseFigure(name, nodesMap[name], i)}
-                    >
-                      {nodesMap[name]}
-                    </p>
-                  )
-              )}
+              {sortedFigureIds.map((name, i) => (
+                // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
+                <p
+                  // eslint-disable-next-line react/no-array-index-key
+                  key={i}
+                  onClick={() => choseFigure(name, nodesMap[name], i)}
+                >
+                  {nodesMap[name]}
+                  {String(name) === '36240' ? 'Shen Zhonggu' : ''}
+                </p>
+              ))}
             </div>
             <div
               className={style.radios}

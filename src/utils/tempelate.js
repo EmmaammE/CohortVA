@@ -91,7 +91,7 @@ const generate = async (sentenceLabel, vKey, KEY) => {
         return acc;
     }, {})
 
-    return Template(sentenceLabel,vKey, KEY,dict)
+    return Template(sentenceLabel,vKey, 'en_name',dict)
 }
  
 export default generate;

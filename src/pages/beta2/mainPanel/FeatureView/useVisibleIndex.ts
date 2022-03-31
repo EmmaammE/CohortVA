@@ -14,12 +14,14 @@ const useVisibleIndex = (height: number) => {
   }, [height]);
 
   useEffect(() => {
-    const node = $container.current;
-    node?.addEventListener('scroll', scrollHandler);
-
-    return () =>
-      node?.removeEventListener('scroll', debounce(scrollHandler, 250)) || null;
-  }, [scrollHandler]);
+    if ($container.current) {
+      const node = $container.current;
+      const handler = debounce(scrollHandler, 50);
+      node.addEventListener('scroll', handler);
+      // return () => node?.removeEventListener('scroll', handler) || null;
+    }
+    // return () => null;
+  }, [scrollHandler, $container]);
 
   return {
     initIndex,

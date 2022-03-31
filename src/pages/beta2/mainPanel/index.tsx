@@ -108,11 +108,7 @@ const MainPanel = () => {
   }, [cohortData, dispatch]);
 
   const xScale = useMemo(
-    () =>
-      d3
-        .scaleLinear()
-        .domain([0, maxFigureWeight + padding])
-        .range([0, width]), // 100
+    () => d3.scaleLinear().domain([0, maxFigureWeight]).range([0, width]), // 100
     [maxFigureWeight]
   );
 
@@ -196,7 +192,7 @@ const MainPanel = () => {
     dispatch(
       updateGroup({
         search_group: Object.keys(figureStatus)
-          .filter((id) => figureStatus[id] === 0)
+          .filter((id) => figureStatus[id] !== 1)
           .map((d) => +d),
       })
     );
@@ -225,7 +221,7 @@ const MainPanel = () => {
 
       <div className="feature-content">
         <div className="feature-content-left">
-          <h3 className="g-title">Figure Overview</h3>
+          <h3 className="g-title">Figure Distribution</h3>
           <Select
             style={{ width: 220, marginLeft: '15px' }}
             placeholder="Feature number"
@@ -265,7 +261,7 @@ const MainPanel = () => {
             />
           </div>
           <div className="map-view">
-            <h3 className="g-title">Map</h3>
+            <h3 className="g-title">Event Map</h3>
             <div className="map-view-legend">
               <img src={legend} alt="legend" />
             </div>
@@ -273,7 +269,7 @@ const MainPanel = () => {
             <FigureTraces posToS={posToS} />
           </div>
           <div className="timeline-view">
-            <h3 className="g-title">Timeline</h3>
+            <h3 className="g-title">Event Timeline</h3>
             {loading && <div className="loading-border" />}
             <div className="timeline-view-select">
               <Select
