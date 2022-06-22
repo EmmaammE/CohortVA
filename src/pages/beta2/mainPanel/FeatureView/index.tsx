@@ -72,7 +72,7 @@ const width = 210;
 
 const defaultLabelColorScale = d3
   .scaleOrdinal()
-  .range(['#28aeb1', '#eb7478', '#ffca28'])
+  .range(['#00ACFC', '#ff8b8e', '#6f5dab'])
   .domain(['included', 'excluded', 'uncertain']);
 
 const defaultEventColorScale = d3

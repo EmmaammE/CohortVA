@@ -5,13 +5,13 @@ import './index.scss';
 
 const RightPanel = () => (
   <div id="right-panel">
-    <h2 className="g-title">Figure Details View</h2>
+    <h2 className="g-title">Figure Details</h2>
     <div className="person-view">
       <h3 className="g-title">Personal Info</h3>
       <FigureInfo />
     </div>
     <div className="view">
-      <h3 className="g-title">Feature List</h3>
+      <h3 className="g-title">Personal Features</h3>
       <FeatureList />
     </div>
   </div>

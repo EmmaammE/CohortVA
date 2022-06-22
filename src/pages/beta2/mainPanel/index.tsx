@@ -200,7 +200,7 @@ const MainPanel = () => {
 
   return (
     <div id="main-panel">
-      <h2 className="g-title">Cohort Explanation View </h2>
+      <h2 className="g-title">Cohort Exploration</h2>
 
       <div className="op-container">
         <div id="feature-container">
@@ -221,7 +221,7 @@ const MainPanel = () => {
 
       <div className="feature-content">
         <div className="feature-content-left">
-          <h3 className="g-title">Figure Distribution</h3>
+          <h3 className="g-title">Cohort Overview</h3>
           <Select
             style={{ width: 220, marginLeft: '15px' }}
             placeholder="Feature number"
@@ -251,7 +251,7 @@ const MainPanel = () => {
         </div>
         <div className="feature-content-right">
           <div className="feature-content-right-top">
-            <h3 className="g-title">Figure Selection</h3>
+            <h3 className="g-title">Figure Event Validation</h3>
             <FeatureView
               data={fid2weight}
               features={features}

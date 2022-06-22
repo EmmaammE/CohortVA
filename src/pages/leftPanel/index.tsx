@@ -84,14 +84,14 @@ const LeftPanel = () => {
       </div>
 
       <div className="identification-view panel">
-        <h2 className="g-title">Cohort Identification View</h2>
+        <h2 className="g-title">Cohort Identification</h2>
         <div className="iv--content">
           <div className="g-divider" style={{ flex: '1 0 30%' }}>
             <h3 className="g-title">Cohort Analysis Provenance</h3>
             <AnalysisPanel setPath={setClickedElement} />
           </div>
           <div id="overview">
-            <h3 className="g-title">Cohort Feature Overview</h3>
+            <h3 className="g-title">Cohort Feature Selection</h3>
             <Overview show={show} />
           </div>
         </div>
