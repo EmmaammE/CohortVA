@@ -251,7 +251,10 @@ const MainPanel = () => {
         </div>
         <div className="feature-content-right">
           <div className="feature-content-right-top">
-            <h3 className="g-title">Figure Event Validation</h3>
+            <div className="feature-content-headers">
+              <h3 className="g-title">Figure Feature Validation</h3>
+              <h3 className="g-title">Figure Event Validation</h3>
+            </div>
             <FeatureView
               data={fid2weight}
               features={features}
@@ -266,6 +269,7 @@ const MainPanel = () => {
               <img src={legend} alt="legend" />
             </div>
             {loading && <div className="loading-border" />}
+
             <FigureTraces posToS={posToS} />
           </div>
           <div className="timeline-view">

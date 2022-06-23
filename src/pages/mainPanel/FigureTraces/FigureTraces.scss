@@ -25,9 +25,15 @@
   margin-right: 5.76px;
 }
 .mapContainer circle {
-  fill: #9b8267;
+  fill: #373737;
   fill-opacity: 0.3;
-  stroke: #9b8267;
+  stroke: #373737;
   stroke-width: 1px;
   cursor: pointer;
+}
+
+.event-map-select {
+  position: absolute;
+  top: 0;
+  right: 2px;
 }

@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg width="14px" height="15px" viewBox="0 0 14 15" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <title>编组 68</title>
+<svg width="14px" height="14px" viewBox="0 0 14 14" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>编组 94</title>
     <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="3.11" transform="translate(-1008.000000, -226.000000)">
-            <g id="编组-68" transform="translate(1008.000000, 226.291667)">
-                <g id="编组-5" transform="translate(0.000000, 0.500000)" fill="#F2C239">
-                    <circle id="椭圆形" cx="7" cy="7" r="7"></circle>
+        <g id="插图" transform="translate(-1486.000000, -4105.000000)" fill="#6F5DAB">
+            <g id="编组-94" transform="translate(1486.000000, 4105.000000)">
+                <g id="编组-5" fill-opacity="0.1" stroke="#6F5DAB" stroke-width="0.968">
+                    <ellipse id="椭圆形" cx="7" cy="6.84241487" rx="6.516" ry="6.35841487"></ellipse>
                 </g>
-                <text id="?" font-family="PingFangSC-Semibold, PingFang SC" font-size="10" font-weight="500" fill="#FFFFFF">
-                    <tspan x="4" y="11">?</tspan>
+                <text id="?" font-family="PingFangSC-Semibold, PingFang SC" font-size="9.68" font-weight="500">
+                    <tspan x="4.4" y="10.5826234">?</tspan>
                 </text>
             </g>
         </g>

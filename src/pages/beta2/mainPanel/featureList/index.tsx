@@ -136,7 +136,7 @@ const FeatureList = ({
                     : (yScale as any).bandwidth()
                 }
                 stroke="#fff"
-                strokeWidth={0.5}
+                strokeWidth={0.3}
                 // fill={`url(#Gradient${groups[i]})`}
                 fill={colorScale(dArr.key)}
               />

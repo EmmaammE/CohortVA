@@ -42,6 +42,8 @@ const AnalysisPanel = () => {
     (state) => state.cohorts.classifierIndex
   );
 
+  useEffect(() => {}, [groupIndex, classifierIndex]);
+
   // 展开第几组群体
   const [activeIndex, setActiveIndex] = useState<number>(groupIndex);
   // 每组群体中在不展开时留下的群体

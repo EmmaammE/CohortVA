@@ -1,5 +1,5 @@
 /* eslint-disable  */
-import React, { Component, useState, useEffect, useRef, useCallback } from 'react';
+import React, { Component, useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import * as d3 from 'd3';
 import china from '../../../assets/geojson/full.json';
 import './FigureTraces.scss';
@@ -7,10 +7,13 @@ import template from '../../../utils/tempelate';
 import Tooltip from '../../../components/tooltip/Tip';
 import { post } from '../../../api/tools';
 import { db } from '../../../database/db';
+import eventMap from '../../../utils/eventMap';
+
+import { Select } from 'antd';
+const { Option } = Select;
 
 const BOX_WIDTH = 220;
 const BOX_HEIGHT = 120;
-let maxVal = 0;
 const path2 = d3
   .geoPath()
   .projection(
@@ -25,7 +28,7 @@ const FigureTraces = ({ posToS }) => {
     .translate([BOX_WIDTH, BOX_HEIGHT*1.28]);
   const path = d3.geoPath().projection(projection);
   const [state, setState] = useState({
-    style: { opacity: 0 },
+    style: { opacity: 0, display: 'none' },
     data: [],
     title: '',
   });
@@ -33,13 +36,23 @@ const FigureTraces = ({ posToS }) => {
   const $map = useRef(null)
   const $container = useRef(null)
   
+  const [addr, setAddr] = useState(null);
+  const [selectType, setSelectType] = useState('');
+  const [maxVal, setMaxVal] = useState(0);
+
+  const updateSelectType = useCallback((value) => {
+    console.log(value)
+    setSelectType(value);
+    // drawCircle(posToS, addr)
+  },[])
 
   const drawCircle = useCallback(
     (data, addr_dict) => {
+      console.log('drawCircle')
       const radiusScale = d3.scaleLinear().domain([0, maxVal]).range([2, Math.log(maxVal)*4]);
       d3.select($map.current)
         .selectAll('circle')
-        .data(Object.keys(data))
+        .data(Object.keys(data).slice(0,100))
         .enter()
         .append('circle')
         .attr('class', 'positionCircle')
@@ -86,8 +99,8 @@ const FigureTraces = ({ posToS }) => {
             });
           }
         });
-      console.log('draw traces finished');
-  }, [$map, projection])
+      // console.log('draw traces finished');
+  }, [$map, projection, selectType])
 
 
   const getPositionToLat = useCallback(
@@ -100,17 +113,20 @@ const FigureTraces = ({ posToS }) => {
       post(settings).then((res) => {
         if (res.data.is_success) {
           const addr = {};
+          let curMaxVal = maxVal;
           for (const _data in res.data.Addr) {
             const curr = res.data.Addr[_data][0];
             if (curr && curr.x_coord !== null && curr.y_coord !== null) {
               addr[_data] = res.data.Addr[_data][0];
               addr[_data].count = posToS[_data];
               if (addr[_data].count.length > maxVal)
-                maxVal = addr[_data].count.length;
+                curMaxVal = addr[_data].count.length;
             }
           }
           // console.log('addr', addr);
-          drawCircle(posToS, addr);
+          // drawCircle(posToS, addr);
+          setMaxVal(curMaxVal);
+          setAddr(addr);
         } else if (res.data.bug) {
             console.error(res.data.bug);
           }
@@ -118,68 +134,76 @@ const FigureTraces = ({ posToS }) => {
   }, [drawCircle, posToS])
  
   const handleTooltipClick = (e) => {
-    const style = { ...state.style, opacity: 0,top:0 };
+    const style = { ...state.style, opacity: 0,top:0,display:'none' };
     setState({ ...state, style });
   };
 
   useEffect(() => {
     if (Object.keys(posToS).length > 0) getPositionToLat(posToS);
     else d3.select($map.current).selectAll('circle').remove();
-  }, [$map, getPositionToLat, posToS]);
+  }, [$map, posToS]);
 
+  const radiusScale = useMemo(() => {
+    return d3.scaleLinear().domain([0, maxVal]).range([2, Math.min(Math.log(maxVal)*4,10)]);
+  }, [maxVal])
+
+  const handleHoverCircle = useCallback((targetData,e) => {
+    if (targetData.length > 50) targetData = targetData.slice(0, 20);
+    if (targetData.length > 0) {
+
+      Promise.all(targetData.map(async (sentence) => {
+        const sentenceData = await db.sentence.get(sentence.sentence);
+        const vKey = [];
+        sentenceData.words.forEach((word, idx) => {
+          vKey.push(word);
+          vKey.push(sentenceData.edges[idx]);
+        });
+        const v = await template(sentenceData.category, vKey, 'name');
+        // console.log(v)
+        return v
+      })).then(resultData => {
+        const newState = {
+          data: resultData,
+          title: `count: ${targetData.length}`,
+          style: { opacity: 1, left: e.clientX+5, top: e.clientY-150 },
+        };
+        setState(newState);
+      });
+    }
+  }, [])
   const { style, data, title } = state;
   return (
-    <>
-      <div>
-       
-        <div className="mapContainer">
-          <svg
-            width={2*BOX_WIDTH}
-            height={2*BOX_HEIGHT}
-            viewBox={`0 0 ${2 * BOX_WIDTH} ${2 * BOX_HEIGHT}`}
-            xmlns="http://www.w3.org/2000/svg"
-            style={{ position: 'relative' }}
-            id="mapWithCircles"
-          >
+    <div>
+      
+      <div className="event-map-select">
+        <Select
+          style={{ width: 120 }}
+          placeholder="All"
+          optionFilterProp="children"
+          size="small"
+          value={selectType}
+          onChange={updateSelectType}
+        >
+          <Option value="">All</Option>
 
-              
-            <clipPath id="myClip">
-              <rect
-                x={BOX_WIDTH*1.7}
-                y={BOX_HEIGHT*1.2}
-                width="65"
-                height="100"
-                stroke="black"
-                fill="transparent"
-              />
-            </clipPath>
-
-          <g ref={$map}>
-              <g>
-                {china.features.map((d, i) => (
-                  <path
-                    strokeWidth="1"
-                    stroke="#999"
-                    fill="#fff"
-                    d={path(d)}
-                    key={`fea-${i}`}
-                  />
-                ))}
-              </g>
-              <g ref={$container} />
-            </g> 
-           
-            {/* <g clipPath="url(#myClip)">
-              {china.features.map((d, i) => (
-                <path
-                  stroke="#999"
-                  fill="#fff"
-                  strokeWidth="1"
-                  d={path2(d)}
-                  key={`fea-${i}`}
-                />
-              ))}
-            </g>
+          {Object.keys(eventMap).map((key) => (
+            <Option key={key} value={key}>
+              {key?.[0].toUpperCase() + key.slice(1)}
+            </Option>
+          ))}
+        </Select>
+      </div>
+      <div className="mapContainer">
+        <svg
+          width={2*BOX_WIDTH}
+          height={2*BOX_HEIGHT}
+          viewBox={`0 0 ${2 * BOX_WIDTH} ${2 * BOX_HEIGHT}`}
+          xmlns="http://www.w3.org/2000/svg"
+          style={{ position: 'relative' }}
+          id="mapWithCircles"
+        >
+            
+          <clipPath id="myClip">
             <rect
               x={BOX_WIDTH*1.7}
               y={BOX_HEIGHT*1.2}
@@ -187,23 +211,73 @@ const FigureTraces = ({ posToS }) => {
               height="100"
               stroke="black"
               fill="transparent"
-            /> */}
-          </svg>
-        </div>
-
-        <div className="mapView-label-container">
-          <div className="tooltip-address">
-            <Tooltip
-              style={style}
-              data={data}
-              title={title}
-              handleClickX={handleTooltipClick}
             />
-          </div>
+          </clipPath>
+
+        <g ref={$map}>
+            <g>
+              {china.features.map((d, i) => (
+                <path
+                  strokeWidth="1"
+                  stroke="#999"
+                  fill="#fff"
+                  d={path(d)}
+                  key={`fea-${i}`}
+                />
+              ))}
+            </g>
+            <g ref={$container} />
+            <g>
+              {
+                addr &&  Object.keys(posToS).map(d => {
+
+                  const size = posToS[d].filter(d => selectType === '' || d.type === selectType).length
+                  return addr[d] && size && <circle 
+                    className='positionCircle'
+                    cx = {projection([addr[d].x_coord, addr[d].y_coord])[0]}
+                    cy = {projection([addr[d].x_coord, addr[d].y_coord])[1]}
+                    r ={radiusScale(size)}
+                    onMouseEnter={(e) =>handleHoverCircle(addr[d].count,e)}
+                  /> 
+                })
+              }
+            </g> 
+          </g> 
+          
+          {/* <g clipPath="url(#myClip)">
+            {china.features.map((d, i) => (
+              <path
+                stroke="#999"
+                fill="#fff"
+                strokeWidth="1"
+                d={path2(d)}
+                key={`fea-${i}`}
+              />
+            ))}
+          </g>
+          <rect
+            x={BOX_WIDTH*1.7}
+            y={BOX_HEIGHT*1.2}
+            width="65"
+            height="100"
+            stroke="black"
+            fill="transparent"
+          /> */}
+        </svg>
+      </div>
+
+      <div className="mapView-label-container">
+        <div className="tooltip-address">
+          <Tooltip
+            style={style}
+            data={data}
+            title={title}
+            handleClickX={handleTooltipClick}
+          />
         </div>
       </div>
-    </>
-  );
+    </div>
+);
 };
 
 export default FigureTraces;

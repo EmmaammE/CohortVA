@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg width="14px" height="15px" viewBox="0 0 14 15" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <title>编组 16</title>
+<svg width="15px" height="15px" viewBox="0 0 15 15" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>编组 107</title>
     <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="3.11" transform="translate(-952.000000, -249.000000)">
-            <g id="编组-16" transform="translate(952.000000, 249.437500)">
-                <circle id="椭圆形" fill="#28AEB1" cx="7" cy="7" r="7"></circle>
-                <polyline id="路径-15" stroke="#FFFFFF" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" points="3 6.79721928 5.86318541 10 11.4161618 4"></polyline>
+        <g id="插图" transform="translate(-1429.000000, -4128.000000)" stroke="#00ACFC">
+            <g id="编组-107" transform="translate(1429.500000, 4128.312500)">
+                <circle id="椭圆形" fill-opacity="0.1" fill="#00ACFC" cx="7" cy="7" r="6.5"></circle>
+                <polyline id="路径-15" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" points="3 6.56411767 5.62458662 9.5 10.714815 4"></polyline>
             </g>
         </g>
     </g>

@@ -51,6 +51,13 @@
       z-index: -1;
     }
 
+    .feature-content-headers {
+      display: flex;
+      h3 {
+        flex: 0 0 43%;
+      }
+    }
+
     &-left {
       flex: 0 0 235px;
       border-right: 1px solid #979797;
@@ -95,6 +102,12 @@
           position: absolute;
           top: 0;
           right: 5px;
+          display: flex;
+          margin-right: 110px;
+
+          img {
+            margin-top: -8px;
+          }
         }
       }
 

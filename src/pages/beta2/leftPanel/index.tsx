@@ -86,7 +86,7 @@ const LeftPanel = () => {
     <div id="left-panel">
       <div className="figures-view g-divider panel">
         <div className="figures-view--header">
-          <h2 className="g-title">Specify Initial Figures</h2>
+          <h2 className="g-title">Scope Specification</h2>
           <ToggleICON
             className="figures-view--icon"
             onClick={toggleShow}
@@ -99,13 +99,13 @@ const LeftPanel = () => {
       </div>
 
       <div className="identification-view panel">
-        <h2 className="g-title">Scope Specification</h2>
+        <h2 className="g-title">Cohort Identification</h2>
         <div className="iv--content">
           <div id="overview" className="g-divider">
             <div>
               <img src={legend1} alt="legend" />
             </div>
-            <h3 className="g-title">Cohort Feature Overview</h3>
+            <h3 className="g-title">Cohort Feature Selection</h3>
             <Overview show={show} />
           </div>
           <div id="analysis">

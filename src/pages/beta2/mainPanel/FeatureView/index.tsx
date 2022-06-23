@@ -580,12 +580,10 @@ const FeatureView = ({
         </div>
 
         <div className={style['events-header']}>
-          <h3>Figure Event</h3>
-
           <div>
             <span
               className={selectedType === '' ? 'active-events' : ''}
-              style={{ '--color': '#ccc' } as any}
+              style={{ '--color': '#373737' } as any}
               onClick={() => setSelectedType('')}
             >
               All
@@ -622,8 +620,8 @@ const FeatureView = ({
         <div className={style['content-divider']} style={{ left: '458px' }} />
         <div className={style['content-divider']} style={{ left: '225px' }} />
 
-        <h3 className={style['life-header']}>Life Vicissitude</h3>
-        <h3 className={style['event-header']}>Event Number</h3>
+        <h3 className={style['life-header']}>Figure History</h3>
+        <h3 className={style['event-header']}>Event Ranking</h3>
         <h3 className={style['matrix-header']}>Relationship Matrix</h3>
 
         <div
@@ -650,7 +648,7 @@ const FeatureView = ({
           </div>
           <div>
             <InfoGraph
-              width={108}
+              width={105}
               height={histogramHeight - 5}
               data={labelInfo}
               yScale={infoYScale}

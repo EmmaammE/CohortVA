@@ -78,6 +78,7 @@ body {
     .ant-radio-wrapper:first-child {
       .ant-radio-checked .ant-radio-inner {
         background: url(/assets/icons/confirm.svg) no-repeat center;
+        background-size: 16px 16px;
         border-color: var(--included);
       }
     }
@@ -85,6 +86,7 @@ body {
     .ant-radio-wrapper:nth-child(2) {
       .ant-radio-checked .ant-radio-inner {
         background: url(/assets/icons/reject.svg) no-repeat center;
+        background-size: 16px 16px;
         border-color: var(--excluded);
       }
     }
@@ -93,7 +95,7 @@ body {
       .ant-radio-checked .ant-radio-inner {
         background: url(/assets/icons/uncertain.svg) no-repeat center;
         border-color: var(--uncertain);
-        background-size: 15px 15px;
+        background-size: 16px 16px;
       }
     }
   }
@@ -102,12 +104,15 @@ body {
     box-shadow: 0 0 0 3px rgb(200 200 200 / 8%);
   }
 
+  .ant-radio-inner {
+    border: 1px solid #767676;
+  }
   .ant-radio-inner::after {
     background: transparent;
   }
 
   .ant-radio::after {
-    border: 1px solid #878787;
+    border: 1px solid #767676;
   }
 }
 

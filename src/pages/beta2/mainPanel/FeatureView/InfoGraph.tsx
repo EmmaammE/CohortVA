@@ -32,8 +32,8 @@ const InfoGraph = ({
         .scaleBand()
         .domain(data?.map((d) => d.key))
         .range([0, width - margin.left - margin.bottom])
-        .paddingInner(0.5)
-        .paddingOuter(1),
+        .paddingInner(0.3)
+        .paddingOuter(0.4),
     [data, width]
   );
 
