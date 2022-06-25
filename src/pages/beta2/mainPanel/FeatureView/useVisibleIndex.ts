@@ -11,6 +11,7 @@ const useVisibleIndex = (height: number) => {
     const index1 = Math.round(($container.current?.scrollTop || 0) / height);
     setInitIndex(index1);
     setOffset($container.current?.scrollTop - index1 * height);
+    console.log('scrollHandler');
   }, [height]);
 
   useEffect(() => {
@@ -18,10 +19,21 @@ const useVisibleIndex = (height: number) => {
       const node = $container.current;
       const handler = debounce(scrollHandler, 50);
       node.addEventListener('scroll', handler);
-      // return () => node?.removeEventListener('scroll', handler) || null;
+
+      console.log('addlistener');
+      return () => node?.removeEventListener('scroll', handler) || null;
     }
-    // return () => null;
+    return () => null;
   }, [scrollHandler, $container]);
+
+  // useEffect(() => {
+  //   const node = $container?.current;
+  //   const handler = debounce(scrollHandler, 50);
+  //   node?.addEventListener('scroll', handler);
+
+  //   console.log('addlistener');
+  //   return () => node?.removeEventListener('scroll', handler) || null;
+  // });
 
   return {
     initIndex,

@@ -535,10 +535,6 @@ const FeatureView = ({
     setSelectedType('');
   }, [figureIdSelected]);
 
-  if (figureIdArr.length === 0) {
-    return <div />;
-  }
-
   return (
     <div className={style.container}>
       <div className={style.header}>

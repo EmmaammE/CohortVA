@@ -14,9 +14,12 @@ const eventMap = {
   military: {
     color: '#D49F8F',
   },
-  family: {
-    color: '#6C4A40',
+  others: {
+    color: '#ccc',
   },
+  // family: {
+  //   color: '#6C4A40',
+  // },
 };
 
 export type TEventType = keyof typeof eventMap;

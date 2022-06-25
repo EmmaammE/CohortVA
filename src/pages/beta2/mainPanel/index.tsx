@@ -35,6 +35,8 @@ const MainPanel = () => {
   const classifierIndex = useAppSelector(
     (state) => state.cohorts.classifierIndex
   );
+
+  const figureIdSelected = useAppSelector((state) => state.status.figureIdArr);
   const dispatch = useAppDispatch();
   const setFigureStatusCb = useCallback(
     (s) => {
@@ -255,13 +257,15 @@ const MainPanel = () => {
               <h3 className="g-title">Figure Feature Validation</h3>
               <h3 className="g-title">Figure Event Validation</h3>
             </div>
-            <FeatureView
-              data={fid2weight}
-              features={features}
-              relationData={personToPerson}
-              personInfo={personInfo}
-              nodeGroups={nodeGroups}
-            />
+            {!!figureIdSelected.length && (
+              <FeatureView
+                data={fid2weight}
+                features={features}
+                relationData={personToPerson}
+                personInfo={personInfo}
+                nodeGroups={nodeGroups}
+              />
+            )}
           </div>
           <div className="map-view">
             <h3 className="g-title">Event Map</h3>

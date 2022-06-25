@@ -4,6 +4,21 @@
   overflow-y: auto;
   transition: height 300ms ease-out;
 }
+
+.figure-table-container .button {
+  width: 50px;
+  height: 20px;
+  line-height: 20px;
+  background: #efefef;
+  border: 1px solid #a3a3a3;
+  box-shadow: 0 4px 8px -8 #0003;
+  border-radius: 3px;
+  text-align: center;
+  cursor: pointer;
+  position: absolute;
+  top: 18px;
+  right: -5px;
+}
 .figure-table-container .figure-table-title {
   font-family: 'Helvetica-Bold';
   color: #240f39;

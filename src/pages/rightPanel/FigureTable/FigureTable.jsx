@@ -1,5 +1,5 @@
 /* eslint-disable  */
-import React, { Component, useReducer, useState, useEffect } from 'react';
+import React, { Component, useReducer, useState, useEffect, useCallback } from 'react';
 import 'antd/lib/collapse/style/index.css';
 import './figureTable.css';
 import { Collapse } from 'antd';
@@ -8,6 +8,7 @@ import { get } from '../../../api/tools';
 import { ReactComponent as ToggleICON } from '../../../assets/icons/toggle.svg';
 
 const { Panel } = Collapse;
+const url = 'https://biogref.org/mm.pl?method=search&';
 
 const FigureTable = ({ chosenFigure }) => {
   const [figure, setFigure] = useState({});
@@ -168,9 +169,18 @@ const FigureTable = ({ chosenFigure }) => {
     //     setFigure({...showFigure} );
     // }
   }, [chosenFigure]);
+
+  const openCBDB = useCallback(() => {
+    window.open(
+      `${url}&person_name=${figure['Personal Info']['Name']}`
+    )
+  }, [figure])
+
+
   return (
     <div className="figure-table-container mod g-scroll">
       {loading && <div className='loading-border'></div>}
+      {figure && <div className='button' onClick={openCBDB}>More</div>}
       <div className="figure-detail-list">
         {figure['Personal Info'] ? (
           <div className="basic-info">

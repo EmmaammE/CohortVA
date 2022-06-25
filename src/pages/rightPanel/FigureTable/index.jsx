@@ -46,7 +46,7 @@ const FigureInfo = () => {
           <span>{figureName}</span>
           <Radio.Group
             value={figureStatus[figureId]}
-            onChange={ onChangeRadio}
+            onChange={onChangeRadio}
           >
             <Radio value={0} />
             <Radio value={1} />

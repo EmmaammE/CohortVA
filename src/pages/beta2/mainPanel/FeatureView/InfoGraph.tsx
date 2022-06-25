@@ -32,7 +32,7 @@ const InfoGraph = ({
         .scaleBand()
         .domain(data?.map((d) => d.key))
         .range([0, width - margin.left - margin.bottom])
-        .paddingInner(0.3)
+        .paddingInner(0.2)
         .paddingOuter(0.4),
     [data, width]
   );
@@ -64,8 +64,8 @@ const InfoGraph = ({
               <text
                 key={`${k.key}t`}
                 x={(xScale(k.key) || 0) + xScale.bandwidth() / 2}
-                y={Math.max(0, height - margin.bottom - 6 - yScale(k.value))}
-                fontSize="8"
+                y={Math.max(0, height - margin.bottom - 8 - yScale(k.value))}
+                fontSize="10"
                 textAnchor="middle"
               >
                 {k.value}
