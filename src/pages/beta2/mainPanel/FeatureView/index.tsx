@@ -211,15 +211,16 @@ const FeatureView = ({
   const { nodesMap } = useNamesMap(figureIdArr);
 
   // matrix people range
-  const [range, setRange] = useState<[number, number]>([1, 1]);
+  const [range, setRange] = useState<[number, number] | null>([1, 1]);
   const $slider = useRef(null);
   const handleSliderChangeEnd = useCallback((value: any) => {
-    // setRange(value.map((d: number) => d - 1));
+    setRange(value.map((d: number) => d - 1));
     // setRange([value 1, value[0] + 25]);
   }, []);
 
   const [rangeProps, setRangeProps] = useState({});
   useEffect(() => {
+    if (!range) return;
     setRangeProps({ value: [...range] });
     // window.requestAnimationFrame(() => {
     //   setRangeProps({});
@@ -821,7 +822,14 @@ const FeatureView = ({
           </div>
 
           <SortICON
-            onClick={() => clickSort(EOrderOption.MatrixOrder)}
+            onClick={() => {
+              clickSort(EOrderOption.MatrixOrder);
+              if (range) {
+                setRange(null);
+              } else {
+                setRange([initIndex, initIndex + 25]);
+              }
+            }}
             style={
               orderOption !== EOrderOption.MatrixOrder
                 ? { transform: 'rotate(180deg)' }

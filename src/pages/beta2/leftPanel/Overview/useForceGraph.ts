@@ -24,10 +24,10 @@ const useForceGraph = (data: GraphData | null, descriptions: any) => {
     const idsSet = new Set(ids);
 
     const curLinks: any = [];
-    const edgeSet = new Set();
 
     let minV = 99999;
     let maxV = 0;
+    let zeroPoint = 0;
     ids.forEach((node) => {
       const nodeData = data[node];
       Object.keys(nodeData).forEach((node2) => {
@@ -35,31 +35,27 @@ const useForceGraph = (data: GraphData | null, descriptions: any) => {
 
         if (!idsSet.has(node2)) return;
 
-        if (edgeSet.has(`${node}-${node2}`)) return;
+        // 极限值-1表示从未同时出现，0表示独立，1表示完全同时发生。
         const value = nodeData[node2];
-        // nodeData[node2] <= 0 ? 9999 : 1 / Math.exp(nodeData[node2]);
+
+        if (value < 0) {
+          zeroPoint = Math.min(zeroPoint, value);
+        } else {
+          minV = Math.min(minV, value);
+          maxV = Math.max(maxV, value);
+        }
         curLinks.push({
           source: node,
           target: node2,
           // value: nodeData[node2] <= 0 ? 0.000001 : 1 / nodeData[node2],
           value,
         });
-
-        edgeSet.add(`${node2}-${node}`);
-
-        // if (value !== 9999) {
-        minV = Math.min(minV, value);
-        maxV = Math.max(maxV, value);
-        // }
       });
     });
-
-    console.log(minV, maxV);
-
-    // const scale = d3.scaleLinear().domain([minV, maxV, 9999]).range([0, 1, 1]);
-    const scale = d3.scaleLinear().domain([minV, maxV]).range([1, 0]);
-
-    // console.log(curLinks, scale(9999));
+    const scale = d3
+      .scaleLinear()
+      .domain([zeroPoint, 0, maxV])
+      .range([2, 1, 0]);
     try {
       d3.forceSimulation(curNodes)
         .force(
@@ -69,16 +65,16 @@ const useForceGraph = (data: GraphData | null, descriptions: any) => {
             .id((d: any) => d.id)
             // .distance((d: any) => d.value * 10 + 1)
             // .strength((d: any) => scale(d.value) + 1)
-            .distance((d: any) => scale(d.value) * 30)
+            .distance((d: any) => scale(d.value) * 10)
             .strength((d: any) => scale(d.value))
         )
         .force(
           'charge',
-          d3.forceManyBody().strength(-Math.log(curNodes.length) / 8)
+          d3.forceManyBody().strength(-Math.log(curNodes.length) / 10)
         )
         .force('center', d3.forceCenter(WIDTH / 2, HEIGHT / 2))
         // .force('collide', d3.forceCollide().radius(1))
-        // .force('collide', d3.forceCollide().radius(0.5))
+        .force('collide', d3.forceCollide().radius(0.5))
         .force('x', d3.forceX())
         .force('y', d3.forceY())
         .stop()
