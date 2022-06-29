@@ -127,14 +127,15 @@ const Overview = ({ show }: IOverview) => {
               weight = f?.weight || 0.1;
             }
           });
-          featuresMap[f2].weight = weight;
 
           const param = {
             use_weight: false,
             features: featuresMap,
-            search_group: Object.keys(figureStatus).filter(
-              (d) => figureStatus[d] !== 2
-            ),
+            // search_group: Object.keys(figureStatus).filter(
+            //   (d) => figureStatus[d] !== 2
+            // ),
+            search_group: Object.keys(figureStatus),
+            featureId: f2,
           };
 
           dispatch(updateCohortByRegexAsync(param));
@@ -296,6 +297,8 @@ const Overview = ({ show }: IOverview) => {
                   {value.features
                     .map((d) => `${d.type.slice(0, 1)}(${d.text})`)
                     .join('&')}
+
+                  {/* {cfid} */}
                 </p>
               </div>
             );

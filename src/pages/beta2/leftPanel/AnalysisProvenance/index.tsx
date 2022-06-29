@@ -24,7 +24,9 @@ const AnalysisPanel = () => {
       if (!res[id]) {
         res[id] = {};
         res[id].size =
-          value.people.normalPeople.length + value.people.refusedPeople.length;
+          value.people.normalPeople.length +
+          value.people.refusedPeople.length +
+          value.people.recommendPeople.length;
 
         res[id].classifiers = [];
       }

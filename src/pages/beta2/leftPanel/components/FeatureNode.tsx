@@ -157,6 +157,7 @@ const FeatureNode = ({
       opacity={
         featureId === '' || featureId === id ? initOpacity : afterOpacity
       }
+      id={id}
       className="node"
       {...style}
       onClick={onClick || null}

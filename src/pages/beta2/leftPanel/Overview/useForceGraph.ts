@@ -24,6 +24,7 @@ const useForceGraph = (data: GraphData | null, descriptions: any) => {
     const idsSet = new Set(ids);
 
     const curLinks: any = [];
+    const edgeSet = new Set();
 
     let minV = 99999;
     let maxV = 0;
@@ -34,8 +35,9 @@ const useForceGraph = (data: GraphData | null, descriptions: any) => {
 
         if (!idsSet.has(node2)) return;
 
-        const value =
-          nodeData[node2] <= 0 ? 0.000001 : 1 / Math.exp(nodeData[node2]);
+        if (edgeSet.has(`${node}-${node2}`)) return;
+        const value = nodeData[node2];
+        // nodeData[node2] <= 0 ? 9999 : 1 / Math.exp(nodeData[node2]);
         curLinks.push({
           source: node,
           target: node2,
@@ -43,14 +45,21 @@ const useForceGraph = (data: GraphData | null, descriptions: any) => {
           value,
         });
 
+        edgeSet.add(`${node2}-${node}`);
+
+        // if (value !== 9999) {
         minV = Math.min(minV, value);
         maxV = Math.max(maxV, value);
+        // }
       });
     });
 
     console.log(minV, maxV);
 
-    const scale = d3.scaleLinear().domain([minV, maxV]).range([0, 1]);
+    // const scale = d3.scaleLinear().domain([minV, maxV, 9999]).range([0, 1, 1]);
+    const scale = d3.scaleLinear().domain([minV, maxV]).range([1, 0]);
+
+    // console.log(curLinks, scale(9999));
     try {
       d3.forceSimulation(curNodes)
         .force(

@@ -82,9 +82,10 @@ const CohortFeature = ({ j, features, size }: ICohortFeature) => {
             }),
             {}
           ),
-          search_group: Object.keys(figureStatus).filter(
-            (d) => figureStatus[d] !== 2
-          ),
+          // search_group: Object.keys(figureStatus).filter(
+          //   (d) => figureStatus[d] !== 2
+          // ),
+          search_group: Object.keys(figureStatus),
         };
 
         db.features.bulkPut(newFeatures as any);

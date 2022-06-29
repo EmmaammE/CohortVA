@@ -25,6 +25,7 @@ import Timeline from './timeline';
 import { setLinks } from '../../../reducer/featureSlice';
 import legend from '../../../assets/legends/3.svg';
 import eventMap from '../../../utils/eventMap';
+import { ReactComponent as SortICON } from '../../../assets/icons/sort2.svg';
 
 const { Option } = Select;
 
@@ -109,6 +110,8 @@ const MainPanel = () => {
     dispatch(setLinks(Array.from(linkSet)));
   }, [cohortData, dispatch]);
 
+  const [sortByStatus, setSortByStatus] = useState<boolean>(false);
+
   const xScale = useMemo(
     () => d3.scaleLinear().domain([0, maxFigureWeight]).range([0, width]), // 100
     [maxFigureWeight]
@@ -116,24 +119,47 @@ const MainPanel = () => {
 
   const yScale = useMemo(() => {
     const featureIdToSort = featureToSort?.id || '';
-    const list = Object.values(people || {})
-      .map((peopleList: any) => {
+
+    let list = [];
+
+    if (sortByStatus) {
+      list = Object.values(people || {})
+        .map((peopleList: any) => {
+          if (featureIdToSort !== '') {
+            peopleList.sort(
+              (p1: any, p2: any) =>
+                (fid2weight?.[p2.id]?.[featureIdToSort] || 0) -
+                (fid2weight?.[p1.id]?.[featureIdToSort] || 0)
+            );
+          } else {
+            peopleList.sort(
+              (p1: any, p2: any) =>
+                (fid2weight?.[p2.id]?.sum || 0) -
+                (fid2weight?.[p1.id]?.sum || 0)
+            );
+          }
+
+          return peopleList.map((d: any) => d.id);
+        })
+        .reduce((acc, cur) => acc.concat(cur), []);
+    } else {
+      list = Object.values(people || {}).reduce(
+        (acc, cur) =>
+          (acc as string[]).concat((cur as { id: string }[]).map((d) => d.id)),
+        []
+      ) as string[];
+
+      list.sort((p1, p2) => {
         if (featureIdToSort !== '') {
-          peopleList.sort(
-            (p1: any, p2: any) =>
-              (fid2weight?.[p2.id]?.[featureIdToSort] || 0) -
-              (fid2weight?.[p1.id]?.[featureIdToSort] || 0)
-          );
-        } else {
-          peopleList.sort(
-            (p1: any, p2: any) =>
-              (fid2weight?.[p2.id]?.sum || 0) - (fid2weight?.[p1.id]?.sum || 0)
+          return (
+            (fid2weight?.[p2]?.[featureIdToSort] || 0) -
+            (fid2weight?.[p1]?.[featureIdToSort] || 0)
           );
         }
 
-        return peopleList.map((d: any) => d.id);
-      })
-      .reduce((acc, cur) => acc.concat(cur), []);
+        return (fid2weight?.[p2]?.sum || 0) - (fid2weight?.[p1]?.sum || 0);
+      });
+    }
 
     if (list.length < 50) {
       return d3
@@ -143,7 +169,7 @@ const MainPanel = () => {
     }
 
     return d3.scaleBand().domain(list).range([0, height]);
-  }, [featureToSort, fid2weight, people]);
+  }, [featureToSort?.id, fid2weight, people, sortByStatus]);
 
   const stackedColorScale = useMemo(
     () =>
@@ -224,22 +250,31 @@ const MainPanel = () => {
       <div className="feature-content">
         <div className="feature-content-left">
           <h3 className="g-title">Cohort Overview</h3>
-          <Select
-            style={{ width: 220, marginLeft: '15px' }}
-            placeholder="Feature number"
-            optionFilterProp="children"
-            size="small"
-            value={getDisplayedFeatureText(featureToSort)}
-            onChange={onChange}
-          >
-            <Option value="">Feature Number</Option>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <SortICON
+              onClick={() => setSortByStatus(!sortByStatus)}
+              style={{
+                cursor: 'pointer',
+                transform: sortByStatus ? 'inherit' : 'rotate(180deg)',
+              }}
+            />
+            <Select
+              style={{ width: 220, marginLeft: '5px' }}
+              placeholder="Feature number"
+              optionFilterProp="children"
+              size="small"
+              value={getDisplayedFeatureText(featureToSort)}
+              onChange={onChange}
+            >
+              <Option value="">Feature Number</Option>
 
-            {features.map((feature: any, index: number) => (
-              <Option key={feature.id} value={index}>
-                {getDisplayedFeatureText(feature)}
-              </Option>
-            ))}
-          </Select>
+              {features.map((feature: any, index: number) => (
+                <Option key={feature.id} value={index}>
+                  {getDisplayedFeatureText(feature)}
+                </Option>
+              ))}
+            </Select>
+          </div>
 
           <FeatureList
             loading={loading}

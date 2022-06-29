@@ -229,7 +229,7 @@ const FigureTraces = ({ posToS }) => {
             </g>
             <g ref={$container} />
             <g>
-              {
+              {/* {
                 Object.keys(eventMap).map(type => {
                   return <g>
                     {
@@ -251,32 +251,31 @@ const FigureTraces = ({ posToS }) => {
                     }
                   </g>
                 })
-              }
-              {/* {
-                addr &&  Object.keys(posToS).map(d => {
+              } */}
+              {addr &&  Object.keys(posToS).map(d => {
                   const size = posToS[d].filter(d => selectType === '' || d.type === selectType).length
 
-                  return (
-                    <>
-                      {
-                        addr[d] && size && Object.keys(eventMap).map(type => {
-                          const size = posToS[d].filter(d => d.type === type).length
+                  // return (
+                  //   <>
+                  //     {
+                  //       addr[d] && size && Object.keys(eventMap).map(type => {
+                  //         const size = posToS[d].filter(d => d.type === type).length
 
-                          return (
-                            addr[d] && size && <circle 
-                              className='positionCircle'
-                              cx = {projection([addr[d].x_coord, addr[d].y_coord])[0]}
-                              cy = {projection([addr[d].x_coord, addr[d].y_coord])[1]}
-                              r ={radiusScale(size)}
-                              fill={eventMap[type]?.color || '#373737'}
-                              stroke={eventMap[type]?.color || '#373737'}
-                              onMouseEnter={(e) =>handleHoverCircle(addr[d].count,e)}
-                            /> 
-                          )
-                        })
-                      }
-                    </>
-                  )
+                  //         return (
+                  //           addr[d] && size && <circle 
+                  //             className='positionCircle'
+                  //             cx = {projection([addr[d].x_coord, addr[d].y_coord])[0]}
+                  //             cy = {projection([addr[d].x_coord, addr[d].y_coord])[1]}
+                  //             r ={radiusScale(size)}
+                  //             fill={eventMap[type]?.color || '#373737'}
+                  //             stroke={eventMap[type]?.color || '#373737'}
+                  //             onMouseEnter={(e) =>handleHoverCircle(addr[d].count,e)}
+                  //           /> 
+                  //         )
+                  //       })
+                  //     }
+                  //   </>
+                  // )
                   return (
                     addr[d] && size && <circle 
                       className='positionCircle'
@@ -289,7 +288,7 @@ const FigureTraces = ({ posToS }) => {
                     /> 
                   )
                 })
-              } */}
+              } 
             </g> 
           </g> 
           
