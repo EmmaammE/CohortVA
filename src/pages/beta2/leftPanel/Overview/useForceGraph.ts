@@ -20,7 +20,7 @@ const useForceGraph = (data: GraphData | null, descriptions: any) => {
 
     const ids = Object.keys(descriptions || []);
     const curNodes: any = ids.map((key) => ({ id: key }));
-    console.log(curNodes);
+    // console.log(curNodes);
     const idsSet = new Set(ids);
 
     const curLinks: any = [];
@@ -65,16 +65,15 @@ const useForceGraph = (data: GraphData | null, descriptions: any) => {
             .id((d: any) => d.id)
             // .distance((d: any) => d.value * 10 + 1)
             // .strength((d: any) => scale(d.value) + 1)
-            .distance((d: any) => scale(d.value) * 10)
+            .distance((d: any) => scale(d.value) * 80)
             .strength((d: any) => scale(d.value))
         )
-        .force(
-          'charge',
-          d3.forceManyBody().strength(-Math.log(curNodes.length) / 10)
-        )
+        .force('charge', d3.forceManyBody().strength(-1))
         .force('center', d3.forceCenter(WIDTH / 2, HEIGHT / 2))
-        // .force('collide', d3.forceCollide().radius(1))
-        .force('collide', d3.forceCollide().radius(0.5))
+        .force(
+          'collide',
+          d3.forceCollide().radius(Math.ceil(curNodes.length) / 9)
+        )
         .force('x', d3.forceX())
         .force('y', d3.forceY())
         .stop()
@@ -83,6 +82,7 @@ const useForceGraph = (data: GraphData | null, descriptions: any) => {
       console.log(e);
     }
 
+    console.log(curNodes.length);
     const [x1 = 0, x2 = 0] = d3.extent(curNodes, (d: any) => d.x);
     const [y1 = 0, y2 = 0] = d3.extent(curNodes, (d: any) => d.y);
 

@@ -146,7 +146,7 @@ const FigureTraces = ({ posToS }) => {
   }, [$map, posToS]);
 
   const radiusScale = useMemo(() => {
-    return d3.scaleLinear().domain([0, maxVal]).range([2, Math.min(Math.log(maxVal)*4,10)]);
+    return d3.scaleLinear().domain([0, maxVal]).range([2, Math.min(Math.log(maxVal)*4,6)]);
   }, [maxVal])
 
   const handleHoverCircle = useCallback((targetData,e) => {
