@@ -1,0 +1,84 @@
+#left-panel {
+  $leftPadding: 13px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+
+  .panel {
+    background: #fff;
+    padding: 0 0 0 $leftPadding;
+  }
+
+  .figures-view {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    width: 300px;
+
+    &--header {
+      height: 50px;
+      line-height: 50px;
+      display: flex;
+      align-items: center;
+    }
+
+    &--icon {
+      display: block;
+      margin: 5px 10px;
+      width: 17px;
+      height: 17px;
+      cursor: pointer;
+    }
+
+    &--content {
+      height: 460px;
+      transition: height 300ms ease-out;
+    }
+  }
+
+  #p-title {
+    display: flex;
+    justify-content: space-between
+  }
+
+  .identification-view {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    flex: 1;
+
+    h2.g-title {
+      margin: 10px 0;
+    }
+    h3.g-title {
+      margin: 5px 0;
+    }
+
+    .iv--content {
+      flex: 1;
+      display: flex;
+      flex-direction: row;
+
+      #analysis {
+        padding: 10px 6px;
+        transition: height 300ms ease-out;
+        flex: 1;
+      }
+
+      #overview {
+        display: flex;
+        flex-direction: column;
+        transition: height 300ms ease-out;
+        border-right: 1px solid #ccc;
+
+        img {
+          margin-bottom: 10px;
+        }
+      }
+
+      .node {
+        transition: opacity 300ms ease-in-out;
+      }
+    }
+  }
+}

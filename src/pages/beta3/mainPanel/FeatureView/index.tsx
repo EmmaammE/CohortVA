@@ -22,7 +22,7 @@ import {
   updateFigureStatusById,
 } from '../../../../reducer/statusSlice';
 import useVisibleIndex from './useVisibleIndex';
-import { mainColors, mainColors2 } from '../../../../utils/atomTopic';
+import { mainColors2 } from '../../../../utils/atomTopic';
 import Line from './Line';
 import InfoGraph from './InfoGraph';
 import eventMap from '../../../../utils/eventMap';
@@ -67,7 +67,7 @@ enum ELabelOption {
 
 const { Option } = Select;
 
-const height = 21;
+const CELL_HEIGHT = 18; // 格子的大小
 const width = 210;
 
 const defaultLabelColorScale = d3
@@ -128,7 +128,7 @@ const FeatureView = ({
   // stack按照原序即可，yScale按照排序后的顺序
   const stack = useStack(data, groups, figureIdArr);
 
-  const svgHeight = useMemo(() => height * figureIdArr.length, [
+  const svgHeight = useMemo(() => CELL_HEIGHT * figureIdArr.length, [
     figureIdArr.length,
   ]);
 
@@ -308,10 +308,10 @@ const FeatureView = ({
     }
   }, []);
 
-  const { initIndex, $container, offset } = useVisibleIndex(21);
+  const { initIndex, $container, offset } = useVisibleIndex(CELL_HEIGHT);
 
   useEffect(() => {
-    setRange([initIndex, initIndex + 25]);
+    setRange([initIndex, initIndex + CELL_HEIGHT]);
   }, [initIndex]);
   // 矩阵选中的人
   const choseFigure = useCallback(
@@ -699,7 +699,7 @@ const FeatureView = ({
                 className={style.highlight}
                 style={
                   pair
-                    ? { top: index * 21, opacity: 1 }
+                    ? { top: index * CELL_HEIGHT, opacity: 1 }
                     : { opacity: 0, top: 0 }
                 }
               />
@@ -720,7 +720,7 @@ const FeatureView = ({
                       x={xScale(d[0])}
                       y={2 + (yScale(figureIdArr[j]) || 0)}
                       width={Math.abs(xScale(d[1]) - xScale(d[0]))}
-                      height={height - 4}
+                      height={CELL_HEIGHT - 4}
                       // fill={`url(#Gradient${groups[i]})`}
                       fill={stackedColorScale(dArr.key) as string}
                       stroke="#fff"
@@ -770,7 +770,7 @@ const FeatureView = ({
             </div>
             <Line
               pids={sortedFigureIds}
-              rowHeight={height}
+              rowHeight={CELL_HEIGHT}
               data={personInfo}
               range={yearRange || ([0] as any)}
               type={selectedType}

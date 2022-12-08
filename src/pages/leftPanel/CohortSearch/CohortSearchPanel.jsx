@@ -184,22 +184,22 @@ class CohortSearcherPanel extends React.PureComponent {
     return (
       <div id="searcher-panel" className="visual-panel">
         <div className="searcher-items">
-          <div className="searcher-item" id="figure_names">
+          {/* <div className="searcher-item" id="figure_names">
             Figures
             <SearchSVG onClick={this.displayInput} />
-          </div>
+          </div> */}
           {searchMode === 'figure_names' && (
             <Input id="figure-name-list-input" className="his-input" />
           )}
           <div className="searcher-item" id="figure">
-            Ego-network
+            根据中心人物查询
             <SearchSVG onClick={this.displayInput} />
           </div>
           {searchMode === 'figure' && (
             <Input id="figure-name-input" className="his-input" />
           )}
           <div className="searcher-item" id="condition">
-            Condition
+            根据条件查询
             <SearchSVG onClick={this.displayInput} />
           </div>
           {searchMode === 'condition' && (
@@ -234,28 +234,29 @@ class CohortSearcherPanel extends React.PureComponent {
             </div>
           )}
           <div className="searcher-item" id="regex">
-            Concept Language
+            根据图结构查询
             <SearchSVG onClick={this.displayInput} />
           </div>
           {searchMode === 'regex' && <Input className="his-input" />}
-          <div className="searcher-item">Model Selection</div>
+          <div className="searcher-item">选择特征提取模型</div>
           <div id="model-checkbox">
             {/* 写死 */}
-            {['TimeRange', 'Location', 'Celebrity', 'Entity', 'Relationship', 'Affiliation'].map(
+            {['时间范围(Time Model)', '地理位置(Where Model)', '职官类型(Office Model)', '中心人物(Celebrity Model)', '社交关系(Relationship Model)', '重要实体(Entity Model)'].map(
+            // {['TimeRange', 'Location', 'Celebrity', 'Entity', 'Relationship', 'Affiliation'].map(
               (f, i) => (
                 <div className="single-checkbox" style={{}} key={i}>
                   <input type="checkbox" value="group" checked readOnly />
                   <label>{f}</label>
-                  <div className="split-line" />
+                  {/* <div className="split-line" /> */}
                 </div>
               )
             )}
-            <div id="placer" />
+            {/* <div id="placer" /> */}
           </div>
 
         </div>
         <div id="submit-button" onClick={this.submit}>
-          Search
+          搜索
         </div>
       </div>
     );

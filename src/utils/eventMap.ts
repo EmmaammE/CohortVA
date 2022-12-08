@@ -1,18 +1,42 @@
+// const eventMap = {
+//   politics: {
+//     color: '#BA6352',
+//   },
+//   academic: {
+//     color: '#C5913E',
+//   },
+//   religion: {
+//     color: '#215B83',
+//   },
+//   sociality: {
+//     color: '#689A99',
+//   },
+//   military: {
+//     color: '#D49F8F',
+//   },
+//   others: {
+//     color: '#ccc',
+//   },
+//   // family: {
+//   //   color: '#6C4A40',
+//   // },
+// };
+
 const eventMap = {
   politics: {
-    color: '#BA6352',
+    color: '#658CA2',
   },
   academic: {
-    color: '#C5913E',
+    color: '#508F8A'
   },
   religion: {
-    color: '#215B83',
+    color: '#E5B79B'
   },
   sociality: {
-    color: '#689A99',
+    color: '#B79657'
   },
   military: {
-    color: '#D49F8F',
+    color: '#5CB5AA'
   },
   others: {
     color: '#ccc',
