@@ -15,7 +15,7 @@ interface ILine {
   type: string;
 }
 
-const width = 185;
+const width = 385;
 const padding = 10;
 const heightPadding = 14;
 
@@ -77,7 +77,7 @@ const Line = ({ pids, rowHeight, data, range, type }: ILine) => {
                 x2={xScale(data[fid]?.c_year || 0)}
                 y1={i * rowHeight}
                 y2={i * rowHeight + rowHeight - heightPadding / 2}
-                stroke="#B16653"
+                stroke="#a36e77"
               />
             )}
             {(type === '' || type === 'politics') &&
@@ -88,7 +88,7 @@ const Line = ({ pids, rowHeight, data, range, type }: ILine) => {
                   x2={xScale(d.c_first_year || 0)}
                   y1={i * rowHeight}
                   y2={i * rowHeight + rowHeight - heightPadding / 2}
-                  stroke="#B16653"
+                  stroke="#a36e77"
                 />
               ))}
             {(data[fid]?.sentence || []).map(

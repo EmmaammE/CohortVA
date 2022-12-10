@@ -11,8 +11,8 @@ const useNamesMap = (ids: string[]) => {
     db.node.bulkGet(ids.map((d) => +d)).then((res) => {
       const map: TMap = {};
       res.forEach((node) => {
-        if (node?.id && node?.en_name) {
-          map[node.id] = node.en_name;
+        if (node?.id && node?.name) {
+          map[node.id] = node.name;
         }
       });
 

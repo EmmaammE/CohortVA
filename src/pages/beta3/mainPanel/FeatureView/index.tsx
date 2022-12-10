@@ -67,7 +67,7 @@ enum ELabelOption {
 
 const { Option } = Select;
 
-const CELL_HEIGHT = 18; // 格子的大小
+const CELL_HEIGHT = 21; // 格子的大小
 const width = 210;
 
 const defaultLabelColorScale = d3
@@ -537,7 +537,7 @@ const FeatureView = ({
 
   return (
     <div className={style.container}>
-      <div className={style.header}>
+      {/* <div className={style.header}>
         <div className={style['feature-header']}>
           <h3>Figure Feature</h3>
           <Select
@@ -611,16 +611,16 @@ const FeatureView = ({
             </Option>
           ))}
         </Select>
-      </div>
+      </div> */}
       <div className={style.content}>
-        <div className={style['content-divider']} style={{ left: '458px' }} />
+        {/* <div className={style['content-divider']} style={{ left: '458px' }} />
         <div className={style['content-divider']} style={{ left: '225px' }} />
 
         <h3 className={style['life-header']}>Figure History</h3>
         <h3 className={style['event-header']}>Event Ranking</h3>
-        <h3 className={style['matrix-header']}>Relationship Matrix</h3>
+        <h3 className={style['matrix-header']}>Relationship Matrix</h3> */}
 
-        <div
+        {/* <div
           className={style.checkall}
           // 有滚动条的时候调整位置
           style={figureIdArr.length > 25 ? { marginRight: '-3px' } : {}}
@@ -630,7 +630,7 @@ const FeatureView = ({
             <Radio value={1} />
             <Radio value={2} />
           </Radio.Group>
-        </div>
+        </div> */}
 
         <div className={style['content-histogram']}>
           <div>
@@ -654,7 +654,7 @@ const FeatureView = ({
 
           <div className={style.year}>
             <InfoGraph
-              width={205}
+              width={405}
               height={histogramHeight - 5}
               data={eventsInfo}
               yScale={eventsScale}

@@ -49,7 +49,7 @@ const trianglePath = (rangeX: number[], rangeY: number[], boxSize: number) => {
     .join(' ');
 };
 
-export const matrixHeight = 450;
+export const matrixHeight = 548;
 
 const Matrix = ({
   data,

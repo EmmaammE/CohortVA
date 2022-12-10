@@ -288,10 +288,10 @@ const MainPanel = () => {
         </div>
         <div className="feature-content-right">
           <div className="feature-content-right-top">
-            <div className="feature-content-headers">
+            {/* <div className="feature-content-headers">
               <h3 className="g-title">Figure Feature Validation</h3>
               <h3 className="g-title">Figure Event Validation</h3>
-            </div>
+            </div> */}
             {!!figureIdSelected.length && (
               <FeatureView
                 data={fid2weight}
